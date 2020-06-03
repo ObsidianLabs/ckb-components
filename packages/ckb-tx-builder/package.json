@@ -1,0 +1,21 @@
+{
+  "name": "@obsidians/ckb-tx-builder",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
+    "@nervosnetwork/ckb-types": "^0.32.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}

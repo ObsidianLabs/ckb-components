@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es2019", "dom"],
+    "outDir": "lib",
+    "declaration": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "types": ["@nervosnetwork/ckb-types", "node"]
+  },
+  "include": ["src"]
+}

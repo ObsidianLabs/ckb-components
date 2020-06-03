@@ -1,0 +1,1 @@
+exports.CkbInstanceManager = require('./CkbInstanceManager')
