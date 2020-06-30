@@ -39,7 +39,7 @@ export default function AddressLockScriptInput ({ initialScript, onChange, addre
         <Dropdown
           header='Address Book'
           icon='fas fa-address-book'
-          items={addressBook.map(item => item.testnetAddress)}
+          items={addressBook.map(item => item.address)}
           onChange={onChangeValue}
         />
       </DebouncedInput>
