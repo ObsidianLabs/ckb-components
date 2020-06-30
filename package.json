@@ -2,6 +2,7 @@
   "name": "@obsidians/ckb-components",
   "private": true,
   "scripts": {
+    "prepare": "node init.js"
   },
   "dependencies": {
   },
@@ -9,6 +10,7 @@
     "lerna": "^3.20.2"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "../electron-components/packages/*"
   ]
 }
