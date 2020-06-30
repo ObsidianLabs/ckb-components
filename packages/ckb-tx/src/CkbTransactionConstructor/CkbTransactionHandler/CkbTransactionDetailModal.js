@@ -8,7 +8,7 @@ import {
 } from '@obsidians/ui-components'
 
 import { CkbScript } from '@obsidians/ckb-tx-builder'
-import ckbKeypair from '@obsidians/ckb-keypair'
+import ckbKeypair from '@obsidians/keypair'
 import notification from '@obsidians/notification'
 
 import CkbWalletContext from '../../CkbWalletContext'

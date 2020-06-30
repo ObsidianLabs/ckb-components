@@ -9,7 +9,7 @@ import {
   CustomInput,
 } from '@obsidians/ui-components'
 
-import ckbKeypair from '@obsidians/ckb-keypair'
+import ckbKeypair from '@obsidians/keypair'
 
 import ckbInstancesChannel from './ckbInstancesChannel'
 

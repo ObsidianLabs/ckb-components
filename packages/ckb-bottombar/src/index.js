@@ -1,18 +1,18 @@
 import React from 'react'
 import CacheRoute from 'react-router-cache-route'
 
-import { CkbKeypairButton } from '@obsidians/ckb-keypair'
+import { KeypairButton } from '@obsidians/keypair'
 import { CkbCompilerSelector } from '@obsidians/ckb-compiler'
 import { TerminalButton } from '@obsidians/ckb-project'
 
 export default function CkbBottomBar (props) {
   return (
     <React.Fragment>
-      <CkbKeypairButton>
+      <KeypairButton>
         <div className='btn btn-primary btn-sm btn-flat'>
           <i className='fas fa-key' />
         </div>
-      </CkbKeypairButton>
+      </KeypairButton>
       <div className='flex-1' />
       <CacheRoute
         path={`/guest/:project`}

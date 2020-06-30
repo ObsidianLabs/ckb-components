@@ -17,7 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ckb-keypair": "^0.1.0",
+    "@obsidians/keypair": "^0.1.0",
     "@obsidians/ckb-node": "^0.1.0",
     "@obsidians/ipc": "^0.1.1",
     "@obsidians/notification": "^0.1.0",
