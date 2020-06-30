@@ -36,7 +36,7 @@
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-url": "^4.0.2",
     "@svgr/rollup": "^5.2.0",
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "10.0.3",
     "cross-env": "^6.0.3",
     "rollup": "^2.0.2",
     "rollup-plugin-babel": "^4.4.0",
@@ -45,7 +45,7 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
-    "electron": "^7.0.0",
+    "electron": "^8.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
