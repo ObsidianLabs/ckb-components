@@ -2,7 +2,7 @@
   "name": "@obsidians/ckb-components",
   "private": true,
   "scripts": {
-    "prepare": "node init.js"
+    "build": "node init.js"
   },
   "dependencies": {
   },
