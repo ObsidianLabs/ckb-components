@@ -18,10 +18,10 @@
   },
   "dependencies": {
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
-    "@obsidians/keypair": "^0.1.0",
     "@obsidians/ckb-sdk": "^0.1.0",
     "@obsidians/ckb-tx-builder": "^0.1.0",
     "@obsidians/file-ops": "^0.1.0",
+    "@obsidians/keypair": "^0.1.0",
     "@obsidians/notification": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
     "node-sass": "^4.13.1",
