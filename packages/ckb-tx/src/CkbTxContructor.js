@@ -22,19 +22,20 @@ export default class CkbTx extends PureComponent {
     super(props)
     
     let selectedTabKey = ''
+    const address = props.address || ''
     const initialTabs = props.tabs.map((value, index) => {
       const key = `tab-${index}`
-      if (value === props.address) {
+      if (value === address) {
         selectedTabKey = key
       }
       return { key, value }
     })
     let initialSelected
     if (!selectedTabKey) {
-      initialSelected = { key: `tab-${initialTabs.length}`, value: props.address }
+      initialSelected = { key: `tab-${initialTabs.length}`, value: address }
       initialTabs.push(initialSelected)
     } else {
-      initialSelected = { key: selectedTabKey, value: props.address }
+      initialSelected = { key: selectedTabKey, value: address }
     }
 
     this.state = {
