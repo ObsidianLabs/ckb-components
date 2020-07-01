@@ -1,8 +1,9 @@
+import redux from '@obsidians/redux'
+
 export default class NavGuard {
-  constructor (history, redux) {
+  constructor (history) {
     console.info('[Router Guard] Start watching route changes')
     this.history = history
-    this.redux = redux
     const { location } = history
     this.uninstall = history.listen(location => this.handleChanges(location))
     this.handleChanges(location)
@@ -26,7 +27,7 @@ export default class NavGuard {
   }
 
   preflight (pathname) {
-    const state = this.redux.getState()
+    const state = redux.getState()
   
     if (pathname === '/') {
       // go to seleted project
@@ -52,7 +53,7 @@ export default class NavGuard {
   updateSelectedProject (pathname) {
     const [author, id] = this.parsePathname(pathname)
 
-    const { projects } = this.redux.getState()
+    const { projects } = redux.getState()
     const oldSelected = projects.get('selected')
     if (
       oldSelected &&
@@ -74,6 +75,6 @@ export default class NavGuard {
       project.name = found.get('name')
       project.path = found.get('path')
     }
-    this.redux.dispatch('SELECT_PROJECT', { project })
+    redux.dispatch('SELECT_PROJECT', { project })
   }
 }

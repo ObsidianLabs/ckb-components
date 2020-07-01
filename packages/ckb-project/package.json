@@ -23,6 +23,7 @@
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ipc": "^0.1.1",
     "@obsidians/notification": "^0.1.0",
+    "@obsidians/redux": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
     "@obsidians/workspace": "^0.1.1",
     "lodash": "^4.17.15"
