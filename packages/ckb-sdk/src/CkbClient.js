@@ -1,6 +1,5 @@
 import CKBCore from '@nervosnetwork/ckb-sdk-core'
 import { RPC } from 'ckb-js-toolkit'
-import CkbWallet from './CkbWallet'
 
 export default class CkbClient {
   constructor(nodeUrl) {
@@ -10,15 +9,16 @@ export default class CkbClient {
     this.txsCache = {}
   }
 
-  walletFrom (value) {
-    return CkbWallet.from(this, value)
+  async loadTransaction (txHash) {
+    if (!this.txsCache[txHash]) {
+      this.txsCache[txHash] = this.core.rpc.getTransaction(txHash)
+    }
+    const tx = await this.txsCache[txHash]
+    return tx
   }
   
   async loadOutpoint (outPoint) {
-    if (!this.txsCache[outPoint.txHash]) {
-      this.txsCache[outPoint.txHash] = await this.core.rpc.getTransaction(outPoint.txHash)
-    }
-    const tx = this.txsCache[outPoint.txHash]
+    const tx = await this.loadTransaction(outPoint.txHash)
     if (!tx || !tx.transaction || !tx.transaction.outputs) {
       return
     }

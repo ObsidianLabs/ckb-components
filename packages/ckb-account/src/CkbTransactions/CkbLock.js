@@ -14,10 +14,9 @@ export default function CkbLock (props) {
     return (
       <div className='d-flex flex-row align-items-center'>
         <Badge color='secondary' className='d-flex mr-1'>
-          <i className='fas fa-lock mr-1' />
           Lock
         </Badge>
-        <div className='text-muted'>(None)</div>
+        <div className='text-muted small'>(None)</div>
       </div>
     )
   }
@@ -30,7 +29,7 @@ export default function CkbLock (props) {
     const address = lockScript.getAddress()
     return (
       <React.Fragment>
-        <div className='d-flex flex-row align-items-center'>
+        <div className='d-flex flex-row align-items-center small'>
           <div id={id.current}>
             <a href={`#/account/${address}`} className='text-body'>
               <code>{address.substr(0, 13)}...{address.substr(36, 46)}</code>
@@ -55,10 +54,9 @@ export default function CkbLock (props) {
     <div className='d-flex flex-row align-items-center'>
       <div id={id.current} className='text-overflow-dots d-flex flex-row align-items-center'>
         <Badge color='secondary' className='d-flex mr-1'>
-          <i className='fas fa-lock mr-1' />
           Lock
         </Badge>
-        <div className='d-flex'>
+        <div className='d-flex small'>
           <a href={`#/account/${lockHash}`} className='text-body'>
             <code>{lockHash.substr(0, 10)}...{lockHash.substr(58, 66)}</code>
           </a>

@@ -3,10 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   TabsWithNavigationBar,
   Modal,
-  LoadingScreen,
 } from '@obsidians/ui-components'
-
-import CkbSdk from '@obsidians/ckb-sdk'
 
 import CkbAccountPage from './CkbAccountPage'
 
@@ -31,7 +28,6 @@ export default class CkbAccount extends PureComponent {
     }
 
     this.state = {
-      ckbClient: undefined,
       initialSelected,
       initialTabs,
       value: props.address,
@@ -47,8 +43,6 @@ export default class CkbAccount extends PureComponent {
   }
 
   refresh = () => {
-    const ckbClient = (new CkbSdk()).ckbClient
-    this.setState({ ckbClient })
   }
 
   get currentValue () {
@@ -85,11 +79,7 @@ export default class CkbAccount extends PureComponent {
   }
 
   render () {
-    const { ckbClient, initialSelected, initialTabs, value } = this.state
-
-    if (!ckbClient) {
-      return <LoadingScreen />
-    }
+    const { initialSelected, initialTabs, value } = this.state
 
     return (
       <React.Fragment>
@@ -107,7 +97,6 @@ export default class CkbAccount extends PureComponent {
         >
           <CkbAccountPage
             ref={this.ckbAccount}
-            ckbClient={ckbClient}
             value={value}
           />
         </TabsWithNavigationBar>

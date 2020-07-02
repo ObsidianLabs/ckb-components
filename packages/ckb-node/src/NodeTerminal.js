@@ -8,13 +8,13 @@ import {
 
 import Terminal from '@obsidians/terminal'
 
-import ckbNode from './ckbNode'
+import nodeManager from './nodeManager'
 
 const parser = /block:\s(\d+),/
 function parseLine(line) {
   const match = parser.exec(line)
   if (match && match[1]) {
-    ckbNode.updateBlockNumber(match[1])
+    nodeManager.updateBlockNumber(match[1])
   }
   return line
 }
@@ -30,7 +30,7 @@ function onLogReceived(message) {
   return lines.join('\n')
 }
 
-export default class CkbNodeTerminal extends PureComponent {
+export default class NodeTerminal extends PureComponent {
   constructor (props) {
     super(props)
     
@@ -88,7 +88,7 @@ export default class CkbNodeTerminal extends PureComponent {
             <Terminal
               logId='ckb-node'
               active={active && activeTab === 'node'}
-              ref={ref => (ckbNode.terminal = ref)}
+              ref={ref => (nodeManager.terminal = ref)}
               onLogReceived={onLogReceived}
             />
           </TabPane>
@@ -96,7 +96,7 @@ export default class CkbNodeTerminal extends PureComponent {
             <Terminal
               logId='ckb-miner'
               active={active && activeTab === 'miner'}
-              ref={ref => (ckbNode.minerTerminal = ref)}
+              ref={ref => (nodeManager.minerTerminal = ref)}
               onLogReceived={onLogReceived}
             />
           </TabPane>

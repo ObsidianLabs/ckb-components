@@ -1,5 +1,6 @@
 import notification from '@obsidians/notification'
 import redux from '@obsidians/redux'
+import nodeManager from '@obsidians/ckb-node'
 
 import { List } from 'immutable'
 
@@ -18,6 +19,8 @@ export const networks = List([
     fullName: "Testnet Aggron",
     icon: "far fa-clouds",
     notification: "Switched to <b>Testnet Aggron</b>.",
+    url: 'http://ckb-aggron.obsidians.io',
+    indexer: 'http://ckb-aggron.obsidians.io:81'
   }, {
     id: "ckb-mainnet",
     group: "mainnet",
@@ -25,6 +28,8 @@ export const networks = List([
     fullName: "CKB Mainnet",
     icon: "far fa-globe",
     notification: "Switched to <b>CKB Mainnet</b>.",
+    url: 'http://ckb-mainnet.obsidians.io',
+    indexer: 'http://ckb-mainnet.obsidians.io:81'
   }
 ])
 
@@ -55,6 +60,7 @@ export class HeaderActions {
     if (!network) {
       return
     }
+    nodeManager.switchNetwork(network)
     redux.dispatch('SELECT_NETWORK', network.id)
     notification.success(`Network`, network.notification)
     this.history.push(`/network/${network.id}`)

@@ -4,7 +4,7 @@ import {
   SplitPane
 } from '@obsidians/ui-components'
 
-import { CkbNodeTerminal } from '@obsidians/ckb-node'
+import { NodeTerminal } from '@obsidians/ckb-node'
 
 import InstanceList from './InstanceList'
 
@@ -25,7 +25,7 @@ export default function CkbInstanceList (props) {
       minSize={200}
     >
       <InstanceList chain={chain} onLifecycle={onLifecycle} />
-      <CkbNodeTerminal active={active} miner={chain === 'dev'} />
+      <NodeTerminal active={active} miner={chain === 'dev'} />
     </SplitPane>
   )
 }

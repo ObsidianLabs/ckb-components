@@ -12,6 +12,7 @@ export default class CkbBalance extends PureComponent {
     loading: true,
     capacity: BigInt(0),
     cellsCount: 0,
+    txCount: 0,
   }
 
   componentDidMount () {
@@ -26,25 +27,39 @@ export default class CkbBalance extends PureComponent {
 
   refresh = async wallet => {
     this.setState({ loading: true })
-    const { capacity, cellsCount } = await wallet.getCapacity()
-    this.setState({ capacity, cellsCount, loading: false })
+    const { balance, live_cells_count, transactions_count } = await wallet.getCapacity()
+    this.setState({
+      capacity: BigInt(balance),
+      cellsCount: live_cells_count,
+      txCount: transactions_count,
+      loading: false,
+    })
   }
 
   render () {
-    const { capacity, cellsCount } = this.state
+    const { loading, capacity, cellsCount, txCount } = this.state
+    let loadingIcon
+    if (loading) {
+      loadingIcon = <span key='loading'><i className='fas fa-spin fa-spinner' /></span>
+    }
 
     return (
       <TableCard title='Account'>
         <TableCardRow
           name='Balance'
           icon='far fa-wallet'
-          badge={`${new CkbCapacity(capacity).toString()} CKB`}
+          badge={loadingIcon || `${new CkbCapacity(capacity).toString()} CKB`}
           badgeColor='success'
         />
         <TableCardRow
           name='Live cells'
           icon='fas fa-cubes'
-          badge={cellsCount}
+          badge={loadingIcon || cellsCount}
+        />
+        <TableCardRow
+          name='Transactions'
+          icon='fas fa-exchange-alt'
+          badge={loadingIcon || txCount}
         />
       </TableCard>
     )

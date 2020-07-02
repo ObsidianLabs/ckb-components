@@ -24,8 +24,8 @@ export default function CkbData ({ data }) {
   return (
     <React.Fragment>
       <div id={id.current} className='d-flex flex-row align-items-center'>
-        <Badge className='mr-1'>data</Badge>
-        <a className='text-body text-overflow-dots'><code>{data}</code></a>
+        <Badge className='mr-1'>Data</Badge>
+        <a className='text-body text-overflow-dots small'><code>{data}</code></a>
       </div>
       <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
         <div className='d-flex flex-column align-items-start'>

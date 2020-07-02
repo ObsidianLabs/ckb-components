@@ -20,7 +20,7 @@ class CkbInstanceManager extends IpcChannel {
         return this.createMainnetInstance({ name, version })
       default:
         return
-    } 
+    }
   }
 
   async createDevInstance({ name, version, lockArg }) {

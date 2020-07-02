@@ -5,7 +5,7 @@ import {
   DeleteButton,
 } from '@obsidians/ui-components'
 
-import { CkbNodeButton, CkbNodeStatus } from '@obsidians/ckb-node'
+import { NodeButton, NodeStatus } from '@obsidians/ckb-node'
 
 import ckbInstancesChannel from './ckbInstancesChannel'
 
@@ -15,11 +15,11 @@ export default class InstanceRow extends PureComponent {
       return null
     }
     return (
-      <CkbNodeButton
+      <NodeButton
         name={name}
         version={version}
         miner={miner}
-        onLifecycle={lifecycle => this.props.onNodeLifecycle(name, lifecycle)}
+        onLifecycle={(lifecycle, params) => this.props.onNodeLifecycle(name, lifecycle, params)}
       />
     )
   }
@@ -45,7 +45,7 @@ export default class InstanceRow extends PureComponent {
     if (this.props.runningInstance !== name) {
       return null
     }
-    return <CkbNodeStatus />
+    return <NodeStatus />
   }
 
   deleteInstance = async name => {

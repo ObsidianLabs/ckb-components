@@ -1,5 +1,5 @@
-export { default } from './ckbNode'
+export { default } from './nodeManager'
 
-export { default as CkbNodeTerminal } from './CkbNodeTerminal'
-export { default as CkbNodeButton } from './CkbNodeButton'
-export { default as CkbNodeStatus } from './CkbNodeStatus'
+export { default as NodeTerminal } from './NodeTerminal'
+export { default as NodeButton } from './NodeButton'
+export { default as NodeStatus } from './NodeStatus'

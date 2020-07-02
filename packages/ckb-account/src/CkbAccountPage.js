@@ -4,6 +4,8 @@ import {
   Screen,
 } from '@obsidians/ui-components'
 
+import nodeManager from '@obsidians/ckb-node'
+
 import CkbBalance from './CkbBalance'
 import CkbAccountInfo from './CkbAccountInfo'
 import CkbTransactions from './CkbTransactions'
@@ -34,7 +36,7 @@ export default class CkbAccountPage extends PureComponent {
 
     let wallet
     try {
-      wallet = this.props.ckbClient.walletFrom(value)
+      wallet = nodeManager.sdk.walletFrom(value)
       this.setState({ error: null, wallet })
     } catch (e) {
       this.setState({ error: e.message, wallet: null })

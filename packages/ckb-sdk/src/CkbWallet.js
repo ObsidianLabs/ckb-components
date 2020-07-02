@@ -2,10 +2,13 @@ import { cell_collectors } from 'ckb-js-toolkit'
 import { CkbScript, lib } from '@obsidians/ckb-tx-builder'
 
 import toCkbLiveCell from './toCkbLiveCell'
+import PendingTx from './PendingTx'
 
 export default class CkbWallet {
-  constructor(ckbClient, lockHash) {
-    this.ckbClient = ckbClient
+  constructor(sdk, lockHash) {
+    this.ckbClient = sdk.ckbClient
+    this.ckbIndexer = sdk.ckbIndexer
+    this.ckbExplorer = 'https://api.explorer.nervos.org/testnet/api/v1'
     this.lockHash = lockHash
     this.lockScript = null
     this.collector = new cell_collectors.RPCCollector(this.ckbClient.rpc, lockHash, {
@@ -38,16 +41,18 @@ export default class CkbWallet {
     throw new Error('Invalid value, expected a lock hash or CKB address.')
   }
 
+  
+
   async getCapacity () {
-    const result = await this.ckbClient.core.rpc.getCapacityByLockHash(this.lockHash)
-    if (!result) {
-      return { capacity: BigInt(0), cellsCount: 0 }
-    }
-    return {
-      capacity: BigInt(result.capacity),
-      cellsCount: parseInt(result.cellsCount),
-      blockNumber: parseInt(result.blockNumber)
-    }
+    const url = `${this.ckbExplorer}/addresses/${this.lockScript.getAddress()}`
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json'
+      }
+    })
+    const result = await response.json()
+    return result.data.attributes
   }
 
   async *loadCells () {
@@ -81,25 +86,17 @@ export default class CkbWallet {
     return result
   }
 
-  async getTransactions (page = 0, size = 10) {
-    if (!(await this.checkIndexState())) {
-      await this.createIndex()
-    }
-    const txs = await this.ckbClient.core.rpc.getTransactionsByLockHash(
-      this.lockHash,
-      BigInt(page),
-      BigInt(size),
-      true
-    )
-    
-    for (var i = 0; i < txs.length; i++) {
-      const { txHash } = txs[i].createdBy
-      const { txStatus, transaction } = await this.getTransaction(txHash)
-      txs[i].tx = transaction
-      txs[i].status = txStatus
+  async getTransactions (cursor, size = 20) {
+    if (!this.ckbIndexer) {
+      return []
     }
 
-    return txs
+    const { last_cursor, txs } = await this.ckbIndexer.getTransactions(this.lockScript, cursor, size)
+
+    return {
+      cursor: last_cursor,
+      txs: txs.map(tx => new PendingTx(tx, this.ckbClient)),
+    }
   }
 
   async getTransaction(txHash) {

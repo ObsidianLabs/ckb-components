@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import uniqBy from 'lodash/uniqBy'
+import _ from 'lodash'
 
 import {
   TableCard,
@@ -7,16 +7,17 @@ import {
 
 import TransactionRow from './TransactionRow'
 
+const PAGE_SIZE = 20
+
 export default class CkbTransactions extends PureComponent {
   state = {
+    cursor: '',
+    txs: [],
     hasMore: true,
     loading: true,
-    txs: [],
-    page: 0,
   }
 
   componentDidMount () {
-    window.wallet = this.props.wallet
     this.refresh(this.props.wallet)
   }
 
@@ -28,30 +29,41 @@ export default class CkbTransactions extends PureComponent {
 
   refresh = async wallet => {
     this.setState({ txs: [], loading: true })
-    const txs = await wallet.getTransactions()
-    this.setState({ txs, loading: false })
+    const { cursor, txs } = await wallet.getTransactions(null, PAGE_SIZE)
+    if (this.props.wallet !== wallet) {
+      return
+    }
+    this.setState({
+      cursor,
+      txs,
+      hasMore: txs.length >= PAGE_SIZE,
+      loading: false,
+    })
   }
 
   loadMore = async () => {
     this.setState({ loading: true })
-    const txs = await this.props.wallet.getTransactions(this.state.page + 1)
+    const { cursor, txs } = await this.props.wallet.getTransactions(this.state.cursor, PAGE_SIZE)
     this.setState({
+      cursor,
       txs: [...this.state.txs, ...txs],
-      page: this.state.page + 1,
-      hasMore: txs.length >= 10,
+      hasMore: txs.length >= PAGE_SIZE,
       loading: false,
     })
   }
 
   renderTableBody = () => {
-    const rows = uniqBy(this.state.txs, tx => tx.createdBy.txHash).map(tx => (
-      <TransactionRow key={`tx-${tx.createdBy.txHash}`} tx={tx} wallet={this.props.wallet} />
-    ))
+    const rows = _.chain(this.state.txs)
+      .groupBy(tx => tx.txHash)
+      .map((parts, txHash) => (
+        <TransactionRow key={`tx-${txHash}`} parts={parts} wallet={this.props.wallet} />
+      ))
+      .value()
 
     if (this.state.loading) {
       rows.push(
         <tr key='txs-loading' className='bg-transparent'>
-          <td align='middle' colSpan='3'>
+          <td align='middle' colSpan={3}>
             <i className='fas fa-spin fa-spinner mr-1' />Loading...
           </td>
         </tr>
@@ -77,8 +89,8 @@ export default class CkbTransactions extends PureComponent {
         tableSm
         TableHead={(
           <tr>
-            {/* <th style={{ width: '10%' }}>time</th> */}
-            <th style={{ width: '15%' }}>block</th>
+            <th style={{ width: '5%' }}>block</th>
+            <th style={{ width: '10%' }}>hash</th>
             <th style={{ width: '85%' }}>data</th>
           </tr>
         )}

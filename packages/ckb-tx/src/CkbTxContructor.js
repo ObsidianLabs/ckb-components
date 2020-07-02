@@ -8,8 +8,6 @@ import {
   LoadingScreen,
 } from '@obsidians/ui-components'
 
-import CkbSdk from '@obsidians/ckb-sdk'
-
 import CkbWalletContext from './CkbWalletContext'
 import ckbTxManager from './ckbTxManager'
 
@@ -38,7 +36,6 @@ export default class CkbTx extends PureComponent {
     }
 
     this.state = {
-      ckbClient: undefined,
       initialSelected,
       initialTabs,
       cellManifest: [],
@@ -52,8 +49,6 @@ export default class CkbTx extends PureComponent {
   }
 
   refresh = async () => {
-    const ckbClient = (new CkbSdk()).ckbClient
-    this.setState({ ckbClient })
     const manifest = await ckbTxManager.loadCellManifest()
     this.setState({ manifest })
   }

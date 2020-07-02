@@ -43,7 +43,7 @@ export default class NetworkCellManifest extends PureComponent {
     if (this.state.loading) {
       return (
         <tr key='cell-manifest-loading' >
-          <td align='middle' colSpan='2'>
+          <td align='middle' colSpan={2}>
             <i className='fas fa-spin fa-spinner mr-1' />Loading...
           </td>
         </tr>

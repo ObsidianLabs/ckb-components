@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 
-import ckbNode from './ckbNode'
+import nodeManager from './nodeManager'
 
-export default class CkbNodeStatus extends PureComponent {
+export default class NodeStatus extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
@@ -12,7 +12,7 @@ export default class CkbNodeStatus extends PureComponent {
   }
 
   componentDidMount () {
-    ckbNode.status = this
+    nodeManager.status = this
   }
 
   render () {

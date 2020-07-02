@@ -42,9 +42,10 @@ export default class InstanceList extends PureComponent {
     this.setState({ instances })
   }
 
-  onNodeLifecycle = (name, lifecycle) => {
+  onNodeLifecycle = (name, lifecycle, params) => {
     const runningState = {
       lifecycle,
+      params,
       runningInstance: name,
     }
     this.setState(runningState)

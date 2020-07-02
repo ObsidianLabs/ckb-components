@@ -7,9 +7,9 @@ import {
   DropdownItem
 } from '@obsidians/ui-components'
 
-import ckbNode from './ckbNode'
+import nodeManager from './nodeManager'
 
-export default class CkbNodeButton extends PureComponent {
+export default class NodeButton extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
@@ -23,10 +23,10 @@ export default class CkbNodeButton extends PureComponent {
     }
   }
 
-  onLifecycle = lifecycle => {
-    ckbNode.updateLifecycle(lifecycle)
+  onLifecycle = (lifecycle, params) => {
+    nodeManager.updateLifecycle(lifecycle, params)
     if (this.props.onLifecycle) {
-      this.props.onLifecycle(lifecycle)
+      this.props.onLifecycle(lifecycle, params)
     }
   }
 
@@ -37,21 +37,21 @@ export default class CkbNodeButton extends PureComponent {
     this.setState({ lifecycle: 'starting' })
     this.onLifecycle('starting')
 
-    await ckbNode.start({
+    const params = await nodeManager.start({
       name: this.props.name,
       version: this.props.version,
       miner,
     })
 
     this.setState({ lifecycle: 'started' })
-    this.onLifecycle('started')
+    this.onLifecycle('started', params)
   }
 
   stop = async () => {
     this.setState({ lifecycle: 'stopping' })
     this.onLifecycle('stopping')
 
-    await ckbNode.stop()
+    await nodeManager.stop()
 
     this.setState({ lifecycle: 'stopped' })
     this.onLifecycle('stopped')

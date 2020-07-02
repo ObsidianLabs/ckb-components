@@ -1,8 +1,14 @@
+import Sdk from '@obsidians/ckb-sdk'
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-class CkbNode {
+class NodeManager {
   constructor () {
     this._terminal = null
+  }
+
+  get sdk () {
+    return this._sdk
   }
 
   set terminal (v) {
@@ -28,6 +34,9 @@ class CkbNode {
       await delay(500)
       await this._minerTerminal.exec(ckbMiner, { resolveOnFirstLog: true })
     }
+    return {
+      url: 'http://localhost:8114',
+    }
   }
 
   generateCommands ({ name, version }) {
@@ -51,9 +60,22 @@ class CkbNode {
     return [ckbRun, ckbMiner]
   }
 
-  updateLifecycle (lifecycle) {
+  updateLifecycle (lifecycle, params) {
     if (this._status) {
       this._status.setState({ lifecycle })
+    }
+    if (params) {
+      this._sdk = new Sdk(params)
+    } else {
+      this._sdk = null
+    }
+  }
+
+  switchNetwork (network) {
+    if (network.url) {
+      this._sdk = new Sdk(network)
+    } else {
+      this._sdk = null
     }
   }
 
@@ -73,4 +95,4 @@ class CkbNode {
   }
 }
 
-export default new CkbNode()
+export default new NodeManager()
