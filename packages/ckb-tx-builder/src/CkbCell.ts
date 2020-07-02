@@ -8,6 +8,7 @@ export interface CkbCell {
   outPoint: CKBComponents.OutPoint,
   cellbase: boolean,
   blockHash: CKBComponents.Hash256,
+  blockNumber: CKBComponents.BlockNumber,
   capacity: CKBComponents.Capacity,
   lock: CKBComponents.Script,
   type?: CKBComponents.Script | null,
@@ -19,6 +20,7 @@ export class CkbLiveCell {
   readonly outPoint: CKBComponents.OutPoint
   readonly cellbase: boolean
   readonly blockHash: string
+  readonly blockNumber: string
   readonly capacity: CkbCapacity
   readonly lock: CkbScript
   readonly type: CkbScript
@@ -28,6 +30,7 @@ export class CkbLiveCell {
     this.outPoint = cell.outPoint
     this.cellbase = cell.cellbase
     this.blockHash = cell.blockHash
+    this.blockNumber = cell.blockNumber
     this.capacity = new CkbCapacity(cell.capacity)
 
     this.lock = new CkbScript(cell.lock)

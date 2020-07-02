@@ -9,6 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import nodeManager from '@obsidians/ckb-node'
 
 import throttle from 'lodash/throttle'
 
@@ -61,27 +62,32 @@ export default class CkbCells extends PureComponent {
       return
     }
 
+    this.cells = []
+    this.setState({
+      cellsCount: 0,
+      totalCapacity: new CkbCapacity(),
+      used: new CkbCapacity(),
+      unused: new CkbCapacity(),
+      cells: [],
+      cellsToRender: 0,
+      done: false
+    })
+
     let wallet
     try {
-      wallet = this.context.ckbClient.walletFrom(this.props.value)
+      wallet = nodeManager.sdk.walletFrom(this.props.value)
       this.setState({ error: null, loading: true })
     } catch (e) {
       this.setState({ error: e.message, loading: false })
       return
     }
 
-    const { balance, live_cells_count } = await wallet.info(true)
+    const { balance, live_cells_count } = await wallet.info()
     this.used = new CkbCapacity()
     this.unused = new CkbCapacity()
-    this.cells = []
     this.setState({
       cellsCount: live_cells_count,
       totalCapacity: new CkbCapacity(BigInt(balance)),
-      used: new CkbCapacity(),
-      unused: new CkbCapacity(),
-      cells: [],
-      cellsToRender: 0,
-      done: false
     })
     this.context.cellCollection.clearCellsForLockHash(wallet.lockHash)
     this.loader = this.loadCells(wallet)

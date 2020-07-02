@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { Badge } from '@obsidians/ui-components'
+import nodeManager from '@obsidians/ckb-node'
 
 import CkbCell from './CkbCell'
 
@@ -27,7 +28,7 @@ function CkbInput ({ since, previousOutput, self, wallet }) {
         return
       }
 
-      wallet.ckbClient
+      nodeManager.sdk.ckbClient
         .loadOutpoint(previousOutput)
         .then(setCell)
     },

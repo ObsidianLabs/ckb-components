@@ -6,6 +6,8 @@ import {
   TableCardRow,
 } from '@obsidians/ui-components'
 
+import { CkbScript } from '@obsidians/ckb-tx-builder'
+
 export default class CkbAccountInfo extends PureComponent {
   state = {
     loading: true,
@@ -24,7 +26,8 @@ export default class CkbAccountInfo extends PureComponent {
 
   refresh = async wallet => {
     this.setState({ loading: true })
-    const lockScript = await wallet.lockScript()
+    const { hash_type, code_hash, args } = await wallet.lockScript()
+    const lockScript = new CkbScript({ hashType: hash_type, codeHash: code_hash, args })
     this.setState({ lockScript, loading: false })
   }
 

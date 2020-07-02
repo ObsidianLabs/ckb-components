@@ -7,7 +7,7 @@ import {
 import CkbCells from './CkbCells'
 import CkbTransferButton from './CkbTransferButton'
 import CkbMintUdtButton from './CkbMintUdtButton'
-import CkbCellManifest from './CkbCellManifest/index'
+import CkbCellManifest from './CkbCellManifest'
 
 export default class CkbCellExplorer extends PureComponent {
   constructor(props) {

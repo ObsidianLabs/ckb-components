@@ -10,6 +10,7 @@ import {
 import { CkbLiveCell, CkbScript, CkbData, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
 
 import notification from '@obsidians/notification'
+import nodeManager from '@obsidians/ckb-node'
 
 import CkbWalletContext from '../../CkbWalletContext'
 import ckbTxManager from '../../ckbTxManager'
@@ -69,7 +70,7 @@ export default class CkbUdtButton extends PureComponent {
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
       if (sudtCellInfo && sudtCellInfo.outPoint) {
-        const cell = await this.context.ckbClient.loadOutpoint(sudtCellInfo.outPoint)
+        const cell = await nodeManager.sdk.loadOutpoint(sudtCellInfo.outPoint)
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
       

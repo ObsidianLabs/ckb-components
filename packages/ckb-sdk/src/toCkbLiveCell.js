@@ -1,27 +1,27 @@
 import { CkbLiveCell } from '@obsidians/ckb-tx-builder'
 
-export default function toCkbLiveCell ({ block_hash, out_point, cellbase, cell_output, data, output_data_len }) {
+export default function toCkbLiveCell ({ out_point, output, output_data, block_number, cellbase }) {
   const outPoint = {
     txHash: out_point.tx_hash,
     index: out_point.index,
   }
-  const lock = cell_output.lock && {
-    hashType: cell_output.lock.hash_type,
-    codeHash: cell_output.lock.code_hash,
-    args: cell_output.lock.args,
+  const lock = output.lock && {
+    hashType: output.lock.hash_type,
+    codeHash: output.lock.code_hash,
+    args: output.lock.args,
   }
-  const type = cell_output.type && {
-    hashType: cell_output.type.hash_type,
-    codeHash: cell_output.type.code_hash,
-    args: cell_output.type.args,
+  const type = output.type && {
+    hashType: output.type.hash_type,
+    codeHash: output.type.code_hash,
+    args: output.type.args,
   }
   return new CkbLiveCell({
     outPoint,
-    cellbase,
-    blockHash: block_hash,
-    capacity: cell_output.capacity,
+    capacity: output.capacity,
     lock,
     type,
-    data,
+    data: output_data,
+    blockNumber: block_number,
+    cellbase,
   })
 }

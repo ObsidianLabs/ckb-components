@@ -6,35 +6,13 @@ export default class CkbIndexer {
     this.rpc = new RPC(endpoint)
   }
 
-  // walletFrom (value) {
-  //   return CkbWallet.from(this, value)
-  // }
-
-  async getCells () {
-    const result = await this.rpc.get_cells(
-      {
-        "script": {
-          "code_hash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
-          "hash_type": "type",
-          "args": "0xda648442dbb7347e467d1d09da13e5cd3a0ef0e1"
-        },
-        "script_type": "lock"
-      },
-      "desc",
-      "0x64"
-    )
-    console.log(result)
-    return result
-  }
-
-  async getTransactions (lockScript, cursor, size) {
-    const { codeHash, hashType, args } = lockScript.serialize()
+  prepareParams (lockScript, cursor, size = 20) {
     const params = [
       {
         script: {
-          code_hash: codeHash,
-          hash_type: hashType,
-          args: args,
+          code_hash: lockScript.codeHash || lockScript.code_hash,
+          hash_type: lockScript.hashType || lockScript.hash_type,
+          args: lockScript.args,
         },
         script_type: 'lock',
       },
@@ -44,7 +22,20 @@ export default class CkbIndexer {
     if (cursor) {
       params.push(cursor)
     }
+    return params
+  }
 
+  async getCells (lockScript, cursor, size) {
+    const params = this.prepareParams(lockScript, cursor, size)
+    const result = await this.rpc.get_cells(...params)
+    return {
+      last_cursor: result.last_cursor,
+      cells: result.objects,
+    }
+  }
+
+  async getTransactions (lockScript, cursor, size) {
+    const params = this.prepareParams(lockScript, cursor, size)
     const result = await this.rpc.get_transactions(...params)
     return {
       last_cursor: result.last_cursor,

@@ -11,6 +11,7 @@ import { CkbScript } from '@obsidians/ckb-tx-builder'
 import ckbKeypair from '@obsidians/keypair'
 import notification from '@obsidians/notification'
 import { kp } from '@obsidians/ckb-sdk'
+import nodeManager from '@obsidians/ckb-node'
 
 import CkbWalletContext from '../../CkbWalletContext'
 
@@ -53,7 +54,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
         const signer = message => keypair.sign(message)
         signatureProvider.set(lock.hash, signer)
       }))
-      const witnessesSigner = this.context.ckbClient.core.signWitnesses(signatureProvider)
+      const witnessesSigner = nodeManager.sdk.core.signWitnesses(signatureProvider)
       const signedTx = await this.state.tx.sign(witnessesSigner, JSON.parse(this.state.value))
       const value = JSON.stringify(signedTx, null, 2)
       this.setState({ value, signed: true, signedTx })
@@ -66,7 +67,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
   pushTransaction = async () => {
     this.setState({ pushing: true })
     try {
-      const txHash = await this.context.ckbClient.core.rpc.sendTransaction(this.state.signedTx)
+      const txHash = await nodeManager.sdk.core.rpc.sendTransaction(this.state.signedTx)
       notification.success('Transaction Pushed', `Transaction hash: ${txHash}`)
       this.onResolve()
       this.modal.current.closeModal()

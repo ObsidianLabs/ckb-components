@@ -1,6 +1,3 @@
-import { cell_collectors } from 'ckb-js-toolkit'
-import { CkbScript, lib } from '@obsidians/ckb-tx-builder'
-
 import toCkbLiveCell from './toCkbLiveCell'
 import PendingTx from './PendingTx'
 
@@ -10,12 +7,6 @@ export default class CkbWallet {
     this.ckbIndexer = sdk.ckbIndexer
     this.ckbExplorer = 'https://api.explorer.nervos.org/testnet/api/v1'
     this.value = value
-    this.lockHash = value
-    // this.collector = new cell_collectors.RPCCollector(this.ckbClient.rpc, lockHash, {
-    //   skipCellWithContent: false,
-    //   loadData: true
-    // })
-    // this.indexed = undefined
     this._getInfo = null
   }
 
@@ -43,49 +34,10 @@ export default class CkbWallet {
 
   async lockScript () {
     const { lock_script } = await this.info()
-    return new CkbScript({
-      hashType: lock_script.hash_type,
-      codeHash: lock_script.code_hash,
-      args: lock_script.args
-    })
-  }
-
-  async *loadCells () {
-    if (!(await this.checkIndexState())) {
-      await this.createIndex()
-    }
-    for await (const cell of this.collector.collect()) {
-      yield toCkbLiveCell(cell)
-    }
-  }
-
-  async checkIndexState () {
-    if (typeof this.indexed === 'undefined') {
-      const indexStates = await this.ckbClient.core.rpc.getLockHashIndexStates()
-      const match = indexStates.find(state => state.lockHash === this.lockHash)
-      this.indexed = !!match
-      return this.indexed
-    }
-    return this.indexed
-  }
-
-  async createIndex () {
-    const result = await this.ckbClient.core.rpc.indexLockHash(this.lockHash, BigInt(0))
-    this.indexed = true
-    return result
-  }
-
-  async removeIndex () {
-    const result = await this.ckbClient.core.rpc.deindexLockHash(this.lockHash)
-    this.indexed = false
-    return result
+    return lock_script
   }
 
   async getTransactions (cursor, size = 20) {
-    if (!this.ckbIndexer) {
-      return []
-    }
-
     const lockScript = await this.lockScript()
     const { last_cursor, txs } = await this.ckbIndexer.getTransactions(lockScript, cursor, size)
 
@@ -95,7 +47,38 @@ export default class CkbWallet {
     }
   }
 
-  async getTransaction(txHash) {
-    return await this.ckbClient.core.rpc.getTransaction(txHash)
+  async *loadCells () {
+    if (!this.collector) {
+      const lockScript = await this.lockScript()
+      this.collector = new IndexerCellCollector(this.ckbClient.rpc, this.ckbIndexer, lockScript)
+    }
+    for await (const cell of this.collector.collect()) {
+      yield cell
+    }
+  }
+}
+
+
+class IndexerCellCollector {
+  constructor(rpc, indexer, lockScript) {
+    this.rpc = rpc
+    this.indexer = indexer
+    this.lockScript = lockScript
+
+    this.cursor = ''
+    this.hasMore = true
+  }
+
+  async *collect() {
+    while (this.hasMore) {
+      const { last_cursor, cells } = await this.indexer.getCells(this.lockScript, this.cursor)
+      for (const cell of cells) {
+        yield toCkbLiveCell(cell)
+      }
+      this.cursor = last_cursor
+      if (cells.length < 20) {
+        this.hasMore = false
+      }
+    }
   }
 }

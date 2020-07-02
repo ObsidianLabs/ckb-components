@@ -5,7 +5,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import {
   SplitPane,
-  LoadingScreen,
 } from '@obsidians/ui-components'
 
 import CkbWalletContext from './CkbWalletContext'
@@ -67,15 +66,10 @@ export default class CkbTx extends PureComponent {
   }
 
   render () {
-    const { ckbClient, initialSelected, initialTabs } = this.state
-
-    if (!ckbClient) {
-      return <LoadingScreen />
-    }
+    const { initialSelected, initialTabs } = this.state
 
     return (
       <CkbWalletContext.Provider value={{
-        ckbClient,
         cellCollection: this.props.cellCollection,
         addressBook: this.props.addressBook,
         cellManifest: this.state.cellManifest,
