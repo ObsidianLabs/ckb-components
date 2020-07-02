@@ -16,6 +16,7 @@ import ckbTxManager from '../../ckbTxManager'
 
 import ScriptInput from '../../components/inputs/ScriptInput'
 import CapacityInput from '../../components/inputs/CapacityInput'
+import IconInput from '../../components/inputs/IconInput'
 
 export default class CkbUdtButton extends PureComponent {
   static contextType = CkbWalletContext
@@ -27,6 +28,7 @@ export default class CkbUdtButton extends PureComponent {
       udt: {},
       udtName: '',
       udtSymbol: '',
+      udtIcon: '',
       errorInCapacity: true,
       errorInReceiver: true,
     }
@@ -44,6 +46,7 @@ export default class CkbUdtButton extends PureComponent {
         udt,
         udtName: udt.name || '',
         udtSymbol: udt.symbol || '',
+        udtIcon: udt.icon || '',
       })
     })
     this.modal.current.openModal()
@@ -87,12 +90,18 @@ export default class CkbUdtButton extends PureComponent {
     this.modal.current.closeModal()
   }
 
+  renderUdtIcon = udt => {
+    return udt.icon ?
+      <img src={udt.icon} className="mr-3" width="32" height="32"/> :
+      <span key="udt-icon"><i className='fad fa-coins fa-2x mr-3'/></span>
+  }
+
   renderUdtInfo = udt => {
     const udtSymbol = udt.symbol || '(Unknown)'
     const udtName = udt.name ? <span className='ml-1'>- {udt.name}</span> : ''
     return (
       <div key='udt-info' className='d-flex align-items-center mb-2'>
-        <i className='fad fa-coins fa-2x mr-3' />
+        {this.renderUdtIcon(udt)}
         <div>
           <div className='d-flex align-items-center'>
             <b>{udtSymbol}</b><span>{udtName}</span>
@@ -120,6 +129,7 @@ export default class CkbUdtButton extends PureComponent {
       name: this.state.udtName,
       symbol: this.state.udtSymbol,
       issuer: this.issuer,
+      icon: this.state.udtIcon
     }
     this.setState({ udt })
     ckbTxManager.updateUdtInfo(udt)
@@ -166,6 +176,10 @@ export default class CkbUdtButton extends PureComponent {
             label='Name'
             value={this.state.udtName}
             onChange={udtName => this.setState({ udtName })}
+          />
+          <IconInput
+            value={this.state.udtIcon}
+            onChange={udtIcon => this.setState({ udtIcon })}
           />
         </Modal>
       </React.Fragment>
