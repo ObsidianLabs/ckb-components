@@ -70,13 +70,13 @@ export default class CkbCells extends PureComponent {
       return
     }
 
-    const { cellsCount, capacity } = await wallet.getCapacity()
+    const { balance, live_cells_count } = await wallet.info(true)
     this.used = new CkbCapacity()
     this.unused = new CkbCapacity()
     this.cells = []
     this.setState({
-      cellsCount,
-      totalCapacity: new CkbCapacity(capacity),
+      cellsCount: live_cells_count,
+      totalCapacity: new CkbCapacity(BigInt(balance)),
       used: new CkbCapacity(),
       unused: new CkbCapacity(),
       cells: [],

@@ -35,9 +35,9 @@ export default function CkbType (props) {
     const address = typeScript.getAddress()
     return (
       <div className='d-flex flex-row align-items-center'>
-        <div id={id.current} className='text-overflow-dots'>
+        <div id={id.current} className='d-flex flex-row align-items-center overflow-hidden'>
           {icon}
-          <div className='small'><code>{address}</code></div>
+          <div className='text-overflow-dots small'><code>{address}</code></div>
         </div>
         <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
           <div className='d-flex flex-column align-items-start'>
@@ -52,9 +52,9 @@ export default function CkbType (props) {
 
   return (
     <div className='d-flex flex-row align-items-center'>
-      <div id={id.current} className='text-overflow-dots d-flex flex-row align-items-center'>
+      <div id={id.current} className='d-flex flex-row align-items-center overflow-hidden'>
         {icon}
-        <div className='d-flex small'><code>{typeHash}</code></div>
+        <div className='text-overflow-dots small'><code>{typeHash}</code></div>
       </div>
       <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
         <div className='d-flex flex-column align-items-start'>

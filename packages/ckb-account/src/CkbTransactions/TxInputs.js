@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 
 import { Badge } from '@obsidians/ui-components'
 
-import * as ckbUtils from '@nervosnetwork/ckb-sdk-utils'
-
 import CkbCell from './CkbCell'
 
 export default function TxInputs ({ inputs, wallet }) {
@@ -55,7 +53,7 @@ function CkbInput ({ since, previousOutput, self, wallet }) {
   return (
     <CkbCell
       {...cell}
-      capacityColor={wallet.lockHash === ckbUtils.scriptToHash(cell.lock) && 'danger'}
+      capacityColor={self && 'danger'}
     />
   )
 }

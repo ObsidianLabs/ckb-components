@@ -1,6 +1,8 @@
 import CKBCore from '@nervosnetwork/ckb-sdk-core'
 import { RPC } from 'ckb-js-toolkit'
 
+import cloneDeep from 'lodash/cloneDeep'
+
 export default class CkbClient {
   constructor(nodeUrl) {
     this.nodeUrl = nodeUrl
@@ -14,7 +16,7 @@ export default class CkbClient {
       this.txsCache[txHash] = this.core.rpc.getTransaction(txHash)
     }
     const tx = await this.txsCache[txHash]
-    return tx
+    return cloneDeep(tx)
   }
   
   async loadOutpoint (outPoint) {

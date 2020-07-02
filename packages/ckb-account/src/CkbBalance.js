@@ -27,7 +27,7 @@ export default class CkbBalance extends PureComponent {
 
   refresh = async wallet => {
     this.setState({ loading: true })
-    const { balance, live_cells_count, transactions_count } = await wallet.getCapacity()
+    const { balance, live_cells_count, transactions_count } = await wallet.info()
     this.setState({
       capacity: BigInt(balance),
       cellsCount: live_cells_count,
@@ -44,7 +44,7 @@ export default class CkbBalance extends PureComponent {
     }
 
     return (
-      <TableCard title='Account'>
+      <TableCard title='Basics'>
         <TableCardRow
           name='Balance'
           icon='far fa-wallet'

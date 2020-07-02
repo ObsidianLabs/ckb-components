@@ -81,6 +81,9 @@ export default class CkbScript {
   }
 
   getAddress (prefix = AddressPrefix.Testnet) {
+    if (this.codeHash !== BLOCK_ASSEMBLER_CODE_HASH) {
+      throw new Error('The lock script is not an address')
+    }
     try {
       return this.args.toAddress(prefix)
     } catch (e) {

@@ -5,54 +5,49 @@ import toCkbLiveCell from './toCkbLiveCell'
 import PendingTx from './PendingTx'
 
 export default class CkbWallet {
-  constructor(sdk, lockHash) {
+  constructor(sdk, value) {
     this.ckbClient = sdk.ckbClient
     this.ckbIndexer = sdk.ckbIndexer
     this.ckbExplorer = 'https://api.explorer.nervos.org/testnet/api/v1'
-    this.lockHash = lockHash
-    this.lockScript = null
-    this.collector = new cell_collectors.RPCCollector(this.ckbClient.rpc, lockHash, {
-      skipCellWithContent: false,
-      loadData: true
-    })
-    this.indexed = undefined
+    this.value = value
+    this.lockHash = value
+    // this.collector = new cell_collectors.RPCCollector(this.ckbClient.rpc, lockHash, {
+    //   skipCellWithContent: false,
+    //   loadData: true
+    // })
+    // this.indexed = undefined
+    this._getInfo = null
   }
 
-  static from (ckbClient, value) {
-    if (value.startsWith('ckb') || value.startsWith('ckt')) {
-      try {
-        const script = new CkbScript(value)
-        const wallet = new CkbWallet(ckbClient, script.hash)
-        wallet.lockScript = script
-        return wallet
-      } catch (e) {
-        throw new Error('Invalid address.')
-      }
-    } else if (lib.isHexString(value)) {
-      if (value.length !== 66) {
-        throw new Error('Invalid lock hash, expected a 0x-prefixed hex string with 64 digits.')
-      }
-      try {
-        return new CkbWallet(ckbClient, value)
-      } catch (e) {
-        throw new Error('Invalid lock hash.')
+  static from (sdk, value) {
+    const wallet = new CkbWallet(sdk, value)
+    return wallet
+  }
+
+  async info (force) {
+    if (!this._getInfo || force) {
+      this._getInfo = async () => {
+        const url = `${this.ckbExplorer}/addresses/${this.value}`
+        const response = await fetch(url, {
+          headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json'
+          }
+        })
+        const result = await response.json()
+        return result.data.attributes
       }
     }
-    throw new Error('Invalid value, expected a lock hash or CKB address.')
+    return await this._getInfo()
   }
 
-  
-
-  async getCapacity () {
-    const url = `${this.ckbExplorer}/addresses/${this.lockScript.getAddress()}`
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json'
-      }
+  async lockScript () {
+    const { lock_script } = await this.info()
+    return new CkbScript({
+      hashType: lock_script.hash_type,
+      codeHash: lock_script.code_hash,
+      args: lock_script.args
     })
-    const result = await response.json()
-    return result.data.attributes
   }
 
   async *loadCells () {
@@ -91,7 +86,8 @@ export default class CkbWallet {
       return []
     }
 
-    const { last_cursor, txs } = await this.ckbIndexer.getTransactions(this.lockScript, cursor, size)
+    const lockScript = await this.lockScript()
+    const { last_cursor, txs } = await this.ckbIndexer.getTransactions(lockScript, cursor, size)
 
     return {
       cursor: last_cursor,

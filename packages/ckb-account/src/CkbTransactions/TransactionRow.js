@@ -97,12 +97,6 @@ export default class TransactionRow extends PureComponent {
       )
     }
 
-    // <div className='d-flex flex-row align-items-center'>
-    //   <div className='small mr-2' key='loading'>
-    //     <i className='fas fa-spin fa-spinner mr-1' />Loading Transaction
-    //   </div>
-    // </div>
-
     const { transaction, txStatus } = this.state.detail
     this.props.parts.forEach(part => {
       if (part.rawTx.io_type === 'input') {
