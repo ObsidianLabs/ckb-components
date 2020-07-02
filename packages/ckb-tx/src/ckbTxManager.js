@@ -88,7 +88,7 @@ class CkbTxManager {
     }
     
     try {
-      this._udtManifest = JSON.parse(manifest).map(({ issuer, name, symbol, precision }) => ({ issuer, name, symbol, precision }))
+      this._udtManifest = JSON.parse(manifest).map(({ issuer, name, symbol, precision, icon }) => ({ issuer, name, symbol, precision, icon }))
       return this._udtManifest
     } catch (e) {
       notification.error('Invalid UDT Manifest', `Please check the manifest file <b>${udtManifestFile}</b>.`)
