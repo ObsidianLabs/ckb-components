@@ -45,22 +45,26 @@ export default class NodeTerminal extends PureComponent {
       return
     }
     if (this.props.miner) {
-      this.openMinerTab()
+      this.openDevTabs()
     } else {
-      this.closeMinerTab()
+      this.closeDevTabs()
     }
   }
 
-  openMinerTab = () => {
+  openDevTabs = () => {
     this.tabs.current.setState({
       tabs: [
         { key: 'node', text: <span key='terminal-node'><i className='fas fa-server mr-1' />node</span> },
+        { key: 'indexer', text: <span key='terminal-indexer'><i className='fas fa-indent mr-1' />indexer</span> },
         { key: 'miner', text: <span key='terminal-miner'><i className='fas fa-hammer mr-1' />miner</span> },
       ]
     })
   }
-  closeMinerTab = () => {
-    this.tabs.current.onCloseTab({ key: 'miner' })
+  closeDevTabs = () => {
+    this.tabs.current.onCloseTab({ key: 'indexer' })
+    setTimeout(() => {
+      this.tabs.current.onCloseTab({ key: 'miner' })
+    }, 10)
   }
 
   render () {
@@ -71,6 +75,7 @@ export default class NodeTerminal extends PureComponent {
       { key: 'node', text: <span key='terminal-node'><i className='fas fa-server mr-1' />node</span> },
     ]
     if (miner) {
+      initialTabs.push({ key: 'indexer', text: <span key='terminal-indexer'><i className='fas fa-indent mr-1' />indexer</span> })
       initialTabs.push({ key: 'miner', text: <span key='terminal-miner'><i className='fas fa-hammer mr-1' />miner</span> })
     }
   
@@ -89,6 +94,14 @@ export default class NodeTerminal extends PureComponent {
               logId='ckb-node'
               active={active && activeTab === 'node'}
               ref={ref => (nodeManager.terminal = ref)}
+              onLogReceived={onLogReceived}
+            />
+          </TabPane>
+          <TabPane className='h-100 w-100' tabId='indexer'>
+            <Terminal
+              logId='ckb-indexer'
+              active={active && activeTab === 'indexer'}
+              ref={ref => (nodeManager.indexerTerminal = ref)}
               onLogReceived={onLogReceived}
             />
           </TabPane>

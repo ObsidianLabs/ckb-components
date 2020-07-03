@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { net } = require('electron')
 
 const { IpcChannel } = require('@obsidians/ipc')
 
@@ -78,26 +77,27 @@ class CkbInstanceManager extends IpcChannel {
     return versions
   }
 
+  async indexerVersions () {
+    const { logs: images } = await this.pty.exec(`docker images muxueqz/ckb-indexer --format "{{json . }}"`)
+    const versions = images.split('\n').filter(Boolean).map(JSON.parse)
+    return versions
+  }
+
   async deleteVersion (version) {
     await this.pty.exec(`docker rmi nervos/ckb:${version}`)
   }
 
   async remoteVersions (size) {
-    const res = await new Promise((resolve, reject) => {
-      const request = net.request(`http://registry.hub.docker.com/v1/repositories/nervos/ckb/tags`)
-      request.on('response', (response) => {
-        let body = ''
-        response.on('data', chunk => {
-          body += chunk
-        })
-        response.on('end', () => resolve(body))
-      })
-      request.end()
-    })
+    const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/nervos/ckb/tags`)
     return JSON.parse(res)
       .filter(({ name }) => name.startsWith('v'))
       .sort((x, y) => semverLt(x.name, y.name) ? 1 : -1)
       .slice(0, size)
+  }
+
+  async remoteIndexerVersions () {
+    const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/muxueqz/ckb-indexer/tags`)
+    return JSON.parse(res)
   }
 
   async any () {

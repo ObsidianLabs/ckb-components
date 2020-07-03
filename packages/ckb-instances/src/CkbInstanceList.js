@@ -1,7 +1,8 @@
 import React from 'react'
 
 import {
-  SplitPane
+  SplitPane,
+  Card,
 } from '@obsidians/ui-components'
 
 import { NodeTerminal } from '@obsidians/ckb-node'
@@ -17,15 +18,24 @@ const chains = {
 export default function CkbInstanceList (props) {
   const { active, network = 'local', onLifecycle } = props
   const chain = chains[network]
+  if (chain === 'dev') {
+    return (
+      <SplitPane
+        split='horizontal'
+        primary='second'
+        defaultSize={260}
+        minSize={200}
+      >
+        <InstanceList chain={chain} onLifecycle={onLifecycle} />
+        <NodeTerminal active={active} miner={chain === 'dev'} />
+      </SplitPane>
+    )
+  }
+  
   return (
-    <SplitPane
-      split='horizontal'
-      primary='second'
-      defaultSize={260}
-      minSize={200}
+    <Card
+      title={`CKB Instances (${chain})`}
     >
-      <InstanceList chain={chain} onLifecycle={onLifecycle} />
-      <NodeTerminal active={active} miner={chain === 'dev'} />
-    </SplitPane>
+    </Card>
   )
 }

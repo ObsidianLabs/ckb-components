@@ -73,12 +73,16 @@ export default class CkbCells extends PureComponent {
       done: false
     })
 
-    let wallet
+    const wallet = nodeManager.sdk.walletFrom(this.props.value)
     try {
-      wallet = nodeManager.sdk.walletFrom(this.props.value)
+      await wallet.info()
       this.setState({ error: null, loading: true })
     } catch (e) {
-      this.setState({ error: e.message, loading: false })
+      let error = e.message
+      if (error === `Cannot read property 'attributes' of undefined`) {
+        error = 'Invalid value, expected a lock hash or CKB address.'
+      }
+      this.setState({ error, wallet: null })
       return
     }
 

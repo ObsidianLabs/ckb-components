@@ -17,7 +17,7 @@ export default function TxInputs ({ inputs, wallet }) {
 
 function CkbInput ({ since, previousOutput, self, wallet }) {
   if (previousOutput.txHash === '0x0000000000000000000000000000000000000000000000000000000000000000') {
-    return `Cellbase for Block ${BigInt(since).toString()}`
+    return <div className='small'>Cellbase for Block #{BigInt(since).toString()}</div>
   }
 
   const [cell, setCell] = useState(null)

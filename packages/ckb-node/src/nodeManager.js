@@ -15,6 +15,10 @@ class NodeManager {
     this._terminal = v
   }
 
+  set indexerTerminal (v) {
+    this._indexerTerminal = v
+  }
+
   set minerTerminal (v) {
     this._minerTerminal = v
   }
@@ -28,14 +32,16 @@ class NodeManager {
       return
     }
 
-    const [ckbRun, ckbMiner] = this.generateCommands({ name, version })
+    const [ckbRun, ckbIndexer, ckbMiner] = this.generateCommands({ name, version })
     await this._terminal.exec(ckbRun, { resolveOnFirstLog: true })
     if (miner) {
       await delay(500)
       await this._minerTerminal.exec(ckbMiner, { resolveOnFirstLog: true })
     }
+    this._indexerTerminal.exec(ckbIndexer)
     return {
       url: 'http://localhost:8114',
+      indexer: 'http://localhost:8116',
     }
   }
 
@@ -51,13 +57,22 @@ class NodeManager {
       `nervos/ckb:${version} run`
     ].join(' ')
 
+    const ckbIndexer = [
+      'docker run -it --rm',
+      `--name ckb-${name}-indexer`,
+      `-p 8116:8116`,
+      `-v ckb-${name}:/data`,
+      `muxueqz/ckb-indexer`,
+      `-c 172.17.0.1:8114 -s /data/indexer -l 0.0.0.0:8116`
+    ].join(' ')
+
     const ckbMiner = [
       'docker exec -it',
       containerName,
       'ckb miner'
     ].join(' ')
 
-    return [ckbRun, ckbMiner]
+    return [ckbRun, ckbIndexer, ckbMiner]
   }
 
   updateLifecycle (lifecycle, params) {
@@ -67,7 +82,7 @@ class NodeManager {
     if (params) {
       this._sdk = new Sdk(params)
     } else {
-      this._sdk = null
+      // this._sdk = null
     }
   }
 
@@ -85,11 +100,15 @@ class NodeManager {
     }
   }
 
-  async stop () {
+  async stop ({ name, version }) {
     if (this._minerTerminal) {
       await this._minerTerminal.stop()
     }
+    if (this._indexerTerminal) {
+      await this._indexerTerminal.exec(`docker stop ckb-${name}-indexer`)
+    }
     if (this._terminal) {
+      await this._terminal.exec(`docker stop ckb-${name}-${version}`)
       await this._terminal.stop()
     }
   }

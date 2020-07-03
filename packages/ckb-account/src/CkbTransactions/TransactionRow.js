@@ -3,8 +3,6 @@ import React, { PureComponent } from 'react'
 import TxInputs from './TxInputs'
 import TxOutputs from './TxOutputs'
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
 export default class TransactionRow extends PureComponent {
   constructor (props) {
     super(props)
@@ -20,7 +18,6 @@ export default class TransactionRow extends PureComponent {
   async fetchTransaction () {
     if (this.props.parts.length) {
       const detail = await this.props.parts[0].fetchTransaction()
-      await delay(2000)
       this.setState({ detail })
     }
   }

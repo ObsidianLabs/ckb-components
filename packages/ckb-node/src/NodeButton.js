@@ -51,7 +51,10 @@ export default class NodeButton extends PureComponent {
     this.setState({ lifecycle: 'stopping' })
     this.onLifecycle('stopping')
 
-    await nodeManager.stop()
+    await nodeManager.stop({
+      name: this.props.name,
+      version: this.props.version,
+    })
 
     this.setState({ lifecycle: 'stopped' })
     this.onLifecycle('stopped')

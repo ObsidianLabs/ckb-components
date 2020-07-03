@@ -10,6 +10,7 @@ import {
 } from '@obsidians/ui-components'
 
 import ckbKeypair from '@obsidians/keypair'
+import { CkbKeypair } from '@obsidians/ckb-sdk'
 
 import ckbInstancesChannel from './ckbInstancesChannel'
 
@@ -37,7 +38,7 @@ export default class CreateInstanceButton extends PureComponent {
   refresh = async () => {
     this.setState({ loading: true })
     const ckbVersions = await ckbInstancesChannel.invoke('versions')
-    const keypairs = await ckbKeypair.loadAllKeypairs()
+    const keypairs = (await ckbKeypair.loadAllKeypairs()).map(k => CkbKeypair.fromAddress(k.address))
     this.setState({
       ckbVersions,
       keypairs,
@@ -105,7 +106,7 @@ export default class CreateInstanceButton extends PureComponent {
       return <option disabled key='' value=''>(No CKB keypairs)</option>
     }
 
-    return this.state.keypairs.map(k => <option key={k.publicKeyHash} value={k.publicKeyHash}>{k.testnetAddress}</option>)
+    return this.state.keypairs.map(k => <option key={k.publicKeyHash} value={k.publicKeyHash}>{k.address}</option>)
   }
 
   render () {

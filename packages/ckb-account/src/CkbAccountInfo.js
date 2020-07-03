@@ -25,13 +25,18 @@ export default class CkbAccountInfo extends PureComponent {
   }
 
   refresh = async wallet => {
-    this.setState({ loading: true })
-    const { hash_type, code_hash, args } = await wallet.lockScript()
-    const lockScript = new CkbScript({ hashType: hash_type, codeHash: code_hash, args })
-    this.setState({ lockScript, loading: false })
+    this.setState({ lockScript: null, loading: true })
+    const lock = await wallet.lockScript()
+    if (lock) {
+      const lockScript = new CkbScript({ hashType: lock.hash_type, codeHash: lock.code_hash, args: lock.args })
+      this.setState({ lockScript, loading: false })
+    } else {
+      this.setState({ loading: false })
+    }
   }
 
   render () {
+    const { wallet } = this.props
     const { loading, lockScript } = this.state
     let loadingIcon
     if (loading) {
@@ -39,14 +44,20 @@ export default class CkbAccountInfo extends PureComponent {
     }
 
     let testnetAddress = <span className='text-muted'>(n/a)</span>
-    try {
-      testnetAddress = <code>{lockScript.getAddress('ckt')}</code>
-    } catch (e) {}
-
     let mainnetAddress = <span className='text-muted'>(n/a)</span>
-    try {
-      mainnetAddress = <code>{lockScript.getAddress('ckb')}</code>
-    } catch (e) {}
+    let hashType = <span className='text-muted'>(n/a)</span>
+    let codeHash = <span className='text-muted'>(n/a)</span>
+    let args = <span className='text-muted'>(n/a)</span>
+    if (lockScript) {
+      try {
+        hashType = lockScript.hashType
+        codeHash = <div className='text-overflow-dots'><code>{lockScript.codeHash}</code></div>
+        args = <div className='text-overflow-dots'><code>{lockScript.args.serialize()}</code></div>
+        testnetAddress = <code>{lockScript.getAddress('ckt')}</code>
+        mainnetAddress = <code>{lockScript.getAddress('ckb')}</code>
+      } catch (e) {}
+    }
+
 
     return (
       <TableCard title='Account Info'>
@@ -69,22 +80,22 @@ export default class CkbAccountInfo extends PureComponent {
         >
           <div className='d-flex flex-row align-items-center'>
             <Badge color='info' className='mr-2'>HashType</Badge>
-            {loadingIcon || lockScript.hashType}
+            {loadingIcon || hashType}
           </div>
           <div className='d-flex flex-row align-items-center '>
             <Badge color='info' className='mr-2'>CodeHash</Badge>
-            {loadingIcon || <div className='text-overflow-dots'><code>{lockScript.codeHash}</code></div>}
+            {loadingIcon || codeHash}
           </div>
           <div className='d-flex flex-row align-items-center text-overflow-dots'>
             <Badge color='info' className='mr-2'>Args</Badge>
-            {loadingIcon || <div className='text-overflow-dots'><code>{lockScript.args.serialize()}</code></div>}
+            {loadingIcon || args}
           </div>
         </TableCardRow>
         <TableCardRow
           name='Lock Hash'
           icon='far fa-hashtag'
         >
-          {loadingIcon || <code>{lockScript.hash}</code>}
+          {loadingIcon || <code>{lockScript ? lockScript.hash : wallet.value}</code>}
         </TableCardRow>
       </TableCard>
     )

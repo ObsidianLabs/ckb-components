@@ -6,7 +6,7 @@ import {
 
 import fileOps from '@obsidians/file-ops'
 
-import ckbInstances, { CkbVersionInstaller } from '@obsidians/ckb-instances'
+import ckbInstances, { CkbVersionInstaller, CkbIndexerInstaller } from '@obsidians/ckb-instances'
 import ckbCompiler, { CkbCompilerInstaller } from '@obsidians/ckb-compiler'
 
 import ListItemDocker from './ListItemDocker'
@@ -21,6 +21,7 @@ export default class Welcome extends PureComponent {
     }
     this.listItemDocker = React.createRef()
     this.listItemCkbNode = React.createRef()
+    this.listItemCkbIndexer = React.createRef()
     this.listItemCkbCompiler = React.createRef()
   }
 
@@ -39,6 +40,7 @@ export default class Welcome extends PureComponent {
     if (this.mounted) {
       this.listItemDocker.current.refresh()
       this.listItemCkbNode.current.refresh()
+      this.listItemCkbIndexer.current.refresh()
       this.listItemCkbCompiler.current.refresh()
       const ready = await checkDependencies()
       this.setState({ ready })
@@ -69,6 +71,15 @@ export default class Welcome extends PureComponent {
                 link='https://hub.docker.com/r/nervos/ckb'
                 getVersions={() => ckbInstances.invoke('versions')}
                 Installer={CkbVersionInstaller}
+                onInstalled={this.refresh}
+              />
+              <DockerImageItem
+                ref={this.listItemCkbIndexer}
+                title='CKB Indexer'
+                subtitle='To index cells and transactions'
+                link='https://hub.docker.com/r/muxueqz/ckb-indexer'
+                getVersions={() => ckbInstances.invoke('indexerVersions')}
+                Installer={CkbIndexerInstaller}
                 onInstalled={this.refresh}
               />
               <DockerImageItem

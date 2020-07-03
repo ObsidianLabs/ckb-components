@@ -34,12 +34,16 @@ export default class CkbAccountPage extends PureComponent {
       return
     }
 
-    let wallet
+    const wallet = nodeManager.sdk.walletFrom(value)
     try {
-      wallet = nodeManager.sdk.walletFrom(value)
+      await wallet.info()
       this.setState({ error: null, wallet })
     } catch (e) {
-      this.setState({ error: e.message, wallet: null })
+      let error = e.message
+      if (error === `Cannot read property 'attributes' of undefined`) {
+        error = 'Invalid value, expected a lock hash or CKB address.'
+      }
+      this.setState({ error, wallet: null })
       return
     }
   }
