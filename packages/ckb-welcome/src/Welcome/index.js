@@ -76,7 +76,7 @@ export default class Welcome extends PureComponent {
               <DockerImageItem
                 ref={this.listItemCkbIndexer}
                 title='CKB Indexer'
-                subtitle='To index cells and transactions'
+                subtitle='A library that keeps track of live cells and transactions'
                 link='https://hub.docker.com/r/muxueqz/ckb-indexer'
                 getVersions={() => ckbInstances.invoke('indexerVersions')}
                 Installer={CkbIndexerInstaller}
