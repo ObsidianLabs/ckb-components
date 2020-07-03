@@ -8,6 +8,7 @@ import {
 import { NodeTerminal } from '@obsidians/ckb-node'
 
 import InstanceList from './InstanceList'
+import RemoteNetwork from './RemoteNetwork'
 
 const chains = {
   local: 'dev',
@@ -33,9 +34,6 @@ export default function CkbInstanceList (props) {
   }
   
   return (
-    <Card
-      title={`CKB Instances (${chain})`}
-    >
-    </Card>
+    <RemoteNetwork chain={chain} />
   )
 }
