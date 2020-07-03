@@ -34,6 +34,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
 
   openModal = tx => {
     const signers = tx.getSigners()
+    tx.network = nodeManager.network?.id || 'local'
     const value = JSON.stringify(tx.serialize(), null, 2)
     this.setState({ tx, value, signers, selected: {}, signed: false, signedTx: null, pushing: false })
     this.modal.current.openModal()

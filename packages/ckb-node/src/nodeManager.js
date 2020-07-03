@@ -5,6 +5,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 class NodeManager {
   constructor () {
     this._terminal = null
+    this.network = null
   }
 
   get sdk () {
@@ -87,6 +88,7 @@ class NodeManager {
   }
 
   switchNetwork (network) {
+    this.network = network
     if (network.url) {
       this._sdk = new Sdk(network)
     } else {
