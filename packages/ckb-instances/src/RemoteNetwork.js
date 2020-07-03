@@ -40,6 +40,7 @@ export default class RemoteNetwork extends PureComponent {
       nodeInfo: null,
       blockchainInfo: null,
       block: null,
+      epoch: null,
     })
     if (!nodeManager.sdk) {
       return
