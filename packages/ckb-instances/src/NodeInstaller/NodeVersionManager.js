@@ -8,10 +8,10 @@ import {
   DeleteButton,
 } from '@obsidians/ui-components'
 
-import CkbVersionInstaller from './CkbVersionInstaller'
-import ckbInstancesChannel from './ckbInstancesChannel'
+import NodeVersionInstaller from './NodeVersionInstaller'
+import instanceChannel from '../instanceChannel'
 
-export default class CkbVersionManager extends PureComponent {
+export default class NodeVersionManager extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -29,7 +29,7 @@ export default class CkbVersionManager extends PureComponent {
 
   refreshVersions = async () => {
     this.setState({ loading: true })
-    const versions = await ckbInstancesChannel.invoke('versions')
+    const versions = await instanceChannel.invoke('versions')
     this.setState({
       installed: versions,
       loading: false,
@@ -38,7 +38,7 @@ export default class CkbVersionManager extends PureComponent {
 
   deleteCkbVersion = async version => {
     this.setState({ loading: true })
-    await ckbInstancesChannel.invoke('deleteVersion', version)
+    await instanceChannel.invoke('deleteVersion', version)
     await this.refreshVersions()
   }
 
@@ -102,7 +102,7 @@ export default class CkbVersionManager extends PureComponent {
           ref={this.modal}
           title='CKB Version Manager'
           ActionBtn={
-            <CkbVersionInstaller
+            <NodeVersionInstaller
               left
               color='success'
               onDownloaded={this.refreshVersions}

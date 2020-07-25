@@ -9,10 +9,10 @@ import {
   CustomInput,
 } from '@obsidians/ui-components'
 
-import ckbKeypair from '@obsidians/keypair'
+import keypairManager from '@obsidians/keypair'
 import { CkbKeypair } from '@obsidians/ckb-sdk'
 
-import ckbInstancesChannel from './ckbInstancesChannel'
+import instanceChannel from './instanceChannel'
 
 export default class CreateInstanceButton extends PureComponent {
   constructor (props) {
@@ -20,7 +20,7 @@ export default class CreateInstanceButton extends PureComponent {
 
     this.state = {
       loading: false,
-      ckbVersions: [],
+      versions: [],
       keypairs: [],
       name: '',
       version: '',
@@ -37,13 +37,13 @@ export default class CreateInstanceButton extends PureComponent {
 
   refresh = async () => {
     this.setState({ loading: true })
-    const ckbVersions = await ckbInstancesChannel.invoke('versions')
-    const keypairs = (await ckbKeypair.loadAllKeypairs()).map(k => CkbKeypair.fromAddress(k.address))
+    const versions = await instanceChannel.invoke('versions')
+    const keypairs = (await keypairManager.loadAllKeypairs()).map(k => CkbKeypair.fromAddress(k.address))
     this.setState({
-      ckbVersions,
+      versions,
       keypairs,
       loading: false,
-      version: ckbVersions[0] ? ckbVersions[0].Tag : '',
+      version: versions[0] ? versions[0].Tag : '',
       lockArg: keypairs[0] ? keypairs[0].publicKeyHash : '',
     })
   }
@@ -55,7 +55,7 @@ export default class CreateInstanceButton extends PureComponent {
 
   onCreateInstance = async () => {
     this.setState({ pending: 'Creating...' })
-    await ckbInstancesChannel.invoke('create', {
+    await instanceChannel.invoke('create', {
       name: this.state.name,
       version: this.state.version,
       chain: this.props.chain,
@@ -71,11 +71,11 @@ export default class CreateInstanceButton extends PureComponent {
       return 'Loading'
     }
 
-    if (!this.state.ckbVersions.length) {
+    if (!this.state.versions.length) {
       return <option disabled key='' value=''>(No CKB installed)</option>
     }
 
-    return this.state.ckbVersions.map(v => <option key={v.Tag} value={v.Tag}>{v.Tag}</option>)
+    return this.state.versions.map(v => <option key={v.Tag} value={v.Tag}>{v.Tag}</option>)
   }
 
   renderBlockAssemberInput = () => {
@@ -113,7 +113,7 @@ export default class CreateInstanceButton extends PureComponent {
     return (
       <React.Fragment>
         <Button
-          key='ckb-new-instance'
+          key='new-instance'
           color='success'
           className={this.props.className}
           onClick={this.onClickButton}

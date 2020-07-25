@@ -4,6 +4,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 class NodeManager {
   constructor () {
+    this._sdk = null
     this._terminal = null
     this.network = null
   }

@@ -7,7 +7,7 @@ import {
 
 import { NodeButton, NodeStatus } from '@obsidians/ckb-node'
 
-import ckbInstancesChannel from './ckbInstancesChannel'
+import instanceChannel from './instanceChannel'
 
 export default class InstanceRow extends PureComponent {
   renderStartStopBtn = (name, version, miner) => {
@@ -49,7 +49,7 @@ export default class InstanceRow extends PureComponent {
   }
 
   deleteInstance = async name => {
-    await ckbInstancesChannel.invoke('delete', name)
+    await instanceChannel.invoke('delete', name)
     this.props.onRefresh()
   }
 

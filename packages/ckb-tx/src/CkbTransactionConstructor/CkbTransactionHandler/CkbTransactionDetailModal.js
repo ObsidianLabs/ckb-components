@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react'
 
 import {
-  Button,
   Modal,
   CustomInput,
   DebouncedInput,
 } from '@obsidians/ui-components'
 
 import { CkbScript } from '@obsidians/ckb-tx-builder'
-import ckbKeypair from '@obsidians/keypair'
+import keypairManager from '@obsidians/keypair'
 import notification from '@obsidians/notification'
 import { kp } from '@obsidians/ckb-sdk'
 import nodeManager from '@obsidians/ckb-node'
@@ -50,7 +49,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
           return
         }
         const lock = new CkbScript(address)
-        const secret = await ckbKeypair.getSigner(address)
+        const secret = await keypairManager.getSigner(address)
         const keypair = kp.importKeypair(secret)
         const signer = message => keypair.sign(message)
         signatureProvider.set(lock.hash, signer)

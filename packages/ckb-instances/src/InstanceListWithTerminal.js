@@ -2,7 +2,6 @@ import React from 'react'
 
 import {
   SplitPane,
-  Card,
 } from '@obsidians/ui-components'
 
 import { NodeTerminal } from '@obsidians/ckb-node'
@@ -16,7 +15,7 @@ const chains = {
   'ckb-mainnet': 'mainnet',
 }
 
-export default function CkbInstanceList (props) {
+export default function InstanceListWithTerminal (props) {
   const { active, network = 'local', onLifecycle } = props
   const chain = chains[network]
   if (chain === 'dev') {

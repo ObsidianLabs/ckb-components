@@ -10,9 +10,9 @@ import {
 
 import Terminal from '@obsidians/terminal'
 
-import ckbInstancesChannel from './ckbInstancesChannel'
+import instanceChannel from '../instanceChannel'
 
-export default class CkbIndexerInstaller extends PureComponent {
+export default class NodeVersionInstaller extends PureComponent {
   constructor (props) {
     super(props)
     
@@ -33,7 +33,7 @@ export default class CkbIndexerInstaller extends PureComponent {
     this.setState({ loading: true })
     let versions
     try {
-      versions = await ckbInstancesChannel.invoke('remoteIndexerVersions', 10)
+      versions = await instanceChannel.invoke('remoteVersions', 10)
     } catch (e) {
       this.setState({ loading: false })
       console.warn(e)
@@ -82,7 +82,7 @@ export default class CkbIndexerInstaller extends PureComponent {
   render () {
     const title = (
       <div key='icon-downloading-ckb'>
-        <i className='fas fa-spinner fa-spin mr-2' />Downloading CKB Indexer {this.state.downloadVersion}...
+        <i className='fas fa-spinner fa-spin mr-2' />Downloading CKB {this.state.downloadVersion}...
       </div>
     )
     return (
@@ -109,7 +109,7 @@ export default class CkbIndexerInstaller extends PureComponent {
               active
               logId='download-ckb'
               height='300px'
-              cmd={`docker pull muxueqz/ckb-indexer:${this.state.downloadVersion}`}
+              cmd={`docker pull nervos/ckb:${this.state.downloadVersion}`}
               onFinished={this.onDownloaded}
             />
           </div>

@@ -66,7 +66,7 @@ export default class RemoteNetwork extends PureComponent {
       <div className='d-flex flex-1 flex-column overflow-auto'>
         <div className='d-flex'>
           <div className='col-6 p-0 border-right-black'>
-            <TableCard title={`CKB Instances (${chain})`}>
+            <TableCard title={`CKB Network (${chain})`}>
               <TableCardRow
                 name='Node URL'
                 badge={nodeManager.sdk?.ckbClient.nodeUrl}

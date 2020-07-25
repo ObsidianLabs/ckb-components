@@ -6,7 +6,7 @@ import {
 
 import fileOps from '@obsidians/file-ops'
 
-import ckbInstances, { CkbVersionInstaller, CkbIndexerInstaller } from '@obsidians/ckb-instances'
+import ckbInstances, { NodeVersionInstaller, CkbIndexerInstaller } from '@obsidians/ckb-instances'
 import ckbCompiler, { CkbCompilerInstaller } from '@obsidians/ckb-compiler'
 
 import ListItemDocker from './ListItemDocker'
@@ -70,7 +70,7 @@ export default class Welcome extends PureComponent {
                 subtitle='The main software that runs CKB node and CKB miner.'
                 link='https://hub.docker.com/r/nervos/ckb'
                 getVersions={() => ckbInstances.invoke('versions')}
-                Installer={CkbVersionInstaller}
+                Installer={NodeVersionInstaller}
                 onInstalled={this.refresh}
               />
               <DockerImageItem

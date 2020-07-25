@@ -3,13 +3,13 @@ import React, { PureComponent } from 'react'
 import { Card } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 
-import CkbVersionManager from './CkbVersionManager'
+import NodeVersionManager from './NodeVersionManager'
 import CreateInstanceButton from './CreateInstanceButton'
 
 import InstanceHeader from './InstanceHeader'
 import InstanceRow from './InstanceRow'
 
-import ckbInstancesChannel from './ckbInstancesChannel'
+import instanceChannel from './instanceChannel'
 
 export default class InstanceList extends PureComponent {
   static defaultProps = {
@@ -38,7 +38,7 @@ export default class InstanceList extends PureComponent {
   }
 
   refreshInstances = async () => {
-    const instances = await ckbInstancesChannel.invoke('list', this.props.chain)
+    const instances = await instanceChannel.invoke('list', this.props.chain)
     this.setState({ instances })
   }
 
@@ -92,7 +92,7 @@ export default class InstanceList extends PureComponent {
         title={`CKB Instances (${this.props.chain})`}
         right={(
           <React.Fragment>
-            <CkbVersionManager
+            <NodeVersionManager
               onRefresh={this.refreshInstances}
             />
             <CreateInstanceButton
