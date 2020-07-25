@@ -31,8 +31,7 @@ class CkbInstanceManager extends IpcChannel {
 
     let config = fs.readFileSync(`/tmp/ckb.toml`, 'utf8')
     config = config.replace(`filter = "info"`, `filter = "info,ckb-script=debug"`)
-    config = config.replace(`= ["Net", "Pool", "Miner", "Chain", "Stats", "Experiment"]`, `= ["Net", "Pool", "Miner", "Chain", "Stats", "Indexer", "Experiment"]`)
-    config = config.replace(`= ["Net", "Pool", "Miner", "Chain", "Stats", "Subscription", "Experiment"]`, `= ["Net", "Pool", "Miner", "Chain", "Stats", "Indexer", "Subscription", "Experiment"]`)
+    config = config.replace(/(modules = \[.+)"Stats"/, `$1"Stats", "Indexer"`)
 
     fs.writeFileSync(`/tmp/ckb.toml`, config, 'utf8')
 
