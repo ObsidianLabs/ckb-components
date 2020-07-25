@@ -9,7 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { CkbLiveCell, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
+import { CkbLiveCell, CkbScript, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
 import nodeManager from '@obsidians/ckb-node'
 
 import CkbWalletContext from '../CkbWalletContext'
@@ -36,6 +36,12 @@ export default class CkbTransferButton extends PureComponent {
   }
 
   openModal = () => {
+    try {
+      new CkbScript(this.props.sender)
+    } catch (e) {
+      notification.error('Error', 'Not a valid CKB address.')
+      return
+    }
     this.modal.current.openModal()
     setTimeout(() => this.capacityInput.current.focus(), 100)
     ckbTxManager.loadUdtManifest().then(udts => this.setState({ udts }))
@@ -87,7 +93,7 @@ export default class CkbTransferButton extends PureComponent {
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
       if (sudtCellInfo && sudtCellInfo.outPoint) {
-        const cell = await nodeManager.sdk.loadOutpoint(sudtCellInfo.outPoint)
+        const cell = await nodeManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.outPoint)
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
       

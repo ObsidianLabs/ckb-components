@@ -28,9 +28,7 @@ function CkbInput ({ since, previousOutput, self, wallet }) {
         return
       }
 
-      nodeManager.sdk.ckbClient
-        .loadOutpoint(previousOutput)
-        .then(setCell)
+      nodeManager.sdk.ckbClient.loadOutpoint(previousOutput).then(setCell)
     },
     [previousOutput],
   )
