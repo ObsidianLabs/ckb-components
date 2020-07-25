@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import { Card } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 
-import NodeVersionManager from './NodeVersionManager'
+import NodeVersionManager from './NodeInstaller/NodeVersionManager'
 import CreateInstanceButton from './CreateInstanceButton'
 
 import InstanceHeader from './InstanceHeader'
