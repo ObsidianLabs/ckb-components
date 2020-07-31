@@ -1,12 +1,18 @@
 const fs = require('fs')
-
-const { IpcChannel } = require('@obsidians/ipc')
-
 const semverLt = require('semver/functions/lt')
+const { IpcChannel } = require('@obsidians/ipc')
+const { DockerImageChannel } = require('@obsidians/docker')
 
 class CkbInstanceManager extends IpcChannel {
   constructor () {
     super('ckb-instances')
+
+    this.ckbNode = new DockerImageChannel('nervos/ckb', {
+      filter: tag => tag.startsWith('v'),
+      sort: (x, y) => semverLt(x, y) ? 1 : -1
+    })
+
+    this.ckbIndexer = new DockerImageChannel('muxueqz/ckb-indexer')
   }
 
   async create ({ name, version, chain, lockArg }) {
@@ -68,40 +74,6 @@ class CkbInstanceManager extends IpcChannel {
 
   async delete (name) {
     await this.pty.exec(`docker volume rm ckb-${name}`)
-  }
-
-  async versions () {
-    const { logs: images } = await this.pty.exec(`docker images nervos/ckb --format "{{json . }}"`)
-    const versions = images.split('\n').filter(Boolean).map(JSON.parse).filter(x => x.Tag.startsWith('v'))
-    return versions
-  }
-
-  async indexerVersions () {
-    const { logs: images } = await this.pty.exec(`docker images muxueqz/ckb-indexer --format "{{json . }}"`)
-    const versions = images.split('\n').filter(Boolean).map(JSON.parse)
-    return versions
-  }
-
-  async deleteVersion (version) {
-    await this.pty.exec(`docker rmi nervos/ckb:${version}`)
-  }
-
-  async remoteVersions (size) {
-    const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/nervos/ckb/tags`)
-    return JSON.parse(res)
-      .filter(({ name }) => name.startsWith('v'))
-      .sort((x, y) => semverLt(x.name, y.name) ? 1 : -1)
-      .slice(0, size)
-  }
-
-  async remoteIndexerVersions () {
-    const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/muxueqz/ckb-indexer/tags`)
-    return JSON.parse(res)
-  }
-
-  async any () {
-    const { versions = [] } = await this.versions()
-    return !!versions.length
   }
 }
 

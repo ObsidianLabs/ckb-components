@@ -34,8 +34,8 @@ export default async function checkDependencies () {
   try {
     const results = await Promise.all([
       checkDocker(),
-      ckbInstances.invoke('versions').then(versions => versions[0].Tag),
-      ckbInstances.invoke('indexerVersions').then(versions => versions[0].Tag),
+      ckbInstances.ckbNode.invoke('versions').then(versions => versions[0].Tag),
+      ckbInstances.ckbIndexer.invoke('versions').then(versions => versions[0].Tag),
       ckbCompiler.invoke('versions').then(versions => versions[0].Tag),
     ])
     return results.every(x => !!x)

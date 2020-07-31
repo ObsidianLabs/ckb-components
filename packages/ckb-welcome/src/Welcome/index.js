@@ -69,7 +69,7 @@ export default class Welcome extends PureComponent {
                 title='CKB Node'
                 subtitle='The main software that runs CKB node and CKB miner.'
                 link='https://hub.docker.com/r/nervos/ckb'
-                getVersions={() => ckbInstances.invoke('versions')}
+                getVersions={() => ckbInstances.ckbNode.invoke('versions')}
                 Installer={NodeVersionInstaller}
                 onInstalled={this.refresh}
               />
@@ -78,8 +78,17 @@ export default class Welcome extends PureComponent {
                 title='CKB Indexer'
                 subtitle='A library that keeps track of live cells and transactions'
                 link='https://hub.docker.com/r/muxueqz/ckb-indexer'
-                getVersions={() => ckbInstances.invoke('indexerVersions')}
+                getVersions={() => ckbInstances.ckbIndexer.invoke('versions')}
                 Installer={CkbIndexerInstaller}
+                onInstalled={this.refresh}
+              />
+              <DockerImageItem
+                ref={this.listItemCapsule}
+                title='Capsule'
+                subtitle='A framework for creating CKB scripts in Rust'
+                link='https://github.com/nervosnetwork/capsule'
+                getVersions={() => ckbInstances.invoke('capsuleVersions')}
+                Installer={NodeVersionInstaller}
                 onInstalled={this.refresh}
               />
               <DockerImageItem
