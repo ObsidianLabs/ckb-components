@@ -46,18 +46,12 @@ class CkbCompiler {
     this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
 
     let cmd
-    if (config.scripts.build) {
-      cmd = config.scripts.build
+    if (config.language === 'rust') {
+      cmd = this.generateBuildCmdForRust(config, { version, projectRoot })
+    } else if (config.language === 'c') {
+      cmd = this.generateBuildCmdForC(config, { version, projectRoot })
     } else {
-      const output = config.output || config.main.replace('.cpp', '.o').replace('.c', '.o')
-      if (version.indexOf('gnu') > -1) {
-        cmd = `riscv64-unknown-linux-gnu-gcc -Os ${config.main} -o ${output}`
-      } else {
-        cmd = `riscv64-unknown-elf-gcc -Os ${config.main} -o ${output}`
-      }
-    }
-    if (config.language !== 'javascript') {
-      cmd = this.generateDockerBuildCmd(cmd, { version, projectRoot })
+      cmd = config.scripts.build
     }
     const result = await this._terminal.exec(cmd)
 
@@ -71,21 +65,47 @@ class CkbCompiler {
     notification.success('Build Successful', `CKB script is built.`)
   }
 
-  async stop () {
-    if (this._terminal) {
-      await this._terminal.stop()
-    }
+  generateBuildCmdForRust(config, { version, projectRoot }) {
+    const cmd = config.scripts?.build || 'capsule build'
+    return [
+      'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
+      `-v /var/run/docker.sock:/var/run/docker.sock`,
+      '-v', `"${projectRoot}":"${projectRoot}"`,
+      '-w', `"${projectRoot}"`,
+      `obsidians/capsule:${version}`,
+      cmd
+    ].join(' ')
   }
 
-  generateDockerBuildCmd(cmd, { version, projectRoot }) {
+  generateBuildCmdForC(config, { version, projectRoot }) {
+    const cmd = this.commandForC(config)
     return [
-      'docker', 'run', '-t', '--rm', '--name', `ckb_compiler_${version}`,
+      'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
       '--volume', `"${projectRoot}:/project"`,
       '-w', '/project',
       `nervos/ckb-riscv-gnu-toolchain:${version}`,
       '/bin/bash', '-c',
       `"${cmd}"`
     ].join(' ')
+  }
+
+  commandForC(config) {
+    if (config.scripts.build) {
+      return config.scripts.build
+    }
+
+    const output = config.output || config.main.replace('.cpp', '.o').replace('.c', '.o')
+    if (version.indexOf('gnu') > -1) {
+      return `riscv64-unknown-linux-gnu-gcc -Os ${config.main} -o ${output}`
+    } else {
+      return `riscv64-unknown-elf-gcc -Os ${config.main} -o ${output}`
+    }
+  }
+
+  async stop () {
+    if (this._terminal) {
+      await this._terminal.stop()
+    }
   }
 }
 
