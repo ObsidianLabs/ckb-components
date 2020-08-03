@@ -15,13 +15,9 @@ export default function CkbBottomBar (props) {
       </KeypairButton>
       <div className='flex-1' />
       <CacheRoute
-        path={`/guest/:project`}
+        path={`/guest/:project?`}
         render={() => {
-          if (!props.projectValid) {
-            return null
-          }
-
-          if (props.projectLanguage === 'rust') {
+          if (!props.projectValid || props.projectLanguage === 'rust') {
             return (
               <DockerImageSelector
                 imageName='obsidians/capsule'
