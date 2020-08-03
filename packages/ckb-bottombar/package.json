@@ -17,8 +17,8 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ckb-compiler": "^0.1.0",
     "@obsidians/ckb-project": "^0.1.0",
+    "@obsidians/docker": "^0.1.0",
     "@obsidians/keypair": "^0.1.0",
     "react-router-cache-route": "^1.8.4"
   },

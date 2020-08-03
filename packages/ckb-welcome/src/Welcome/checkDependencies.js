@@ -34,12 +34,14 @@ export default async function checkDependencies () {
   try {
     const results = await Promise.all([
       checkDocker(),
-      ckbInstances.ckbNode.invoke('versions').then(versions => versions[0].Tag),
-      ckbInstances.ckbIndexer.invoke('versions').then(versions => versions[0].Tag),
-      ckbCompiler.invoke('versions').then(versions => versions[0].Tag),
+      ckbInstances.ckbNode.installed(),
+      ckbInstances.ckbIndexer.installed(),
+      ckbCompiler.capsule.installed(),
+      ckbCompiler.regular.installed(),
     ])
     return results.every(x => !!x)
   } catch (e) {
+    console.warn(e)
     return false
   }
 }

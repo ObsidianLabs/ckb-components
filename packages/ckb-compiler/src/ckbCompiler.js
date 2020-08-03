@@ -1,16 +1,13 @@
-import { IpcChannel } from '@obsidians/ipc'
+import { DockerImageChannel } from '@obsidians/docker'
 import notification from '@obsidians/notification'
 
 class CkbCompiler {
   constructor () {
-    this.channel = new IpcChannel('ckb-compiler')
+    this.capsule = new DockerImageChannel(`obsidians/capsule`)
+    this.regular = new DockerImageChannel(`nervos/ckb-riscv-gnu-toolchain`)
     this._terminal = null
     this._button = null
     this.notification = null
-  }
-
-  async invoke (method, ...args) {
-    return await this.channel.invoke(method, ...args)
   }
 
   set terminal (v) {

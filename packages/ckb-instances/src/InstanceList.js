@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 
 import { Card } from '@obsidians/ui-components'
+import { DockerImageButton } from '@obsidians/docker'
 import notification from '@obsidians/notification'
 
-import NodeVersionManager from './NodeInstaller/NodeVersionManager'
 import CreateInstanceButton from './CreateInstanceButton'
 
 import InstanceHeader from './InstanceHeader'
@@ -92,8 +92,13 @@ export default class InstanceList extends PureComponent {
         title={`CKB Instances (${this.props.chain})`}
         right={(
           <React.Fragment>
-            <NodeVersionManager
-              onRefresh={this.refreshInstances}
+            <DockerImageButton
+              channel={instanceChannel.ckbNode}
+              icon='fas fa-server'
+              title='CKB Versions'
+              noneName='CKB node'
+              modalTitle='CKB Version Manager'
+              downloadingTitle='Downloading CKB'
             />
             <CreateInstanceButton
               className='ml-2'

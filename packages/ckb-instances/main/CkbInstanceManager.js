@@ -11,7 +11,6 @@ class CkbInstanceManager extends IpcChannel {
       filter: tag => tag.startsWith('v'),
       sort: (x, y) => semverLt(x, y) ? 1 : -1
     })
-
     this.ckbIndexer = new DockerImageChannel('muxueqz/ckb-indexer')
   }
 
