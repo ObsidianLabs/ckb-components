@@ -6,8 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
-import { DownloadImageButton } from '@obsidians/docker'
-import { checkDocker } from './checkDependencies'
+import { dockerChannel, DownloadImageButton } from '@obsidians/docker'
 
 export default class DockerImageItem extends PureComponent {
   mounted = false
@@ -25,7 +24,7 @@ export default class DockerImageItem extends PureComponent {
   }
 
   refresh = async () => {
-    if (!await checkDocker()) {
+    if (!await dockerChannel.check()) {
       this.mounted && this.setState({ status: 'NO_DOCKER' })
       return
     }
