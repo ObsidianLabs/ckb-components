@@ -17,10 +17,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ckb-node": "^0.1.0",
+    "@obsidians/ckb-network": "^0.1.0",
     "@obsidians/ckb-project": "^0.1.0",
     "@obsidians/navbar": "^0.1.0",
-    "@obsidians/notification": "^0.1.0",
     "@obsidians/redux": "^0.1.0"
   },
   "devDependencies": {

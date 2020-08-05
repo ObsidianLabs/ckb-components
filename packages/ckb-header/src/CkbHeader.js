@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 
 import Navbar from '@obsidians/navbar'
 import { NewProjectModal, navbarItem } from '@obsidians/ckb-project' 
+import { networkManager } from '@obsidians/ckb-network'
 
 import headerActions from './headerActions'
 
@@ -55,7 +56,10 @@ export default class CkbHeader extends PureComponent {
         icon: network.icon,
         selected: network,
         dropdown: networkList,
-        onClickItem: newtorkId => headerActions.setNetwork(newtorkId),
+        onClickItem: newtorkId => {
+          headerActions.updateNetwork(newtorkId)
+          networkManager.setNetwork(newtorkId)
+        }
       },
     ]
 

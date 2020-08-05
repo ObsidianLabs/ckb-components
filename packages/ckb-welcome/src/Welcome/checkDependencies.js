@@ -1,5 +1,5 @@
 import { IpcChannel } from '@obsidians/ipc'
-import ckbInstances from '@obsidians/ckb-instances'
+import { instanceChannel } from '@obsidians/ckb-network'
 import ckbCompiler from '@obsidians/ckb-compiler'
 
 export async function checkDocker () {
@@ -34,8 +34,8 @@ export default async function checkDependencies () {
   try {
     const results = await Promise.all([
       checkDocker(),
-      ckbInstances.ckbNode.installed(),
-      ckbInstances.ckbIndexer.installed(),
+      instanceChannel.ckbNode.installed(),
+      instanceChannel.ckbIndexer.installed(),
       ckbCompiler.capsule.installed(),
       ckbCompiler.regular.installed(),
     ])

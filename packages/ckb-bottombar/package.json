@@ -19,8 +19,7 @@
   "dependencies": {
     "@obsidians/ckb-project": "^0.1.0",
     "@obsidians/docker": "^0.1.0",
-    "@obsidians/keypair": "^0.1.0",
-    "react-router-cache-route": "^1.8.4"
+    "@obsidians/keypair": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -42,7 +41,8 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router-cache-route": "^1.8.4"
   },
   "eslintConfig": {
     "extends": "react-app"

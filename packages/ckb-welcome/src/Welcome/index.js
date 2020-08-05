@@ -5,7 +5,7 @@ import {
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
-import ckbInstances from '@obsidians/ckb-instances'
+import { instanceChannel } from '@obsidians/ckb-network'
 import ckbCompiler from '@obsidians/ckb-compiler'
 
 import ListItemDocker from './ListItemDocker'
@@ -67,7 +67,7 @@ export default class Welcome extends PureComponent {
               />
               <DockerImageItem
                 ref={this.listItemCkbNode}
-                channel={ckbInstances.ckbNode}
+                channel={instanceChannel.ckbNode}
                 title='CKB Node'
                 subtitle='The main software that runs CKB node and CKB miner.'
                 link='https://hub.docker.com/r/nervos/ckb'
@@ -76,7 +76,7 @@ export default class Welcome extends PureComponent {
               />
               <DockerImageItem
                 ref={this.listItemCkbIndexer}
-                channel={ckbInstances.ckbIndexer}
+                channel={instanceChannel.ckbIndexer}
                 title='CKB Indexer'
                 subtitle='A library that keeps track of live cells and transactions'
                 link='https://hub.docker.com/r/muxueqz/ckb-indexer'
