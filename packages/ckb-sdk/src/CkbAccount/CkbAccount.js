@@ -40,7 +40,13 @@ export default class CkbAccount {
           }
         })
         const result = await response.json()
-        return result.data.attributes
+        const { balance, live_cells_count, transactions_count, ...rest } = result.data.attributes
+        return {
+          balance,
+          live_cells_count: parseInt(live_cells_count),
+          transactions_count,
+          ...rest,
+        }
       }
     }
     return await this._getInfo()
