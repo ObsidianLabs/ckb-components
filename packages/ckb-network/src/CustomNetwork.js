@@ -51,7 +51,7 @@ export default class CustomNetwork extends PureComponent {
       if (this.h) {
         clearInterval(this.h)
       }
-      this.h = setInterval(() => this.refreshBlock(), 1000)
+      this.h = setInterval(() => this.refreshBlock(), 3000)
     }
     return !!nodeInfo
   }

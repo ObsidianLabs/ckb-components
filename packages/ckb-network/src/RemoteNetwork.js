@@ -21,7 +21,7 @@ export default class RemoteNetwork extends PureComponent {
 
   componentDidMount () {
     this.refresh()
-    this.h = setInterval(() => this.refreshBlock(), 1000)
+    this.h = setInterval(() => this.refreshBlock(), 3000)
   }
 
   componentDidUpdate (prevProps) {
