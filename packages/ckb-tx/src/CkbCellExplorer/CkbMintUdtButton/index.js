@@ -19,7 +19,7 @@ import ScriptInput from '../../components/inputs/ScriptInput'
 import CapacityInput from '../../components/inputs/CapacityInput'
 import IconInput from '../../components/inputs/IconInput'
 
-export default class CkbUdtButton extends PureComponent {
+export default class CkbMintUdtButton extends PureComponent {
   static contextType = CkbWalletContext
 
   constructor(props) {
@@ -40,7 +40,13 @@ export default class CkbUdtButton extends PureComponent {
   }
 
   openModal = () => {
-    const lock = new CkbScript(this.props.issuer)
+    let lock
+    try {
+      lock = new CkbScript(this.props.issuer)
+    } catch (e) {
+      notification.error('Error', 'Not a valid CKB address.')
+      return
+    }
     this.issuer = lock.hash
     ckbTxManager.getUdtInfo(lock.hash).then(udt => {
       this.setState({
@@ -70,7 +76,7 @@ export default class CkbUdtButton extends PureComponent {
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
       if (sudtCellInfo && sudtCellInfo.outPoint) {
-        const cell = await nodeManager.sdk.loadOutpoint(sudtCellInfo.outPoint)
+        const cell = await nodeManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.outPoint)
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
       

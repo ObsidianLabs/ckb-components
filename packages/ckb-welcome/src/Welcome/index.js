@@ -5,9 +5,8 @@ import {
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
-
-import ckbInstances, { CkbVersionInstaller, CkbIndexerInstaller } from '@obsidians/ckb-instances'
-import ckbCompiler, { CkbCompilerInstaller } from '@obsidians/ckb-compiler'
+import ckbInstances from '@obsidians/ckb-instances'
+import ckbCompiler from '@obsidians/ckb-compiler'
 
 import ListItemDocker from './ListItemDocker'
 import DockerImageItem from './DockerImageItem'
@@ -22,6 +21,7 @@ export default class Welcome extends PureComponent {
     this.listItemDocker = React.createRef()
     this.listItemCkbNode = React.createRef()
     this.listItemCkbIndexer = React.createRef()
+    this.listItemCapsule = React.createRef()
     this.listItemCkbCompiler = React.createRef()
   }
 
@@ -41,6 +41,7 @@ export default class Welcome extends PureComponent {
       this.listItemDocker.current.refresh()
       this.listItemCkbNode.current.refresh()
       this.listItemCkbIndexer.current.refresh()
+      this.listItemCapsule.current.refresh()
       this.listItemCkbCompiler.current.refresh()
       const ready = await checkDependencies()
       this.setState({ ready })
@@ -66,29 +67,38 @@ export default class Welcome extends PureComponent {
               />
               <DockerImageItem
                 ref={this.listItemCkbNode}
+                channel={ckbInstances.ckbNode}
                 title='CKB Node'
                 subtitle='The main software that runs CKB node and CKB miner.'
                 link='https://hub.docker.com/r/nervos/ckb'
-                getVersions={() => ckbInstances.invoke('versions')}
-                Installer={CkbVersionInstaller}
+                downloadingTitle='Downloading CKB'
                 onInstalled={this.refresh}
               />
               <DockerImageItem
                 ref={this.listItemCkbIndexer}
+                channel={ckbInstances.ckbIndexer}
                 title='CKB Indexer'
                 subtitle='A library that keeps track of live cells and transactions'
                 link='https://hub.docker.com/r/muxueqz/ckb-indexer'
-                getVersions={() => ckbInstances.invoke('indexerVersions')}
-                Installer={CkbIndexerInstaller}
+                downloadingTitle='Downloading CKB Indexer'
+                onInstalled={this.refresh}
+              />
+              <DockerImageItem
+                ref={this.listItemCapsule}
+                channel={ckbCompiler.capsule}
+                title='Capsule'
+                subtitle='A framework for creating CKB scripts in Rust'
+                link='https://github.com/nervosnetwork/capsule'
+                downloadingTitle='Downloading Capsule'
                 onInstalled={this.refresh}
               />
               <DockerImageItem
                 ref={this.listItemCkbCompiler}
+                channel={ckbCompiler.regular}
                 title='CKB Compiler'
                 subtitle='CKB compiler is required to compile CKB scripts.'
                 link='https://hub.docker.com/r/nervos/ckb-riscv-gnu-toolchain'
-                getVersions={() => ckbCompiler.invoke('versions')}
-                Installer={CkbCompilerInstaller}
+                downloadingTitle='Downloading CKB Compiler'
                 onInstalled={this.refresh}
               />
             </ListGroup>

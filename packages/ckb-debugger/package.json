@@ -21,7 +21,6 @@
     "@obsidians/ckb-tx-builder": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
     "ckb-standalone-debugger": "0.2.0",
-    "lodash": "^4.17.15",
     "moment": "^2.24.0"
   },
   "devDependencies": {
@@ -43,6 +42,7 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
+    "lodash": "^4.17.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },

@@ -41,6 +41,7 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
+    "lodash": "^4.17.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },

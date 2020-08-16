@@ -9,6 +9,7 @@ export default class CkbWallet {
     this.ckbIndexer = sdk.ckbIndexer
     this.ckbExplorer = sdk.ckbExplorer
     this.value = value
+    this.indexed = undefined
     this._getInfo = null
   }
 
@@ -51,6 +52,9 @@ export default class CkbWallet {
       if (this.ckbExplorer) {
         this._getInfo = async () => await this.fetchAddressInfo(this.ckbExplorer)
       } else {
+        if (!await this.checkIndexState()) {
+          await this.createIndex()
+        }
         this._getInfo = async () => {
           const result = await this.ckbClient.core.rpc.getCapacityByLockHash(this.lockHash)
           if (!result) {

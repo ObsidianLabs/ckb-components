@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 
 import { Card } from '@obsidians/ui-components'
+import { DockerImageButton } from '@obsidians/docker'
 import notification from '@obsidians/notification'
 
-import CkbVersionManager from './CkbVersionManager'
 import CreateInstanceButton from './CreateInstanceButton'
 
 import InstanceHeader from './InstanceHeader'
 import InstanceRow from './InstanceRow'
 
-import ckbInstancesChannel from './ckbInstancesChannel'
+import instanceChannel from './instanceChannel'
 
 export default class InstanceList extends PureComponent {
   static defaultProps = {
@@ -38,7 +38,7 @@ export default class InstanceList extends PureComponent {
   }
 
   refreshInstances = async () => {
-    const instances = await ckbInstancesChannel.invoke('list', this.props.chain)
+    const instances = await instanceChannel.invoke('list', this.props.chain)
     this.setState({ instances })
   }
 
@@ -92,8 +92,13 @@ export default class InstanceList extends PureComponent {
         title={`CKB Instances (${this.props.chain})`}
         right={(
           <React.Fragment>
-            <CkbVersionManager
-              onRefresh={this.refreshInstances}
+            <DockerImageButton
+              channel={instanceChannel.ckbNode}
+              icon='fas fa-server'
+              title='CKB Versions'
+              noneName='CKB node'
+              modalTitle='CKB Version Manager'
+              downloadingTitle='Downloading CKB'
             />
             <CreateInstanceButton
               className='ml-2'

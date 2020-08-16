@@ -15,6 +15,7 @@ import {
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import { IpcChannel } from '@obsidians/ipc'
+import Terminal from '@obsidians/terminal'
 
 import actions from '../actions'
 
@@ -30,6 +31,7 @@ export default class NewCkbProjectModal extends Component {
     }
 
     this.modal = React.createRef()
+    this.terminal = React.createRef()
     this.path = fileOps.current.path
     this.fs = fileOps.current.fs
     this.channel = new IpcChannel('ckb-project')
@@ -80,11 +82,32 @@ export default class NewCkbProjectModal extends Component {
       return false
     }
 
-    try {
-      await this.channel.invoke('createProject', { projectRoot, name, template })
-    } catch (e) {
-      notification.error('Cannot Create the Project', e.message)
-      return false
+    if (template === 'rust') {
+      const compilerVersion = 'v0.1.4'
+      const { dir, name: projectName } = this.path.parse(projectRoot)
+      const cmd = [
+        `docker run --rm -it`,
+        `--name ckb-create-project`,
+        `-v /var/run/docker.sock:/var/run/docker.sock`,
+        `-v "${dir}":"${dir}"`,
+        `-w "${dir}"`,
+        `obsidians/capsule:${compilerVersion}`,
+        `capsule new ${projectName}`,
+      ].join(' ')
+
+      const result = await this.terminal.current.exec(cmd)
+
+      if (result.code) {
+        notification.error('Canno Create the Projectt')
+        return false
+      }
+    } else {
+      try {
+        await this.channel.invoke('createProject', { projectRoot, name, template })
+      } catch (e) {
+        notification.error('Cannot Create the Project', e.message)
+        return false
+      }
     }
 
     notification.success('Successful', `New project <b>${name}</b> is created.`)
@@ -135,6 +158,7 @@ export default class NewCkbProjectModal extends Component {
             value={this.state.template}
             onChange={event => this.setState({ template: event.target.value })}
           >
+            <option value='rust'>[Rust] Empty rust project</option>
             <option value='moleculec-es-template'>[JavaScript] moleculec-es</option>
             <option value='molecule-javascript-template'>[JavaScript] molecule-javascript</option>
             <option value='js-minimal'>[JavaScript] minimal</option>
@@ -144,6 +168,15 @@ export default class NewCkbProjectModal extends Component {
             <option value='duktape'>Duktape</option>
           </CustomInput>
         </FormGroup>
+        <div style={{ display: this.state.creating ? 'block' : 'none'}}>
+          <Terminal
+            ref={this.terminal}
+            active={this.state.creating}
+            height='200px'
+            logId='create-project'
+            className='rounded overflow-hidden'
+          />
+        </div>
       </Modal>
     )
   }
