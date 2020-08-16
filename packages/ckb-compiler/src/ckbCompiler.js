@@ -113,10 +113,19 @@ class CkbCompiler {
     } else if (mode === 'release-w-debug-output') {
       cmd += ` --release --debug-output`
     }
+    let volume = ''
+    let dockerSocket = ''
+    if (process.env.OS_IS_WINDOWS) {
+      volume = `-v "${projectRoot.replace(/\\/g, '/').replace('C:', '/c')}:${projectRoot}"`
+      dockerSocket = '-v //var/run/docker.sock:/var/run/docker.sock'
+    } else {
+      volume = `-v "${projectRoot}":"${projectRoot}"`
+      dockerSocket = `-v /var/run/docker.sock:/var/run/docker.sock`
+    }
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      `-v /var/run/docker.sock:/var/run/docker.sock`,
-      '-v', `"${projectRoot}":"${projectRoot}"`,
+      dockerSocket,
+      volume,
       '-w', `"${projectRoot}"`,
       `obsidians/capsule:${version}`,
       cmd
@@ -128,10 +137,19 @@ class CkbCompiler {
     if (mode !== 'debug') {
       cmd += ` --release`
     }
+    let volume = ''
+    let dockerSocket = ''
+    if (process.env.OS_IS_WINDOWS) {
+      volume = `-v "/${projectRoot.replace(/\\/g, '/').replace('C:', '/c')}:${projectRoot}"`
+      dockerSocket = '-v //var/run/docker.sock:/var/run/docker.sock'
+    } else {
+      volume = `-v "${projectRoot}":"${projectRoot}"`
+      dockerSocket = `-v /var/run/docker.sock:/var/run/docker.sock`
+    }
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      `-v /var/run/docker.sock:/var/run/docker.sock`,
-      '-v', `"${projectRoot}":"${projectRoot}"`,
+      dockerSocket,
+      volume,
       '-w', `"${projectRoot}"`,
       `obsidians/capsule:${version}`,
       cmd
@@ -140,9 +158,15 @@ class CkbCompiler {
 
   generateBuildCmdForC(config, { version, projectRoot }) {
     const cmd = this.commandForC(config, version)
+    let volume = ''
+    if (process.env.OS_IS_WINDOWS) {
+      volume = `-v "${projectRoot.replace(/\\/g, '/').replace('C:', '/c')}:/project"`
+    } else {
+      volume = `-v "${projectRoot}":"/project"`
+    }
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      '--volume', `"${projectRoot}:/project"`,
+      volume,
       '-w', '/project',
       `nervos/ckb-riscv-gnu-toolchain:${version}`,
       '/bin/bash', '-c',
