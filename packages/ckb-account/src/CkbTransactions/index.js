@@ -55,8 +55,8 @@ export default class CkbTransactions extends PureComponent {
   renderTableBody = () => {
     const rows = _.chain(this.state.txs)
       .groupBy(tx => tx.txHash)
-      .map((parts, txHash) => (
-        <TransactionRow key={`tx-${txHash}`} parts={parts} wallet={this.props.wallet} />
+      .map((cells, txHash) => (
+        <TransactionRow key={`tx-${txHash}`} cells={cells} wallet={this.props.wallet} />
       ))
       .value()
 
@@ -73,6 +73,14 @@ export default class CkbTransactions extends PureComponent {
         <tr key='txs-loadmore' className='bg-transparent'>
           <td align='middle' colSpan={3}>
             <span className='btn btn-sm btn-secondary' onClick={this.loadMore}>Load More</span>
+          </td>
+        </tr>
+      )
+    } else if (!rows.length) {
+      rows.push(
+        <tr key='txs-none'>
+          <td align='middle' colSpan={3}>
+            (No Transactions)
           </td>
         </tr>
       )

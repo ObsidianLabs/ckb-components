@@ -4,6 +4,8 @@ import {
   TabsWithNavigationBar,
 } from '@obsidians/ui-components'
 
+import keypairManager from '@obsidians/keypair'
+
 import CkbCells from './CkbCells'
 import CkbTransferButton from './CkbTransferButton'
 import CkbMintUdtButton from './CkbMintUdtButton'
@@ -19,10 +21,24 @@ export default class CkbCellExplorer extends PureComponent {
 
     this.tabs = React.createRef()
     this.ckbCells = React.createRef()
+    this.keypairs = {}
   }
 
   get currentValue () {
     return this.state.value
+  }
+
+  componentDidMount () {
+    keypairManager.loadAllKeypairs().then(this.updateKeypairs)
+    keypairManager.onUpdated(this.updateKeypairs)
+  }
+
+  updateKeypairs = keypairs => {
+    this.keypairs = {}
+    keypairs.forEach(k => {
+      this.keypairs[k.address] = k.name
+    })
+    this.forceUpdate()
   }
 
   openTab = value => {
@@ -39,10 +55,12 @@ export default class CkbCellExplorer extends PureComponent {
   getTabText = tab => {
     const { value, temp } = tab
     let tabText = ''
-    if (value.length < 10) {
-      tabText += value
+    if (this.keypairs[value]) {
+      tabText = this.keypairs[value]
+    } else if (value.length < 10) {
+      tabText = value
     } else {
-      tabText += (value.substr(0, 6) + '...' + value.slice(-4))
+      tabText = `${value.substr(0, 6)}...${value.slice(-4)}`
     }
     return tabText
   }

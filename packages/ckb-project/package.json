@@ -20,6 +20,7 @@
     "@obsidians/ckb-compiler": "^0.1.0",
     "@obsidians/ckb-debugger": "^0.1.0",
     "@obsidians/code-editor": "^0.1.0",
+    "@obsidians/docker": "^0.1.0",
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ipc": "^0.1.1",
     "@obsidians/notification": "^0.1.0",
@@ -47,6 +48,7 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
+    "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"

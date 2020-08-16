@@ -1,6 +1,6 @@
 import CkbClient from './CkbClient'
-import CkbWallet from './CkbWallet'
 import CkbIndexer from './CkbIndexer'
+import CkbAccount from './CkbAccount'
 
 export default class CkbSdk {
   constructor ({ url = 'http://localhost:8114', indexer, explorer }) {
@@ -13,6 +13,10 @@ export default class CkbSdk {
   }
 
   walletFrom (value) {
-    return CkbWallet.from(this, value)
+    if (this.ckbExplorer) {
+      return new CkbAccount.WithExplorer(this, value)
+    } else {
+      return new CkbAccount.WithoutExplorer(this, value)
+    }
   }
 }

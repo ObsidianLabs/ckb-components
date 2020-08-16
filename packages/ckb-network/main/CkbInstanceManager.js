@@ -11,7 +11,7 @@ class CkbInstanceManager extends IpcChannel {
       filter: tag => tag.startsWith('v'),
       sort: (x, y) => semverLt(x, y) ? 1 : -1
     })
-    this.ckbIndexer = new DockerImageChannel('muxueqz/ckb-indexer')
+    this.ckbIndexer = new DockerImageChannel('nervos/ckb-indexer')
   }
 
   async create ({ name, version, chain, lockArg }) {
@@ -69,6 +69,22 @@ class CkbInstanceManager extends IpcChannel {
     })
     
     return instancesWithLabels.filter(x => x.Labels.chain === chain)
+  }
+
+  async readConfig ({ name, version }) {
+    await this.pty.exec(`docker run -d --rm -it --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.pty.exec(`docker cp ckb-config-${name}:/var/lib/ckb/ckb.toml /tmp/ckb.toml`)
+    const config = fs.readFileSync(`/tmp/ckb.toml`, 'utf8')
+    await this.pty.exec(`docker stop ckb-config-${name}`)
+    return config
+  }
+
+  async writeConfig ({ name, version, content }) {
+    fs.writeFileSync(`/tmp/ckb.toml`, content, 'utf8')
+    await this.pty.exec(`docker run -d --rm -it --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.pty.exec(`docker cp /tmp/ckb.toml ckb-config-${name}:/var/lib/ckb/ckb.toml`)
+    await this.pty.exec(`docker exec -u root ckb-config-${name} /bin/bash -c "chown ckb:ckb ckb.toml"`)
+    await this.pty.exec(`docker stop ckb-config-${name}`)
   }
 
   async delete (name) {

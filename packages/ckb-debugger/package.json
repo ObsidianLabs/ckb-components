@@ -20,8 +20,7 @@
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "@obsidians/ckb-tx-builder": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
-    "ckb-standalone-debugger": "0.2.0",
-    "moment": "^2.24.0"
+    "ckb-standalone-debugger": "0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -43,6 +42,7 @@
   },
   "peerDependencies": {
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },

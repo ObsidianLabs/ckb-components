@@ -3,13 +3,13 @@ import React, { PureComponent } from 'react'
 import {
   Button,
   Modal,
-  FormGroup,
-  Label,
   DebouncedFormGroup,
-  CustomInput,
+  DropdownInput,
+  Badge,
 } from '@obsidians/ui-components'
 
 import keypairManager from '@obsidians/keypair'
+import { DockerImageInputSelector } from '@obsidians/docker'
 import { CkbKeypair } from '@obsidians/ckb-sdk'
 
 import instanceChannel from './instanceChannel'
@@ -19,11 +19,9 @@ export default class CreateInstanceButton extends PureComponent {
     super(props)
 
     this.state = {
-      loading: false,
-      versions: [],
-      keypairs: [],
       name: '',
       version: '',
+      keypairs: [],
       lockArg: '',
       pending: false,
     }
@@ -36,14 +34,9 @@ export default class CreateInstanceButton extends PureComponent {
   }
 
   refresh = async () => {
-    this.setState({ loading: true })
-    const versions = await instanceChannel.ckbNode.versions()
-    const keypairs = (await keypairManager.loadAllKeypairs()).map(k => CkbKeypair.fromAddress(k.address))
+    const keypairs = (await keypairManager.loadAllKeypairs()).map(k => CkbKeypair.fromAddress(k.address, k.name))
     this.setState({
-      versions,
       keypairs,
-      loading: false,
-      version: versions[0] ? versions[0].Tag : '',
       lockArg: keypairs[0] ? keypairs[0].publicKeyHash : '',
     })
   }
@@ -62,20 +55,8 @@ export default class CreateInstanceButton extends PureComponent {
       lockArg: this.state.lockArg,
     })
     this.modal.current.closeModal()
-    this.setState({ pending: false })
+    this.setState({ name: '', pending: false })
     this.props.onRefresh()
-  }
-
-  renderCkbVersionOptions = () => {
-    if (this.state.loading) {
-      return 'Loading'
-    }
-
-    if (!this.state.versions.length) {
-      return <option disabled key='' value=''>(No CKB installed)</option>
-    }
-
-    return this.state.versions.map(v => <option key={v.Tag} value={v.Tag}>{v.Tag}</option>)
   }
 
   renderBlockAssemberInput = () => {
@@ -83,30 +64,22 @@ export default class CreateInstanceButton extends PureComponent {
       return null
     }
     return (
-      <FormGroup>
-        <Label>Block assembler (miner)</Label>
-        <CustomInput
-          type='select'
-          className='form-control'
-          value={this.state.lockArg}
-          onChange={event => this.setState({ lockArg: event.target.value })}
-        >
-          {this.renderLockArgOptions()}
-        </CustomInput>
-      </FormGroup>
+      <DropdownInput
+        label='Block assembler (miner)'
+        options={this.state.keypairs.map(k => ({
+          id: k.publicKeyHash,
+          display: (
+            <div className='w-100 d-flex align-items-center justify-content-between'>
+              <code>{k.address}</code><Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
+            </div>
+          )
+        }))}
+        renderText={option => <div className='w-100 mr-1'>{option.display}</div>}
+        placeholder='(No CKB keypairs)'
+        value={this.state.lockArg}
+        onChange={lockArg => this.setState({ lockArg })}
+      />
     )
-  }
-
-  renderLockArgOptions = () => {
-    if (this.state.loading) {
-      return 'Loading'
-    }
-
-    if (!this.state.keypairs.length) {
-      return <option disabled key='' value=''>(No CKB keypairs)</option>
-    }
-
-    return this.state.keypairs.map(k => <option key={k.publicKeyHash} value={k.publicKeyHash}>{k.address}</option>)
   }
 
   render () {
@@ -123,6 +96,7 @@ export default class CreateInstanceButton extends PureComponent {
         </Button>
         <Modal
           ref={this.modal}
+          overflow
           title={`New Instance (${this.props.chain})`}
           textConfirm='Create'
           onConfirm={this.onCreateInstance}
@@ -136,17 +110,15 @@ export default class CreateInstanceButton extends PureComponent {
             value={this.state.name}
             onChange={name => this.setState({ name })}
           />
-          <FormGroup>
-            <Label>CKB version</Label>
-            <CustomInput
-              type='select'
-              className='form-control'
-              value={this.state.version}
-              onChange={event => this.setState({ version: event.target.value })}
-            >
-              {this.renderCkbVersionOptions()}
-            </CustomInput>
-          </FormGroup>
+          <DockerImageInputSelector
+            channel={instanceChannel.ckbNode}
+            label='CKB version'
+            noneName='CKB node'
+            modalTitle='CKB Version Manager'
+            downloadingTitle='Downloading CKB'
+            selected={this.state.version}
+            onSelected={version => this.setState({ version })}
+          />
           {this.renderBlockAssemberInput()}
         </Modal>
       </React.Fragment>

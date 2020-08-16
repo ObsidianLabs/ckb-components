@@ -10,7 +10,6 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@nervosnetwork/ckb-sdk-core": "^0.32.0",
     "@obsidians/ckb-tx-builder": "^0.1.0",
     "ckb-js-toolkit": "git+https://git@github.com/xxuejie/ckb-js-toolkit.git"
   },
@@ -22,5 +21,8 @@
     "@babel/preset-env": "^7.7.5",
     "babel-eslint": "10.0.3",
     "cross-env": "^6.0.3"
+  },
+  "peerDependencies": {
+    "@nervosnetwork/ckb-sdk-core": "^0.32.0"
   }
 }

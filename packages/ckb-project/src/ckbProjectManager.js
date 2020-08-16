@@ -83,6 +83,32 @@ class CkbProjectManager {
     return true
   }
 
+  async test () {
+    let settings
+    try {
+      settings = await this.checkSettings()
+    } catch (e) {
+      return false
+    }
+
+    if (!this.compilerVersion) {
+      notification.error('No Capsule Version', 'Please install Capsule and select a version.')
+      return false
+    }
+
+    await this.project.saveAll()
+    this.toggleTerminal(true)
+
+    try {
+      await ckbCompiler.build(settings)
+      await ckbCompiler.test(settings)
+    } catch (e) {
+      return false
+    }
+
+    return true
+  }
+
   async debug () {
     let settings
     try {

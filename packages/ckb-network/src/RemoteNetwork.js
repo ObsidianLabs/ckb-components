@@ -5,8 +5,8 @@ import {
   TableCardRow,
 } from '@obsidians/ui-components'
 
-import nodeManager from '@obsidians/ckb-node'
 import moment from 'moment'
+import networkManager from './networkManager'
 
 export default class RemoteNetwork extends PureComponent {
   constructor (props) {
@@ -21,7 +21,7 @@ export default class RemoteNetwork extends PureComponent {
 
   componentDidMount () {
     this.refresh()
-    this.h = setInterval(() => this.refreshBlock(), 1000)
+    this.h = setInterval(() => this.refreshBlock(), 3000)
   }
 
   componentDidUpdate (prevProps) {
@@ -42,20 +42,20 @@ export default class RemoteNetwork extends PureComponent {
       block: null,
       epoch: null,
     })
-    if (!nodeManager.sdk) {
+    if (!networkManager.sdk) {
       return
     }
-    const nodeInfo = await nodeManager.sdk?.ckbClient.core.rpc.localNodeInfo()
-    const blockchainInfo = await nodeManager.sdk?.ckbClient.core.rpc.getBlockchainInfo()
+    const nodeInfo = await networkManager.sdk?.ckbClient.core.rpc.localNodeInfo()
+    const blockchainInfo = await networkManager.sdk?.ckbClient.core.rpc.getBlockchainInfo()
     this.setState({ nodeInfo, blockchainInfo })
   }
 
   async refreshBlock () {
-    if (!nodeManager.sdk) {
+    if (!networkManager.sdk) {
       return
     }
-    const block = await nodeManager.sdk?.ckbClient.core.rpc.getTipHeader()
-    const epoch = await nodeManager.sdk?.ckbClient.core.rpc.getCurrentEpoch()
+    const block = await networkManager.sdk?.ckbClient.core.rpc.getTipHeader()
+    const epoch = await networkManager.sdk?.ckbClient.core.rpc.getCurrentEpoch()
     this.setState({ block, epoch })
   }
 
@@ -69,7 +69,12 @@ export default class RemoteNetwork extends PureComponent {
             <TableCard title={`CKB Network (${chain})`}>
               <TableCardRow
                 name='Node URL'
-                badge={nodeManager.sdk?.ckbClient.nodeUrl}
+                badge={networkManager.sdk?.ckbClient.nodeUrl}
+                badgeColor='primary'
+              />
+              <TableCardRow
+                name='Indexer URL'
+                badge={networkManager.sdk?.ckbIndexer?.endpoint}
                 badgeColor='primary'
               />
               <TableCardRow
@@ -115,5 +120,3 @@ export default class RemoteNetwork extends PureComponent {
     )
   }
 }
-
-

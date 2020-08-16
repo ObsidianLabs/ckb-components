@@ -4,7 +4,8 @@ import ECPair from '@nervosnetwork/ckb-sdk-utils/lib/ecpair'
 export const BLOCK_ASSEMBLER_CODE_HASH = '0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8'
 
 export default class CkbKeypair {
-  constructor(privateKey, address) {
+  constructor(privateKey, address, name) {
+    this.name = name
     if (privateKey) {
       this._privateKey = privateKey
     } else if (address.startsWith('ckt')) {
@@ -24,8 +25,8 @@ export default class CkbKeypair {
     return new CkbKeypair(privateKey)
   }
 
-  static fromAddress (address) {
-    return new CkbKeypair(null, address)
+  static fromAddress (address, name) {
+    return new CkbKeypair(null, address, name)
   }
 
   static addressToPublicKeyHash (address) {
