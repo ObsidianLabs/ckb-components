@@ -1,12 +1,32 @@
 import notification from '@obsidians/notification'
 import redux from '@obsidians/redux'
-import nodeManager from '@obsidians/ckb-node'
+import Sdk from '@obsidians/ckb-sdk'
 
 import networks from './networks'
 
 class NetworkManager {
   constructor () {
+    this._sdk = null
+  }
 
+  get sdk () {
+    return this._sdk
+  }
+
+  async createSdk (params) {
+    const sdk = new Sdk(params)
+    try {
+      const nodeInfo = await sdk.ckbClient.core.rpc.localNodeInfo()
+      this._sdk = sdk
+      return nodeInfo
+    } catch (e) {
+      console.warn(e)
+      notification.error('Invalid Node URL', '')
+    }
+  }
+
+  async updateSdk (params) {
+    this._sdk = new Sdk(params)
   }
 
   async setNetwork (networkId) {
@@ -17,7 +37,14 @@ class NetworkManager {
     if (!network) {
       return
     }
-    nodeManager.switchNetwork(network)
+
+    this.network = network
+    if (network.url) {
+      this._sdk = new Sdk(network)
+    } else {
+      this._sdk = null
+    }
+
     redux.dispatch('SELECT_NETWORK', network.id)
     notification.success(`Network`, network.notification)
   }

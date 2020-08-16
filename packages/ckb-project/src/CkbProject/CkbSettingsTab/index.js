@@ -63,7 +63,7 @@ export default class CkbSettingsTab extends PureComponent {
     if (!this.onChangeHandlers[key]) {
       this.onChangeHandlers[key] = async value => {
         if (key === 'language') {
-          redux.dispatch('UPDATE_GLOBAL_CONFIG', { projectLanguage: value })
+          redux.dispatch('UPDATE_GLOBAL_CONFIG', { projectLanguage: value, compilerVersion: '' })
         }
         const settings = this.state.settings
         set(settings, key, value)
@@ -85,6 +85,8 @@ export default class CkbSettingsTab extends PureComponent {
       return <JsSpecificSettings settings={settings} onChange={this.onChange} />
     } else if (settings.language === 'c') {
       return <CSpecificSettings settings={settings} onChange={this.onChange} />
+    } else if (settings.language === 'rust') {
+      return null
     } else {
       return <OtherLanguageSettings settings={settings} onChange={this.onChange} />
     }

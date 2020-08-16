@@ -104,6 +104,7 @@ export default class CkbProject extends PureComponent {
   render () {
     const {
       projectRoot,
+      projectLanguage,
       compilerVersion,
       InvalidProjectActions = null,
     } = this.props
@@ -132,6 +133,7 @@ export default class CkbProject extends PureComponent {
         Toolbar={(
           <CkbToolbar
             projectRoot={projectRoot}
+            projectLanguage={projectLanguage}
             compilerVersion={compilerVersion}
           />
         )}

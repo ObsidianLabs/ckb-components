@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react'
 
-import networkManager from './networkManager'
-
 import LocalNetwork from './LocalNetwork'
 import CustomNetwork from './CustomNetwork'
 import RemoteNetwork from './RemoteNetwork'
@@ -12,25 +10,17 @@ const chains = {
   'ckb-mainnet': 'mainnet',
 }
 
-export default class Network extends PureComponent {
-  componentDidMount () {
-    
+export default props => {
+  const {
+    active,
+    network = 'local',
+    customNetwork,
+  } = props
+  const chain = chains[network]
+  if (chain === 'dev') {
+    return <LocalNetwork chain={chain} active={active} />
+  } else if (network === 'custom') {
+    return <CustomNetwork customNetwork={customNetwork} />
   }
-
-  componentDidUpdate (prevProps) {
-    if (prevProps.network !== this.props.network) {
-      // networkManager.updateNetwork()
-    }
-  }
-
-  render () {
-    const { active, network = 'local', onLifecycle } = this.props
-    const chain = chains[network]
-    if (chain === 'dev') {
-      return <LocalNetwork chain={chain} active={active} onLifecycle={onLifecycle} />
-    } else if (network === 'custom') {
-      return <CustomNetwork />
-    }
-    return <RemoteNetwork chain={chain} />
-  }
+  return <RemoteNetwork chain={chain} />
 }

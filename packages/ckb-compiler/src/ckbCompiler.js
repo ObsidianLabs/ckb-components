@@ -7,6 +7,7 @@ class CkbCompiler {
     this.regular = new DockerImageChannel(`nervos/ckb-riscv-gnu-toolchain`)
     this._terminal = null
     this._button = null
+    this._testButton = null
     this.notification = null
   }
 
@@ -16,6 +17,9 @@ class CkbCompiler {
 
   set button (v) {
     this._button = v
+  }
+  set testButton (v) {
+    this._testButton = v
   }
 
   get projectRoot () {
@@ -43,15 +47,24 @@ class CkbCompiler {
     const projectRoot = this.projectRoot
 
     this._button.setState({ building: true })
-    this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
 
     let cmd
     if (config.language === 'rust') {
-      cmd = this.generateBuildCmdForRust(config, { version, projectRoot })
+      const mode = this._button.state.mode
+      cmd = this.generateBuildCmdForRust(config, { version, projectRoot }, )
+      if (mode === 'debug') {
+        this.notification = notification.info(`Building CKB Script`, `Building Debug...`, 0)
+      } else if (mode === 'release') {
+        this.notification = notification.info(`Building CKB Script`, `Building Release...`, 0)
+      } else if (mode === 'release-w-debug-output') {
+        this.notification = notification.info(`Building CKB Script`, `Building Release with Debug Output...`, 0)
+      }
     } else if (config.language === 'c') {
       cmd = this.generateBuildCmdForC(config, { version, projectRoot })
+      this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     } else {
       cmd = config.scripts.build
+      this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     }
     const result = await this._terminal.exec(cmd)
 
@@ -65,8 +78,56 @@ class CkbCompiler {
     notification.success('Build Successful', `CKB script is built.`)
   }
 
-  generateBuildCmdForRust(config, { version, projectRoot }) {
-    const cmd = config.scripts?.build || 'capsule build'
+  async test (config = {}) {
+    const version = this.compilerVersion
+    const projectRoot = this.projectRoot
+
+    this._testButton.setState({ testing: true })
+
+    let cmd
+    if (config.language === 'rust') {
+      const mode = this._button.state.mode
+      cmd = this.generateTestCmdForRust(config, { version, projectRoot }, mode)
+      if (mode === 'debug') {
+        this.notification = notification.info(`Testing CKB Script`, `Testing Debug...`, 0)
+      } else {
+        this.notification = notification.info(`Testing CKB Script`, `Testing Release...`, 0)
+      }
+    }
+    const result = await this._terminal.exec(cmd)
+
+    this._testButton.setState({ testing: false })
+    this.notification.dismiss()
+
+    if (result.code) {
+      notification.error('Test Failed')
+      throw new Error(result.logs)
+    }
+    notification.success('Test Successful', `CKB script has passed the test.`)
+  }
+
+  generateBuildCmdForRust(config, { version, projectRoot }, mode) {
+    let cmd = config.scripts?.build || 'capsule build'
+    if (mode === 'release') {
+      cmd += ` --release`
+    } else if (mode === 'release-w-debug-output') {
+      cmd += ` --release --debug-output`
+    }
+    return [
+      'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
+      `-v /var/run/docker.sock:/var/run/docker.sock`,
+      '-v', `"${projectRoot}":"${projectRoot}"`,
+      '-w', `"${projectRoot}"`,
+      `obsidians/capsule:${version}`,
+      cmd
+    ].join(' ')
+  }
+
+  generateTestCmdForRust(config, { version, projectRoot }, mode) {
+    let cmd = config.scripts?.test || 'capsule test'
+    if (mode !== 'debug') {
+      cmd += ` --release`
+    }
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
       `-v /var/run/docker.sock:/var/run/docker.sock`,
@@ -78,7 +139,7 @@ class CkbCompiler {
   }
 
   generateBuildCmdForC(config, { version, projectRoot }) {
-    const cmd = this.commandForC(config)
+    const cmd = this.commandForC(config, version)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
       '--volume', `"${projectRoot}:/project"`,
@@ -89,8 +150,8 @@ class CkbCompiler {
     ].join(' ')
   }
 
-  commandForC(config) {
-    if (config.scripts.build) {
+  commandForC(config, version) {
+    if (config.scripts && config.scripts.build) {
       return config.scripts.build
     }
 

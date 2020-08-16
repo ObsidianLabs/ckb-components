@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import { Card } from '@obsidians/ui-components'
+import redux from '@obsidians/redux'
 import { DockerImageButton } from '@obsidians/docker'
 import notification from '@obsidians/notification'
 
@@ -15,7 +16,6 @@ import instanceChannel from './instanceChannel'
 export default class InstanceList extends PureComponent {
   static defaultProps = {
     chain: 'dev',
-    onLifecycle: () => {},
   }
 
   constructor (props) {
@@ -53,11 +53,12 @@ export default class InstanceList extends PureComponent {
     }
     this.setState(runningState)
     if (lifecycle === 'stopped') {
+      redux.dispatch('UPDATE_UI_STATE', { localNetwork: '' })
       notification.info(`CKB Instance Stopped`, `CKB instance <b>${name}</b> stops to run.`)
     } else if (lifecycle === 'started') {
+      redux.dispatch('UPDATE_UI_STATE', { localNetwork: runningState })
       notification.success(`CKB Instance Started`, `CKB instance <b>${name}</b> is running now.`)
     }
-    this.props.onLifecycle(runningState)
   }
 
   renderTable = () => {

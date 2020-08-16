@@ -9,7 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import { CkbCapacity } from '@obsidians/ckb-tx-builder'
-import nodeManager from '@obsidians/ckb-node'
+import { networkManager } from '@obsidians/ckb-network'
 
 import throttle from 'lodash/throttle'
 
@@ -20,7 +20,8 @@ import CkbCell from './CkbCell'
 
 import ckbTxManager from '../../ckbTxManager'
 
-const STEP = 20
+const DISPLAY_STEP = 20
+const LOAD_STEP = 200
 
 export default class CkbCells extends PureComponent {
   static contextType = CkbWalletContext
@@ -70,10 +71,11 @@ export default class CkbCells extends PureComponent {
       unused: new CkbCapacity(),
       cells: [],
       cellsToRender: 0,
-      done: false
+      done: false,
+      loading: true,
     })
 
-    const wallet = nodeManager.sdk.walletFrom(this.props.value)
+    const wallet = networkManager.sdk?.walletFrom(this.props.value)
     try {
       await wallet.info()
       this.setState({ error: null, loading: true })
@@ -91,7 +93,7 @@ export default class CkbCells extends PureComponent {
     this.unused = new CkbCapacity()
     this.setState({
       cellsCount: live_cells_count,
-      totalCapacity: new CkbCapacity(BigInt(balance)),
+      totalCapacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
     })
     this.context.cellCollection.clearCellsForLockHash(wallet.lockHash)
     this.loader = this.loadCells(wallet)
@@ -123,7 +125,8 @@ export default class CkbCells extends PureComponent {
       if (this.xloader !== loader) {
         return
       }
-      if (this.state.cells.length >= this.state.cellsCount) {
+      const { cellsCount, cells } = this.state
+      if (typeof cellsCount === 'number' && cells.length >= cellsCount) {
         return
       }
       if (cell.isEmpty()) {
@@ -137,7 +140,7 @@ export default class CkbCells extends PureComponent {
   
       this.context.cellCollection.push(cell)
       i++
-      if (i >= 1000) {
+      if (i >= LOAD_STEP) {
         i = 0
         this.setState({ loading: false })
         yield
@@ -157,7 +160,7 @@ export default class CkbCells extends PureComponent {
 
   displayMoreCell = () => {
     const { cellsToRender, cells } = this.state
-    this.setState({ cellsToRender: this.state.cellsToRender + STEP })
+    this.setState({ cellsToRender: this.state.cellsToRender + DISPLAY_STEP })
     if (cellsToRender >= cells.length) {
       this.loadMoreCell()
     }
@@ -181,6 +184,13 @@ export default class CkbCells extends PureComponent {
       done,
     } = state
 
+    let cellStat = null
+    if (typeof cellsCount === 'number') {
+      cellStat = `${cells.length} of ${cellsCount} Cells`
+    } else {
+      cellStat = `${cells.length} Cells`
+    }
+
     let icon = null
     if (loading) {
       icon = <span key='cells-loading'><i className='fas fa-spin fa-spinner text-muted ml-1' /></span>
@@ -188,12 +198,20 @@ export default class CkbCells extends PureComponent {
       icon = <Badge className='ml-1' onClick={this.loadMoreCell}>more</Badge>
     }
 
-    const usedPercentage = Number(totalCapacity.value && used.value * BigInt(1000) / totalCapacity.value) / 10
-    const unusedPercentage = Number(totalCapacity.value && unused.value * BigInt(1000) / totalCapacity.value) / 10
+    let usedPercentage = 0
+    let unusedPercentage = 0
+    let underline
+    if (totalCapacity) {
+      usedPercentage = Number(totalCapacity.value && used.value * BigInt(1000) / totalCapacity.value) / 10
+      unusedPercentage = Number(totalCapacity.value && unused.value * BigInt(1000) / totalCapacity.value) / 10
+      underline = `${unused.display()} free of ${totalCapacity.display()} CKB`
+    } else {
+      underline = `${unused.display()} free`
+    }
     return (
       <div style={{ width: 200 }}>
         <div className='d-flex align-items-center'>
-          {cells.length} of {cellsCount} Cells
+          {cellStat}
           {icon}
         </div>
         <Progress multi style={{ height: 14 }}>
@@ -208,9 +226,7 @@ export default class CkbCells extends PureComponent {
             Unknown
           </Progress>
         </Progress>
-        <div className='small text-muted'>
-          {unused.display()} free of {totalCapacity.display()} CKB
-        </div>
+        <div className='small text-muted'>{underline}</div>
       </div>
     )
   }
@@ -240,11 +256,11 @@ export default class CkbCells extends PureComponent {
     if (!emptyCells.length) {
       return null
     }
-    let totalCapacity = new CkbCapacity()
-    emptyCells.forEach(cell => totalCapacity.plus(cell.capacity))
+    let totalEmptyCapacity = new CkbCapacity()
+    emptyCells.forEach(cell => totalEmptyCapacity.plus(cell.capacity))
     return (
       <div className='d-flex w-100 justify-content-center text-muted mt-2'>
-        {emptyCells.length} empty cell{emptyCells.length > 1 && 's'} with {totalCapacity.display()} CKB
+        {emptyCells.length} empty cell{emptyCells.length > 1 && 's'} with {totalEmptyCapacity.display()} CKB
       </div>
     )
   }
@@ -264,7 +280,7 @@ export default class CkbCells extends PureComponent {
         </div>
       )
     }
-    if (cells.length < cellsCount) {
+    if (typeof cellsCount === 'number' && cells.length < cellsCount) {
       return (
         <div key='load-more' className='d-flex w-100 justify-content-center mt-2'>
           <Button size='sm' onClick={this.displayMoreCell}>Load More</Button>

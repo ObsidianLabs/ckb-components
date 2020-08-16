@@ -17,8 +17,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ckb-node": "^0.1.0",
+    "@obsidians/ckb-network": "^0.1.0",
     "@obsidians/ckb-tx-builder": "^0.1.0",
+    "@obsidians/keypair": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0"
   },
   "devDependencies": {
