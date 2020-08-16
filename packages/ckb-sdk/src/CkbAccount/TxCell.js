@@ -17,7 +17,7 @@ export default class TxCell {
   }
 
   get txIndex () {
-    return Number(this.outpoint.tx_index)
+    return Number(this.outpoint.io_index)
   }
 
   async fetchTransaction () {
