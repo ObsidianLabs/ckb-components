@@ -10,7 +10,7 @@ import { CkbCapacity } from '@obsidians/ckb-tx-builder'
 export default class CkbBalance extends PureComponent {
   state = {
     loading: true,
-    capacity: BigInt(0),
+    capacity: new CkbCapacity(0),
     cellsCount: 0,
     txCount: 0,
   }
@@ -29,7 +29,7 @@ export default class CkbBalance extends PureComponent {
     this.setState({ loading: true })
     const { balance, live_cells_count, transactions_count } = await wallet.info()
     this.setState({
-      capacity: BigInt(balance),
+      capacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
       cellsCount: live_cells_count,
       txCount: transactions_count,
       loading: false,
@@ -48,7 +48,7 @@ export default class CkbBalance extends PureComponent {
         <TableCardRow
           name='Balance'
           icon='far fa-wallet'
-          badge={loadingIcon || `${new CkbCapacity(capacity).toString()} CKB`}
+          badge={loadingIcon || (capacity ? `${capacity.toString()} CKB` : '(n/a)')}
           badgeColor='success'
         />
         <TableCardRow

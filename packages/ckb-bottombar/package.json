@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "CKB Studio bottom bar",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "source": "src/index.js",
   "main": "main/index.js",
   "browser": "dist/index.es.js",
@@ -19,8 +19,8 @@
   "dependencies": {
     "@obsidians/ckb-compiler": "^0.1.0",
     "@obsidians/ckb-project": "^0.1.0",
-    "@obsidians/keypair": "^0.1.0",
-    "react-router-cache-route": "^1.8.4"
+    "@obsidians/docker": "^0.1.0",
+    "@obsidians/keypair": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -42,7 +42,8 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router-cache-route": "^1.8.4"
   },
   "eslintConfig": {
     "extends": "react-app"

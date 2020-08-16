@@ -1,0 +1,14 @@
+.btn-compiler-dropdown {
+  position: absolute;
+  border-radius: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 2px;
+  font-size: 10px;
+  height: 12px;
+  line-height: 12px;
+  
+  &:hover {
+    color: var(--color-white) !important;
+  }
+}

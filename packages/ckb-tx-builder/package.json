@@ -1,5 +1,6 @@
 {
   "name": "@obsidians/ckb-tx-builder",
+  "license": "GPL-3.0",
   "version": "0.1.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -11,11 +12,11 @@
     "build": "tsc",
     "prepare": "yarn build"
   },
-  "dependencies": {
-    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
-    "@nervosnetwork/ckb-types": "^0.32.0"
-  },
   "devDependencies": {
     "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
+    "@nervosnetwork/ckb-types": "^0.32.0"
   }
 }

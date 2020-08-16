@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import {
   Modal,
@@ -7,18 +7,22 @@ import {
   InputGroup,
   InputGroupAddon,
   Input,
-  CustomInput,
   Button,
   DebouncedFormGroup,
+  DropdownInput,
+  Badge,
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import { IpcChannel } from '@obsidians/ipc'
+import Terminal from '@obsidians/terminal'
+import { DockerImageInputSelector } from '@obsidians/docker'
+import ckbCompiler from '@obsidians/ckb-compiler'
 
 import actions from '../actions'
 
-export default class NewCkbProjectModal extends Component {
+export default class NewCkbProjectModal extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -26,10 +30,12 @@ export default class NewCkbProjectModal extends Component {
       name: '',
       projectRoot: '',
       template: 'moleculec-es-template',
+      capsuleVersion: '',
       creating: false
     }
 
     this.modal = React.createRef()
+    this.terminal = React.createRef()
     this.path = fileOps.current.path
     this.fs = fileOps.current.fs
     this.channel = new IpcChannel('ckb-project')
@@ -80,15 +86,63 @@ export default class NewCkbProjectModal extends Component {
       return false
     }
 
-    try {
-      await this.channel.invoke('createProject', { projectRoot, name, template })
-    } catch (e) {
-      notification.error('Cannot Create the Project', e.message)
-      return false
+    if (template === 'rust') {
+      const capsuleVersion = this.state.capsuleVersion
+      if (!capsuleVersion) {
+        notification.error('Cannot Create the Project', 'Please select a version for Capsule.')
+        return false
+      }
+      const { dir, name: projectName } = this.path.parse(projectRoot)
+      const cmd = [
+        `docker run --rm -it`,
+        `--name ckb-create-project`,
+        `-v /var/run/docker.sock:/var/run/docker.sock`,
+        `-v "${dir}":"${dir}"`,
+        `-w "${dir}"`,
+        `obsidians/capsule:${capsuleVersion}`,
+        `capsule new ${projectName}`,
+      ].join(' ')
+
+      const result = await this.terminal.current.exec(cmd)
+
+      if (result.code) {
+        notification.error('Canno Create the Projectt')
+        return false
+      }
+
+      const ckbconfig = {
+        language: 'rust',
+        main: `contracts/${projectName}/src/main.rs`,
+      }
+      await this.fs.writeFile(this.path.join(projectRoot, 'ckbconfig.json'), JSON.stringify(ckbconfig, null, 2))
+    } else {
+      try {
+        await this.channel.invoke('createProject', { projectRoot, name, template })
+      } catch (e) {
+        notification.error('Cannot Create the Project', e.message)
+        return false
+      }
     }
 
     notification.success('Successful', `New project <b>${name}</b> is created.`)
     return { projectRoot, name }
+  }
+
+  renderCapsuleVersion = () => {
+    if (this.state.template !== 'rust') {
+      return null
+    }
+    return (
+      <DockerImageInputSelector
+        channel={ckbCompiler.capsule}
+        label='Capsule version'
+        noneName='Capsule'
+        modalTitle='Capsule Manager'
+        downloadingTitle='Downloading Capsule'
+        selected={this.state.capsuleVersion}
+        onSelected={capsuleVersion => this.setState({ capsuleVersion })}
+      />
+    )
   }
 
   render () {
@@ -102,6 +156,7 @@ export default class NewCkbProjectModal extends Component {
     return (
       <Modal
         ref={this.modal}
+        overflow
         title='Create a New Project'
         textConfirm='Create Project'
         onConfirm={this.onCreateProject}
@@ -127,23 +182,56 @@ export default class NewCkbProjectModal extends Component {
           label='Project name'
           onChange={name => this.setState({ name })}
         />
-        <FormGroup>
-          <Label>Template</Label>
-          <CustomInput
-            type='select'
-            id='ckb-settings-template'
-            value={this.state.template}
-            onChange={event => this.setState({ template: event.target.value })}
-          >
-            <option value='moleculec-es-template'>[JavaScript] moleculec-es</option>
-            <option value='molecule-javascript-template'>[JavaScript] molecule-javascript</option>
-            <option value='js-minimal'>[JavaScript] minimal</option>
-            <option value='htlc'>[JavaScript] HTLC</option>
-            <option value='carrot'>[C] carrot</option>
-            <option value='simple-udt'>[C] Simple UDT</option>
-            <option value='duktape'>Duktape</option>
-          </CustomInput>
-        </FormGroup>
+        <DropdownInput
+          label='Template'
+          options={[
+            {
+              group: 'Rust',
+              children: [
+                { id: 'rust', display: 'CKB project in Rust' },
+              ],
+            },
+            {
+              group: 'JavaScript',
+              children: [
+                { id: 'moleculec-es-template', display: 'moleculec-es' },
+                { id: 'molecule-javascript-template', display: 'molecule-javascript' },
+                { id: 'js-minimal', display: 'minimal' },
+                { id: 'htlc', display: 'HTLC' },
+              ],
+            },
+            {
+              group: 'C',
+              children: [
+                { id: 'carrot', display: 'carrot' },
+                { id: 'simple-udt', display: 'Simple UDT' },
+              ],
+            },
+            {
+              group: 'Other',
+              children: [
+                { id: 'duktape', display: 'Duktape' },
+              ],
+            },
+          ]}
+          renderText={option => (
+            <div className='w-100 mr-1 d-flex align-items-center justify-content-between'>
+              <span>{option.display}</span><Badge color='info' style={{ top: 0 }}>{option.group}</Badge>
+            </div>
+          )}
+          value={this.state.template}
+          onChange={template => this.setState({ template })}
+        />
+        {this.renderCapsuleVersion()}
+        <div style={{ display: this.state.creating ? 'block' : 'none'}}>
+          <Terminal
+            ref={this.terminal}
+            active={this.state.creating}
+            height='200px'
+            logId='create-project'
+            className='rounded overflow-hidden'
+          />
+        </div>
       </Modal>
     )
   }

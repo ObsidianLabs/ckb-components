@@ -2,16 +2,29 @@ import React, { PureComponent } from 'react'
 
 import {
   Button,
-  UncontrolledTooltip
+  UncontrolledTooltip,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from '@obsidians/ui-components'
 
 import ckbCompiler from './ckbCompiler'
+
+import './style.scss'
+
+const modeText = {
+  debug: 'Debug',
+  release: 'Release',
+  'release-w-debug-output': 'Release w/ Output',
+}
 
 export default class CkbCompilerButton extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      building: false
+      building: false,
+      mode: 'debug',
     }
   }
 
@@ -23,10 +36,45 @@ export default class CkbCompilerButton extends PureComponent {
     if (this.state.building) {
       ckbCompiler.stop()
     } else if (this.props.onClick) {
-      this.props.onClick()
+      this.props.onClick(this.state.mode)
     } else {
       ckbCompiler.build({})
     }
+  }
+
+  renderModeSwitcher = projectLanguage => {
+    if (projectLanguage !== 'rust' || this.state.building) {
+      return null
+    }
+    const mode = this.state.mode
+    return (
+      <UncontrolledDropdown direction='down'>
+        <DropdownToggle tag='div' className='btn text-muted btn-compiler-dropdown hover-show'>
+          <i className='fas fa-caret-down' />
+        </DropdownToggle>
+        <DropdownMenu className='dropdown-menu-sm'>
+          <DropdownItem header>Build Mode</DropdownItem>
+          <DropdownItem
+            active={mode === 'debug'}
+            onClick={() => this.setState({ mode: 'debug' })}
+          >
+            Debug
+          </DropdownItem>
+          <DropdownItem
+            active={mode === 'release'}
+            onClick={() => this.setState({ mode: 'release' })}
+          >
+            Release
+          </DropdownItem>
+          <DropdownItem
+            active={mode === 'release-w-debug-output'}
+            onClick={() => this.setState({ mode: 'release-w-debug-output' })}
+          >
+            Release with Debug Output
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    )
   }
 
   render () {
@@ -35,6 +83,7 @@ export default class CkbCompilerButton extends PureComponent {
       className,
       size = 'sm',
       color = 'default',
+      projectLanguage,
     } = this.props
 
     let icon = <span key='ckb-build-icon'><i className='fas fa-hammer' /></span>
@@ -48,21 +97,22 @@ export default class CkbCompilerButton extends PureComponent {
     }
 
     return (
-      <React.Fragment>
+      <div className='p-relative hover-block'>
         <Button
           color={color}
           size={size}
           id='tooltip-ckb-build-btn'
           key='tooltip-ckb-build-btn'
-          className={`hover-block ${className}`}
+          className={className}
           onClick={this.onClick}
         >
           {icon}
         </Button>
+        {this.renderModeSwitcher(projectLanguage)}
         <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-ckb-build-btn'>
-          { this.state.building ? 'Stop Build' : `Build (${version})`}
+          { this.state.building ? 'Stop Build' : `${modeText[this.state.mode]} (${version || 'none'})`}
         </UncontrolledTooltip>
-      </React.Fragment>
+      </div>
     )
   }
 }

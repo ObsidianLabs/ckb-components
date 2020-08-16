@@ -16,8 +16,8 @@ export default class TransactionRow extends PureComponent {
   }
 
   async fetchTransaction () {
-    if (this.props.parts.length) {
-      const detail = await this.props.parts[0].fetchTransaction()
+    if (this.props.cells.length) {
+      const detail = await this.props.cells[0].fetchTransaction()
       this.setState({ detail })
     }
   }
@@ -27,16 +27,16 @@ export default class TransactionRow extends PureComponent {
   }
 
   render () {
-    const { blockNumber, txHash } = this.props.parts[0]
+    const { blockNumber, txHash } = this.props.cells[0]
 
     if (!this.state.detail) {
       const inputs = []
       const outputs = []
-      this.props.parts.forEach(part => {
-        if (part.rawTx.io_type === 'input') {
-          inputs[parseInt(part.rawTx.io_index, 16)] = true
+      this.props.cells.forEach(cell => {
+        if (cell.type === 'input') {
+          inputs[cell.txIndex] = true
         } else {
-          outputs[parseInt(part.rawTx.io_index, 16)] = true
+          outputs[cell.txIndex] = true
         }
       })
       let inputsComponents = (
@@ -95,11 +95,11 @@ export default class TransactionRow extends PureComponent {
     }
 
     const { transaction, txStatus } = this.state.detail
-    this.props.parts.forEach(part => {
-      if (part.rawTx.io_type === 'input') {
-        transaction.inputs[parseInt(part.rawTx.io_index, 16)].self = true
+    this.props.cells.forEach(cell => {
+      if (cell.type === 'input') {
+        transaction.inputs[cell.txIndex].self = true
       } else {
-        transaction.outputs[parseInt(part.rawTx.io_index, 16)].self = true
+        transaction.outputs[cell.txIndex].self = true
       }
     })
     return (

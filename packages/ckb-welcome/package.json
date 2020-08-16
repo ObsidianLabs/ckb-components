@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "CKB Studio welcome screen",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "source": "src/index.js",
   "main": "main/index.js",
   "browser": "dist/index.es.js",
@@ -18,12 +18,13 @@
   },
   "dependencies": {
     "@obsidians/ckb-compiler": "^0.1.0",
-    "@obsidians/ckb-instances": "^0.1.0",
+    "@obsidians/ckb-network": "^0.1.0",
+    "@obsidians/docker": "^0.1.0",
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ipc": "^0.1.1",
     "@obsidians/notification": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
-    "electron-updater": "^4.2.5"
+    "electron-updater": "^4.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

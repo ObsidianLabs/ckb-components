@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "CKB account",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "source": "src/index.js",
   "main": "main/index.js",
   "browser": "dist/index.es.js",
@@ -17,9 +17,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
-    "@obsidians/ckb-node": "^0.1.0",
+    "@obsidians/ckb-network": "^0.1.0",
     "@obsidians/ckb-tx-builder": "^0.1.0",
+    "@obsidians/keypair": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0"
   },
   "devDependencies": {
@@ -41,6 +41,7 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
+    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "lodash": "^4.17.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"

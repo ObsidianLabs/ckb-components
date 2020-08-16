@@ -58,6 +58,13 @@ export default class CkbSettings {
     return this.onChangeHandlers[key]
   }
 
+  get language () {
+    if (this.settings) {
+      return this.settings.language
+    }
+    throw new Error('No main file in ckbconfig.json')
+  }
+
   get mainPath () {
     if (this.settings && this.settings.main) {
       return this.path.join(this.projectRoot, this.settings.main)

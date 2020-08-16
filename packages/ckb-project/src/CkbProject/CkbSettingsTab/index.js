@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 
+import redux from '@obsidians/redux'
 import fileOps from '@obsidians/file-ops'
 import { modelSessionManager } from '@obsidians/code-editor'
 
@@ -61,6 +62,9 @@ export default class CkbSettingsTab extends PureComponent {
   onChange = key => {
     if (!this.onChangeHandlers[key]) {
       this.onChangeHandlers[key] = async value => {
+        if (key === 'language') {
+          redux.dispatch('UPDATE_GLOBAL_CONFIG', { projectLanguage: value, compilerVersion: '' })
+        }
         const settings = this.state.settings
         set(settings, key, value)
         this.forceUpdate()
@@ -81,6 +85,8 @@ export default class CkbSettingsTab extends PureComponent {
       return <JsSpecificSettings settings={settings} onChange={this.onChange} />
     } else if (settings.language === 'c') {
       return <CSpecificSettings settings={settings} onChange={this.onChange} />
+    } else if (settings.language === 'rust') {
+      return null
     } else {
       return <OtherLanguageSettings settings={settings} onChange={this.onChange} />
     }
@@ -106,8 +112,9 @@ export default class CkbSettingsTab extends PureComponent {
                 value={settings.language}
                 onChange={event => this.onChange('language')(event.target.value)}
               >
-                <option value='c'>C</option>
+                <option value='rust'>Rust</option>
                 <option value='javascript'>JavaScript</option>
+                <option value='c'>C</option>
                 <option value='other'>Other</option>
               </CustomInput>
             </FormGroup>

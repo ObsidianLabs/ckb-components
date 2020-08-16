@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 
+import redux from '@obsidians/redux'
 import Workspace, { ProjectLoading, ProjectInvalid } from '@obsidians/workspace'
 import fileOps from '@obsidians/file-ops'
 import { useBuiltinCustomTabs, modelSessionManager, defaultModeDetector } from '@obsidians/code-editor'
@@ -69,6 +70,8 @@ export default class CkbProject extends PureComponent {
       return
     }
 
+    redux.dispatch('UPDATE_GLOBAL_CONFIG', { projectLanguage: this.ckbSettings.language })
+
     if (await this.ckbSettings.isMainValid()) {
       this.setState({
         loading: false,
@@ -101,6 +104,7 @@ export default class CkbProject extends PureComponent {
   render () {
     const {
       projectRoot,
+      projectLanguage,
       compilerVersion,
       InvalidProjectActions = null,
     } = this.props
@@ -129,6 +133,7 @@ export default class CkbProject extends PureComponent {
         Toolbar={(
           <CkbToolbar
             projectRoot={projectRoot}
+            projectLanguage={projectLanguage}
             compilerVersion={compilerVersion}
           />
         )}

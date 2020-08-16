@@ -1,16 +1,10 @@
-import Sdk from '@obsidians/ckb-sdk'
+import { networkManager } from '@obsidians/ckb-network'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 class NodeManager {
   constructor () {
-    this._sdk = null
     this._terminal = null
-    this.network = null
-  }
-
-  get sdk () {
-    return this._sdk
   }
 
   set terminal (v) {
@@ -64,7 +58,7 @@ class NodeManager {
       `--name ckb-${name}-indexer`,
       `-p 8116:8116`,
       `-v ckb-${name}:/data`,
-      `muxueqz/ckb-indexer`,
+      `nervos/ckb-indexer`,
       `-c 172.17.0.1:8114 -s /data/indexer -l 0.0.0.0:8116`
     ].join(' ')
 
@@ -82,18 +76,7 @@ class NodeManager {
       this._status.setState({ lifecycle })
     }
     if (params) {
-      this._sdk = new Sdk(params)
-    } else {
-      // this._sdk = null
-    }
-  }
-
-  switchNetwork (network) {
-    this.network = network
-    if (network.url) {
-      this._sdk = new Sdk(network)
-    } else {
-      this._sdk = null
+      networkManager.updateSdk(params)
     }
   }
 
