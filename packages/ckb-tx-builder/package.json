@@ -1,5 +1,6 @@
 {
   "name": "@obsidians/ckb-tx-builder",
+  "license": "GPL-3.0",
   "version": "0.1.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

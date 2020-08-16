@@ -28,11 +28,11 @@ class CkbInstanceManager extends IpcChannel {
   }
 
   async createDevInstance({ name, version, lockArg }) {
-    await this.pty.exec(`docker volume create --label version=${version},chain=dev ckb-${name}`)
-    await this.pty.exec(`docker run --rm -it -v ckb-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain dev --ba-arg ${lockArg}`)
+    await this.exec(`docker volume create --label version=${version},chain=dev ckb-${name}`)
+    await this.exec(`docker run --rm -it -v ckb-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain dev --ba-arg ${lockArg}`)
     
-    await this.pty.exec(`docker run -d --rm -it --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
-    await this.pty.exec(`docker cp ckb-config-${name}:/var/lib/ckb/ckb.toml /tmp/ckb.toml`)
+    await this.exec(`docker run -d --rm -it --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.exec(`docker cp ckb-config-${name}:/var/lib/ckb/ckb.toml /tmp/ckb.toml`)
 
     let config = fs.readFileSync(`/tmp/ckb.toml`, 'utf8')
     config = config.replace(`filter = "info"`, `filter = "info,ckb-script=debug"`)
@@ -40,23 +40,23 @@ class CkbInstanceManager extends IpcChannel {
 
     fs.writeFileSync(`/tmp/ckb.toml`, config, 'utf8')
 
-    await this.pty.exec(`docker cp /tmp/ckb.toml ckb-config-${name}:/var/lib/ckb/ckb.toml`)
-    await this.pty.exec(`docker exec -u root ckb-config-${name} /bin/bash -c "chown ckb:ckb ckb.toml"`)
-    await this.pty.exec(`docker stop ckb-config-${name}`)
+    await this.exec(`docker cp /tmp/ckb.toml ckb-config-${name}:/var/lib/ckb/ckb.toml`)
+    await this.exec(`docker exec -u root ckb-config-${name} /bin/bash -c "chown ckb:ckb ckb.toml"`)
+    await this.exec(`docker stop ckb-config-${name}`)
   }
 
   async createAggronInstance ({ name, version }) {
-    await this.pty.exec(`docker volume create --label version=${version},chain=aggron ckb-aggron-${name}`)
-    await this.pty.exec(`docker run --rm -it -v ckb-aggron-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain testnet`)
+    await this.exec(`docker volume create --label version=${version},chain=aggron ckb-aggron-${name}`)
+    await this.exec(`docker run --rm -it -v ckb-aggron-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain testnet`)
   }
 
   async createMainnetInstance({ name, version }) {
-    await this.pty.exec(`docker volume create --label version=${version},chain=mainnet ckb-mainnet-${name}`)
-    await this.pty.exec(`docker run --rm -it -v ckb-mainnet-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain mainnet`)
+    await this.exec(`docker volume create --label version=${version},chain=mainnet ckb-mainnet-${name}`)
+    await this.exec(`docker run --rm -it -v ckb-mainnet-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain mainnet`)
   }
 
   async list (chain = 'dev') {
-    const { logs: volumes } = await this.pty.exec(`docker volume ls --format "{{json . }}"`)
+    const { logs: volumes } = await this.exec(`docker volume ls --format "{{json . }}"`)
     const instances = volumes.split('\n').filter(Boolean).map(JSON.parse).filter(x => x.Name.startsWith('ckb-'))
     const instancesWithLabels = instances.map(i => {
       const labels = {}
@@ -88,7 +88,7 @@ class CkbInstanceManager extends IpcChannel {
   }
 
   async delete (name) {
-    await this.pty.exec(`docker volume rm ckb-${name}`)
+    await this.exec(`docker volume rm ckb-${name}`)
   }
 }
 
