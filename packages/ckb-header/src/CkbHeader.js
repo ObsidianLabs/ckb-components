@@ -37,7 +37,7 @@ export default class CkbHeader extends PureComponent {
       navbarItem(projects, selectedProject)
     ]
 
-    const dropdownKeypairs = this.state.keypairs.map(k => ({ id: k.address, name: k.name || <code>{k.address}</code> }))
+    const dropdownKeypairs = this.state.keypairs.map(k => ({ id: k.address, name: k.name || <code>{k.address.substr(0, 6)}...{k.address.substr(-4)}</code> }))
     dropdownKeypairs.unshift({ header: 'keypair manager' })
     if (!dropdownKeypairs.length) {
       dropdownKeypairs.push({ none: true })
