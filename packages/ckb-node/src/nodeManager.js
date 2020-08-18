@@ -31,7 +31,7 @@ class NodeManager {
     const [ckbRun, ckbIndexer, ckbMiner] = this.generateCommands({ name, version })
     await this._terminal.exec(ckbRun, { resolveOnFirstLog: true })
     if (miner) {
-      await delay(500)
+      await delay(2000)
       await this._minerTerminal.exec(ckbMiner, { resolveOnFirstLog: true })
     }
     this._indexerTerminal.exec(ckbIndexer)
