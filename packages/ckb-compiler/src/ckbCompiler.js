@@ -1,4 +1,5 @@
 import { DockerImageChannel } from '@obsidians/docker'
+import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
 class CkbCompiler {
@@ -113,11 +114,12 @@ class CkbCompiler {
     } else if (mode === 'release-w-debug-output') {
       cmd += ` --release --debug-output`
     }
+    const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      `-v /var/run/docker.sock:/var/run/docker.sock`,
-      '-v', `"${projectRoot}":"${projectRoot}"`,
-      '-w', `"${projectRoot}"`,
+      '-v /var/run/docker.sock:/var/run/docker.sock',
+      `-v "${projectDir}:${projectDir}"`,
+      '-w', `"${projectDir}"`,
       `obsidians/capsule:${version}`,
       cmd
     ].join(' ')
@@ -128,11 +130,12 @@ class CkbCompiler {
     if (mode !== 'debug') {
       cmd += ` --release`
     }
+    const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      `-v /var/run/docker.sock:/var/run/docker.sock`,
-      '-v', `"${projectRoot}":"${projectRoot}"`,
-      '-w', `"${projectRoot}"`,
+      '-v /var/run/docker.sock:/var/run/docker.sock',
+      `-v "${projectDir}:${projectDir}"`,
+      '-w', `"${projectDir}"`,
       `obsidians/capsule:${version}`,
       cmd
     ].join(' ')
@@ -140,9 +143,10 @@ class CkbCompiler {
 
   generateBuildCmdForC(config, { version, projectRoot }) {
     const cmd = this.commandForC(config, version)
+    const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
-      '--volume', `"${projectRoot}:/project"`,
+      `-v "${projectDir}:/project"`,
       '-w', '/project',
       `nervos/ckb-riscv-gnu-toolchain:${version}`,
       '/bin/bash', '-c',

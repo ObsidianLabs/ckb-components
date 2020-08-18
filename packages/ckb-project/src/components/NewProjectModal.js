@@ -93,12 +93,14 @@ export default class NewCkbProjectModal extends PureComponent {
         return false
       }
       const { dir, name: projectName } = this.path.parse(projectRoot)
+      await fileOps.current.ensureDirectory(dir)
+      const projectDir = fileOps.current.getDockerMountPath(projectRoot)
       const cmd = [
         `docker run --rm -it`,
         `--name ckb-create-project`,
-        `-v /var/run/docker.sock:/var/run/docker.sock`,
-        `-v "${dir}":"${dir}"`,
-        `-w "${dir}"`,
+        '-v /var/run/docker.sock:/var/run/docker.sock',
+        `-v "${projectDir}:${projectDir}"`,
+        `-w "${projectDir}"`,
         `obsidians/capsule:${capsuleVersion}`,
         `capsule new ${projectName}`,
       ].join(' ')
