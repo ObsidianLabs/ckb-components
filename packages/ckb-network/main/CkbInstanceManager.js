@@ -33,9 +33,8 @@ class CkbInstanceManager extends IpcChannel {
     const configPath = path.join(os.tmpdir(), 'ckb.toml')
 
     await this.cp(`docker volume create --label version=${version},chain=dev ckb-${name}`)
-    await this.cp(`docker run --rm -v ckb-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain dev --ba-arg ${lockArg}`)
-    
-    await this.cp(`docker run -d --rm --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.cp(`docker run --rm -i -v ckb-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain dev --ba-arg ${lockArg}`)
+    await this.cp(`docker run -d --rm -i --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
     await this.cp(`docker cp ckb-config-${name}:/var/lib/ckb/ckb.toml ${configPath}`)
 
     let config = fs.readFileSync(configPath, 'utf8')
@@ -51,12 +50,12 @@ class CkbInstanceManager extends IpcChannel {
 
   async createAggronInstance ({ name, version }) {
     await this.cp(`docker volume create --label version=${version},chain=aggron ckb-aggron-${name}`)
-    await this.cp(`docker run --rm -v ckb-aggron-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain testnet`)
+    await this.cp(`docker run --rm -i -v ckb-aggron-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain testnet`)
   }
 
   async createMainnetInstance({ name, version }) {
     await this.cp(`docker volume create --label version=${version},chain=mainnet ckb-mainnet-${name}`)
-    await this.cp(`docker run --rm -v ckb-mainnet-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain mainnet`)
+    await this.cp(`docker run --rm -i -v ckb-mainnet-${name}:/var/lib/ckb nervos/ckb:${version} init --force --chain mainnet`)
   }
 
   async list (chain = 'dev') {
