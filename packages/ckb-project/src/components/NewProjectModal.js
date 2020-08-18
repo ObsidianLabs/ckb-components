@@ -94,7 +94,7 @@ export default class NewCkbProjectModal extends PureComponent {
       }
       const { dir, name: projectName } = this.path.parse(projectRoot)
       await fileOps.current.ensureDirectory(dir)
-      const projectDir = fileOps.current.getDockerMountPath(projectRoot)
+      const projectDir = fileOps.current.getDockerMountPath(dir)
       const cmd = [
         `docker run --rm -it`,
         `--name ckb-create-project`,
