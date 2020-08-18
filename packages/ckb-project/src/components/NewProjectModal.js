@@ -108,7 +108,7 @@ export default class NewCkbProjectModal extends PureComponent {
       const result = await this.terminal.current.exec(cmd)
 
       if (result.code) {
-        notification.error('Canno Create the Projectt')
+        notification.error('Cannot Create the Project')
         return false
       }
 
