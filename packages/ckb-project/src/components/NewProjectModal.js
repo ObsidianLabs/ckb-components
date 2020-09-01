@@ -45,6 +45,7 @@ export default class NewCkbProjectModal extends PureComponent {
   }
 
   openModal () {
+    this.setState({ hasError: false })
     this.modal.current.openModal()
     return new Promise(resolve => { this.onConfirm = resolve })
   }
