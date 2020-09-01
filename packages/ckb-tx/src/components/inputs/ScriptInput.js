@@ -111,7 +111,7 @@ export default class ScriptInput extends PureComponent {
       return null
     }
     if (this.script.size() > 1000) {
-      return <FormText>Script size too large.</FormText>
+      return <FormText>Script hash calculation skipped due to large file size.</FormText>
     }
     return <FormText>Script hash: <code>{this.script.hash}</code></FormText>
   }

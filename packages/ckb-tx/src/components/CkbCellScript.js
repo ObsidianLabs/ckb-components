@@ -99,10 +99,7 @@ export default class CkbCellScript extends PureComponent {
 
     const scriptHash = script.size() <= 1000
       ? <code>{script.hash}</code>
-      : 'Script size too large.'
-    const args = script.size() <= 1000
-      ? <code>{script.args.serialize()}</code>
-      : 'Script size too large.'
+      : 'Hash skipped for large args.'
 
     return (
       <div className='d-flex flex-row align-items-center justify-content-between h-100'>
