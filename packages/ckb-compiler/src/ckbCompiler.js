@@ -52,7 +52,7 @@ class CkbCompiler {
     let cmd
     if (config.language === 'rust') {
       const mode = this._button.state.mode
-      cmd = this.generateBuildCmdForRust(config, { version, projectRoot }, )
+      cmd = this.generateBuildCmdForRust(config, { version, projectRoot }, mode)
       if (mode === 'debug') {
         this.notification = notification.info(`Building CKB Script`, `Building Debug...`, 0)
       } else if (mode === 'release') {
