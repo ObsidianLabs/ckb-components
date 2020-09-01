@@ -73,7 +73,7 @@ export default class CkbTransactionConstructor extends PureComponent {
                 header={total => (
                   <div className='d-flex flex-row justify-content-between mb-2'>
                     <div className='d-flex flex-row align-items-center'><h5 className='mb-0'>Inputs</h5></div>
-                    <div><Badge color='warning'>Total: {total}</Badge></div>
+                    <div className='user-select'><Badge color='warning'>Total: {total}</Badge></div>
                   </div>
                 )}
               />

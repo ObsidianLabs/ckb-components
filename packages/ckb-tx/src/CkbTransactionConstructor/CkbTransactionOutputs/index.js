@@ -117,7 +117,7 @@ export default class CkbTransactionOutputs extends PureComponent {
             <h5 className='mb-0'>Outputs</h5>
             <CkbOutputNewButton depCells={this.props.depCells} onNewOutput={this.onNewOutput} />
           </div>
-          <div>
+          <div className='user-select'>
             <Badge color='warning'>
               Total: {totalCapacity.toString()}
             </Badge>
