@@ -31,7 +31,8 @@ export default class NewCkbProjectModal extends PureComponent {
       projectRoot: '',
       template: 'moleculec-es-template',
       capsuleVersion: '',
-      creating: false
+      creating: false,
+      hasError: false,
     }
 
     this.modal = React.createRef()
@@ -65,7 +66,9 @@ export default class NewCkbProjectModal extends PureComponent {
     if (created) {
       this.modal.current.closeModal()
       this.onConfirm(created)
-      this.setState({ name: '', projectRoot: '', template: 'moleculec-es-template' })
+      this.setState({ name: '', projectRoot: '', template: 'moleculec-es-template', hasError: false })
+    } else {
+      this.setState({ hasError: true })
     }
     this.setState({ creating: false })
   }
@@ -225,7 +228,7 @@ export default class NewCkbProjectModal extends PureComponent {
           onChange={template => this.setState({ template })}
         />
         {this.renderCapsuleVersion()}
-        <div style={{ display: this.state.creating ? 'block' : 'none'}}>
+        <div style={{ display: this.state.creating || this.state.hasError ? 'block' : 'none'}}>
           <Terminal
             ref={this.terminal}
             active={this.state.creating}
