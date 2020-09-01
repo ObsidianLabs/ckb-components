@@ -77,6 +77,16 @@ export default class CkbCompilerButton extends PureComponent {
     )
   }
 
+  renderTooltipText = (version, projectLanguage) => {
+    if (this.state.building) {
+      return 'Stop Build'
+    }
+    if (projectLanguage === 'javascript') {
+      return 'Build'
+    }
+    return `${modeText[this.state.mode]} (${version || 'none'})`
+  }
+
   render () {
     const {
       version = 'none',
@@ -110,7 +120,7 @@ export default class CkbCompilerButton extends PureComponent {
         </Button>
         {this.renderModeSwitcher(projectLanguage)}
         <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-ckb-build-btn'>
-          { this.state.building ? 'Stop Build' : `${modeText[this.state.mode]} (${version || 'none'})`}
+          {this.renderTooltipText(version, projectLanguage)}
         </UncontrolledTooltip>
       </div>
     )
