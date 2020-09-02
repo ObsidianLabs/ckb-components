@@ -1,10 +1,10 @@
 const semverLt = require('semver/functions/lt')
 const semverValid = require('semver/functions/valid')
 
-const { IpcChannel } = require('@obsidians/ipc')
+const { TerminalChannel } = require('@obsidians/terminal')
 const { DockerImageChannel } = require('@obsidians/docker')
 
-class CkbCompilerManager extends IpcChannel {
+class CompilerManager extends TerminalChannel {
   constructor () {
     super('ckb-compiler')
 
@@ -17,15 +17,6 @@ class CkbCompilerManager extends IpcChannel {
       sort: (x, y) => x < y ? 1 : -1,
     })
   }
-
-  resize ({ cols, rows }) {
-    this.pty.resize({ cols, rows })
-  }
-
-  kill () {
-    this.pty.kill()
-    // Pty.exec(`docker stop substrate_compiler`)
-  }
 }
 
-module.exports = CkbCompilerManager
+module.exports = CompilerManager

@@ -52,7 +52,7 @@ export default class NewCkbProjectModal extends PureComponent {
 
   chooseProjectPath = async () => {
     try {
-      const projectRoot = await fileOps.current.chooseFolder('CKB Studio')
+      const projectRoot = await fileOps.current.chooseFolder()
       this.setState({ projectRoot })
     } catch (e) {
 
@@ -78,9 +78,9 @@ export default class NewCkbProjectModal extends PureComponent {
     let projectRoot
     const { name, template } = this.state
     if (!this.state.projectRoot) {
-      projectRoot = this.path.join(fileOps.current.homePath, 'CKB Studio', name)
+      projectRoot = this.path.join(fileOps.current.workspace, name)
     } else if (!this.path.isAbsolute(this.state.projectRoot)) {
-      projectRoot = this.path.join(fileOps.current.homePath, 'CKB Studio', this.state.projectRoot)
+      projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
     } else {
       projectRoot = this.state.projectRoot
     }
@@ -156,7 +156,7 @@ export default class NewCkbProjectModal extends PureComponent {
 
     let placeholder = 'Project path'
     if (!this.state.projectRoot) {
-      placeholder = this.path.join(fileOps.current.homePath, 'CKB Studio', this.state.name || '')
+      placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
     }
 
     return (

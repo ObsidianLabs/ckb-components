@@ -32,7 +32,7 @@ export default class FileInput extends PureComponent {
   selectFile = async () => {
     this.setState({ selectingFile: true })
     try {
-      const defaultPath = this.state.filePath ? fileOps.current.path.parse(this.state.filePath).dir : 'CKB Studio'
+      const defaultPath = this.state.filePath ? fileOps.current.path.parse(this.state.filePath).dir : ''
       const file = await fileOps.current.openNewFile(defaultPath)
       this.setState({ selectingFile: false, filePath: file.path, bytes: this.getFileSize(file.path) })
       this.props.onSelectFile(file.path)

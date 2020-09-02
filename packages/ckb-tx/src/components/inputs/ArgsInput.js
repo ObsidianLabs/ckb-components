@@ -32,7 +32,7 @@ const optionItemFromData = data => {
   }
 }
 
-const getFileArg = async (defaultPath = 'CKB Studio') => {
+const getFileArg = async defaultPath => {
   const file = await fileOps.current.openNewFile(defaultPath)
   return optionItemFromData(new CkbData(file.path, 'file'))
 }
