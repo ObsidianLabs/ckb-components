@@ -25,8 +25,8 @@ class CkbTxManager {
   }
 
   get cellManifestFile () {
-    const { path, homePath } = fileOps.current
-    return path.join(homePath, 'CKB Studio', 'cells.json')
+    const { path, workspace } = fileOps.current
+    return path.join(workspace, 'cells.json')
   }
 
   async loadCellManifest () {
@@ -68,8 +68,8 @@ class CkbTxManager {
   }
 
   get udtManifestFile () {
-    const { path, homePath } = fileOps.current
-    return path.join(homePath, 'CKB Studio', 'udts.json')
+    const { path, workspace } = fileOps.current
+    return path.join(workspace, 'udts.json')
   }
 
   async loadUdtManifest () {
