@@ -63,9 +63,6 @@ export default class InstanceConfigModal extends PureComponent {
         confirmDisabled={this.state.loading}
         pending={this.state.saving && 'Saving...'}
         textCancel='Close'
-        // textActions={['Delete Instance']}
-        // colorActions={['danger']}
-        // onActions={[this.delete]}
       >
         <DebouncedInput
           size='sm'

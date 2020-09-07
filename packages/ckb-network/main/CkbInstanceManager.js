@@ -76,7 +76,7 @@ class CkbInstanceManager extends IpcChannel {
 
   async readConfig ({ name, version }) {
     const configPath = path.join(os.tmpdir(), 'ckb.toml')
-    await this.exec(`docker run -d --rm --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.exec(`docker run --rm -i --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
     await this.exec(`docker cp ckb-config-${name}:/var/lib/ckb/ckb.toml ${configPath}`)
     const config = fs.readFileSync(configPath, 'utf8')
     await this.exec(`docker stop ckb-config-${name}`)
@@ -86,8 +86,8 @@ class CkbInstanceManager extends IpcChannel {
   async writeConfig ({ name, version, content }) {
     const configPath = path.join(os.tmpdir(), 'ckb.toml')
     fs.writeFileSync(configPath, content, 'utf8')
-    await this.exec(`docker run -d --rm --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
-    await this.exec(`docker cp ${configPath}l ckb-config-${name}:/var/lib/ckb/ckb.toml`)
+    await this.exec(`docker run --rm -i --name ckb-config-${name} -v ckb-${name}:/var/lib/ckb --entrypoint /bin/bash nervos/ckb:${version}`)
+    await this.exec(`docker cp ${configPath} ckb-config-${name}:/var/lib/ckb/ckb.toml`)
     await this.exec(`docker exec -u root ckb-config-${name} /bin/bash -c "chown ckb:ckb ckb.toml"`)
     await this.exec(`docker stop ckb-config-${name}`)
   }
