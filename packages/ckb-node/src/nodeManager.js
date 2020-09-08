@@ -91,10 +91,10 @@ class NodeManager {
       await this._minerTerminal.stop()
     }
     if (this._indexerTerminal) {
-      await this._indexerTerminal.exec(`docker stop ckb-${name}-indexer`)
+      await this._indexerTerminal.execAsChildProcess(`docker stop ckb-${name}-indexer`)
     }
     if (this._terminal) {
-      await this._terminal.exec(`docker stop ckb-${name}-${version}`)
+      await this._terminal.execAsChildProcess(`docker stop ckb-${name}-${version}`)
       await this._terminal.stop()
     }
   }
