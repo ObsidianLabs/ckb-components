@@ -5,8 +5,6 @@ import { lib } from '@obsidians/ckb-tx-builder'
 
 import get from 'lodash/get'
 
-fileOps.fsType = 'electron'
-
 class CkbDebugger {
   constructor () {
     this._window = null
