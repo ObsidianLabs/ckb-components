@@ -11,7 +11,6 @@ export default async function checkDependencies () {
       ckbCompiler.capsule.installed(),
       ckbCompiler.regular.installed(),
     ])
-    console.log(results)
     return results.every(x => !!x)
   } catch (e) {
     console.warn(e)
