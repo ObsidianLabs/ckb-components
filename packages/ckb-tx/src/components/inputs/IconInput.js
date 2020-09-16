@@ -5,7 +5,7 @@ import {
   Button,
 } from '@obsidians/ui-components'
 
-const remote = window.require('electron').remote;
+import fileOps from '@obsidians/file-ops'
 
 export default class IconInput extends PureComponent {
   
@@ -14,9 +14,9 @@ export default class IconInput extends PureComponent {
   }
 
   onSelect = async () => {
-    const { filePaths, canceled } = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+    const { filePaths, canceled } = await fileOps.current.showOpenDialog({
       filters: [
-        {name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg']}
+        { name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] }
       ]
     })
     if (canceled) {
