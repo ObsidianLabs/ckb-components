@@ -1,21 +1,8 @@
 import { List } from 'immutable'
+import fileOps from '@obsidians/file-ops'
 
-export default List([
+const networkList = [
   {
-    id: 'local',
-    group: 'default',
-    name: 'Local',
-    fullName: 'Local Network',
-    icon: 'fas fa-laptop-code',
-    notification: 'Switched to <b>Local</b> network.',
-  }, {
-    id: 'custom',
-    group: 'default',
-    name: 'Custom',
-    fullName: 'Custom Network',
-    icon: 'fas fa-edit',
-    notification: 'Switched to <b>Custom</b> network.',
-  }, {
     id: "ckb-aggron",
     group: "testnet",
     name: "Aggron",
@@ -36,4 +23,34 @@ export default List([
     indexer: 'http://ckb-mainnet.obsidians.io:81',
     explorer: 'https://api.explorer.nervos.org/api/v1',
   }
-])
+]
+
+if (fileOps.fsType === 'electron') {
+  networkList.unshift({
+    id: 'custom',
+    group: 'default',
+    name: 'Custom',
+    fullName: 'Custom Network',
+    icon: 'fas fa-edit',
+    notification: 'Switched to <b>Custom</b> network.',
+  })
+  networkList.unshift({
+    id: 'local',
+    group: 'default',
+    name: 'Local',
+    fullName: 'Local Network',
+    icon: 'fas fa-laptop-code',
+    notification: 'Switched to <b>Local</b> network.',
+  })
+} else {
+  networkList.push({
+    id: 'custom',
+    group: 'others',
+    name: 'Custom',
+    fullName: 'Custom Network',
+    icon: 'fas fa-edit',
+    notification: 'Switched to <b>Custom</b> network.',
+  })
+}
+
+export default List(networkList)
