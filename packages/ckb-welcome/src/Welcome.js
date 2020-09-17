@@ -5,11 +5,11 @@ import {
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
+import { ListItemDocker, ListItemDockerImage } from '@obsidians/docker'
+
 import { instanceChannel } from '@obsidians/ckb-network'
 import ckbCompiler from '@obsidians/ckb-compiler'
 
-import ListItemDocker from './ListItemDocker'
-import DockerImageItem from './DockerImageItem'
 import checkDependencies from './checkDependencies'
 
 export default class Welcome extends PureComponent {
@@ -65,7 +65,7 @@ export default class Welcome extends PureComponent {
                 ref={this.listItemDocker}
                 onStartedDocker={this.refresh}
               />
-              <DockerImageItem
+              <ListItemDockerImage
                 ref={this.listItemCkbNode}
                 channel={instanceChannel.ckbNode}
                 title='CKB Node'
@@ -74,7 +74,7 @@ export default class Welcome extends PureComponent {
                 downloadingTitle='Downloading CKB'
                 onInstalled={this.refresh}
               />
-              <DockerImageItem
+              <ListItemDockerImage
                 ref={this.listItemCkbIndexer}
                 channel={instanceChannel.ckbIndexer}
                 title='CKB Indexer'
@@ -83,7 +83,7 @@ export default class Welcome extends PureComponent {
                 downloadingTitle='Downloading CKB Indexer'
                 onInstalled={this.refresh}
               />
-              <DockerImageItem
+              <ListItemDockerImage
                 ref={this.listItemCapsule}
                 channel={ckbCompiler.capsule}
                 title='Capsule'
@@ -92,7 +92,7 @@ export default class Welcome extends PureComponent {
                 downloadingTitle='Downloading Capsule'
                 onInstalled={this.refresh}
               />
-              <DockerImageItem
+              <ListItemDockerImage
                 ref={this.listItemCkbCompiler}
                 channel={ckbCompiler.regular}
                 title='CKB Compiler'
