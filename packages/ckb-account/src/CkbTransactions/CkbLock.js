@@ -5,6 +5,8 @@ import {
   UncontrolledTooltip,
 } from '@obsidians/ui-components'
 
+import { Link } from 'react-router-dom'
+
 import { CkbScript } from '@obsidians/ckb-tx-builder'
 
 export default function CkbLock (props) {
@@ -31,9 +33,9 @@ export default function CkbLock (props) {
       <React.Fragment>
         <div className='d-flex flex-row align-items-center small'>
           <div id={id.current}>
-            <a href={`#/account/${address}`} className='text-body'>
+            <Link to={`/account/${address}`} className='text-body'>
               <code>{address.substr(0, 13)}...{address.substr(36, 46)}</code>
-            </a>
+            </Link>
           </div>
         </div>
         <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
@@ -57,9 +59,9 @@ export default function CkbLock (props) {
           Lock
         </Badge>
         <div className='d-flex small'>
-          <a href={`#/account/${lockHash}`} className='text-body'>
+          <Link href={`/account/${lockHash}`} className='text-body'>
             <code>{lockHash.substr(0, 10)}...{lockHash.substr(58, 66)}</code>
-          </a>
+          </Link>
         </div>
       </div>
       <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>

@@ -44,7 +44,8 @@
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "lodash": "^4.17.15",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router-dom": "^5.1.2"
   },
   "eslintConfig": {
     "extends": "react-app"
