@@ -1,4 +1,5 @@
 import { networkManager } from '@obsidians/ckb-network'
+import notification from '@obsidians/notification'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -87,15 +88,22 @@ class NodeManager {
   }
 
   async stop ({ name, version }) {
+    let n
     if (this._minerTerminal) {
+      n = notification.info('Stopping CKB cMiner...', '', 0)
       await this._minerTerminal.stop()
+      n.dismiss()
     }
     if (this._indexerTerminal) {
+      n = notification.info('Stopping CKB Indexer...', '', 0)
       await this._indexerTerminal.execAsChildProcess(`docker stop ckb-${name}-indexer`)
+      n.dismiss()
     }
     if (this._terminal) {
+      n = notification.info('Stopping CKB Node...', '', 0)
       await this._terminal.execAsChildProcess(`docker stop ckb-${name}-${version}`)
       await this._terminal.stop()
+      n.dismiss()
     }
   }
 }
