@@ -98,8 +98,8 @@ export default class CkbTransactions extends PureComponent {
         TableHead={(
           <tr>
             <th style={{ width: '5%' }}>block</th>
-            <th style={{ width: '10%' }}>hash</th>
-            <th style={{ width: '85%' }}>data</th>
+            <th style={{ width: '20%' }}>hash</th>
+            <th style={{ width: '75%' }}>data</th>
           </tr>
         )}
       >

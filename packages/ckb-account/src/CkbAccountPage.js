@@ -11,12 +11,19 @@ import CkbAccountInfo from './CkbAccountInfo'
 import CkbTransactions from './CkbTransactions'
 
 export default class CkbAccountPage extends PureComponent {
-  state = {
-    error: null,
-    wallet: null,
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      error: null,
+      wallet: null,
+    }
+  
+    props.cacheLifecycles.didRecover(this.componentDidRecover)
   }
 
   componentDidMount () {
+    this.props.onDisplay(this)
     this.refresh()
   }
 
@@ -24,6 +31,10 @@ export default class CkbAccountPage extends PureComponent {
     if (prevProps.value !== this.props.value) {
       this.refresh()
     }
+  }
+
+  componentDidRecover = () => {
+    this.props.onDisplay(this)
   }
 
   refresh = async () => {
@@ -34,9 +45,15 @@ export default class CkbAccountPage extends PureComponent {
       return
     }
 
-    const wallet = networkManager.sdk?.walletFrom(value)
+    await new Promise(resolve => setTimeout(resolve, 10))
+
+    let wallet
     try {
+      console.log(value)
+      wallet = networkManager.sdk?.walletFrom(value)
+      console.log('wallet', wallet)
       await wallet.info()
+      console.log('info')
       this.setState({ error: null, wallet })
     } catch (e) {
       let error = e.message

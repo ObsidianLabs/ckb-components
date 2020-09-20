@@ -45,9 +45,11 @@ export default class CkbCells extends PureComponent {
     }
 
     this.updateCellsThrottled = throttle(() => this.updateCells(), 1000)
+    props.cacheLifecycles.didRecover(this.componentDidRecover)
   }
 
   componentDidMount () {
+    this.props.onDisplay(this)
     this.refresh()
   }
 
@@ -55,6 +57,10 @@ export default class CkbCells extends PureComponent {
     if (prevProps.value !== this.props.value) {
       this.refresh()
     }
+  }
+
+  componentDidRecover = () => {
+    this.props.onDisplay(this)
   }
 
   refresh = async () => {
@@ -74,6 +80,8 @@ export default class CkbCells extends PureComponent {
       done: false,
       loading: true,
     })
+
+    await new Promise(resolve => setTimeout(resolve, 10))
 
     const wallet = networkManager.sdk?.walletFrom(this.props.value)
     try {
@@ -314,7 +322,7 @@ export default class CkbCells extends PureComponent {
     }
 
     return (
-      <div className='d-flex flex-1 flex-column'>
+      <div className='d-flex flex-1 flex-column h-100 overflow-hidden'>
         <div className='p-3 d-flex flex-row justify-content-between align-items-start'>
           <div>
             <div className='d-flex flex-row align-items-center'>
@@ -323,7 +331,7 @@ export default class CkbCells extends PureComponent {
             </div>
             <div className='mt-1'>
               <CustomInput
-                id='switch-show-empty-cells'
+                id={`switch-show-empty-cells-${this.props.value}`}
                 type='switch'
                 label='Show empty cells'
                 checked={this.state.showEmptyCells}

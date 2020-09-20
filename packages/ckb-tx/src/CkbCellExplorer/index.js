@@ -6,6 +6,8 @@ import {
 
 import keypairManager from '@obsidians/keypair'
 
+import CacheRoute from 'react-router-cache-route'
+
 import CkbCells from './CkbCells'
 import CkbTransferButton from './CkbTransferButton'
 import CkbMintUdtButton from './CkbMintUdtButton'
@@ -20,7 +22,6 @@ export default class CkbCellExplorer extends PureComponent {
     }
 
     this.tabs = React.createRef()
-    this.ckbCells = React.createRef()
     this.keypairs = {}
   }
 
@@ -50,7 +51,13 @@ export default class CkbCellExplorer extends PureComponent {
     this.props.onValueChanged && this.props.onValueChanged(value)
   }
 
-  onRefresh = () => this.ckbCells.current.refresh()
+  onPageDisplay = page => {
+    this.currentPage = page
+  }
+
+  onRefresh = () => {
+    this.currentPage?.refresh()
+  }
 
   getTabText = tab => {
     const { value, temp } = tab
@@ -88,7 +95,19 @@ export default class CkbCellExplorer extends PureComponent {
           </React.Fragment>
         )}
       >
-        <CkbCells ref={this.ckbCells} value={value} />
+        <CacheRoute
+          path={`/contract/:name`}
+          multiple={5}
+          className='h-100 overflow-hidden'
+          render={props => (
+            <CkbCells
+              cacheLifecycles={props.cacheLifecycles}
+              onDisplay={this.onPageDisplay}
+              value={props.match.params.name}
+            />
+          )}
+        />
+        
       </TabsWithNavigationBar>
     )
   }

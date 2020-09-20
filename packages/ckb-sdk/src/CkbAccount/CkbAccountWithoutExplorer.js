@@ -12,12 +12,13 @@ export default class CkbAccountWithoutExplorer extends CkbAccount {
   async info (force) {
     if (!this._getInfo || force) {
       this._getInfo = async () => {
+        const lockHash = this.lockHash
         try {
           await this.ensureIndex()
         } catch (e) {
           return {}
         }
-        const result = await this.ckbClient.core.rpc.getCapacityByLockHash(this.lockHash)
+        const result = await this.ckbClient.core.rpc.getCapacityByLockHash(lockHash)
         if (!result) {
           return {}
         }

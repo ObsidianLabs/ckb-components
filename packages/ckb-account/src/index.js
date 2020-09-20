@@ -5,6 +5,8 @@ import {
   Modal,
 } from '@obsidians/ui-components'
 
+import CacheRoute from 'react-router-cache-route'
+
 import keypairManager from '@obsidians/keypair'
 import CkbAccountPage from './CkbAccountPage'
 
@@ -36,7 +38,6 @@ export default class CkbAccount extends PureComponent {
     }
 
     this.tabs = React.createRef()
-    this.ckbAccount = React.createRef()
     this.modal = React.createRef()
     this.keypairs = {}
   }
@@ -76,8 +77,12 @@ export default class CkbAccount extends PureComponent {
     this.props.onValueChanged && this.props.onValueChanged(value)
   }
 
+  onPageDisplay = page => {
+    this.currentPage = page
+  }
+
   onRefresh = () => {
-    this.ckbAccount.current.refresh()
+    this.currentPage?.refresh()
   }
 
   getTabText = tab => {
@@ -110,9 +115,17 @@ export default class CkbAccount extends PureComponent {
           onRefresh={this.onRefresh}
           onTabsUpdated={this.props.onTabsUpdated}
         >
-          <CkbAccountPage
-            ref={this.ckbAccount}
-            value={value}
+          <CacheRoute
+            path={`/account/:name`}
+            multiple={5}
+            className='h-100 overflow-auto'
+            render={props => (
+              <CkbAccountPage
+                cacheLifecycles={props.cacheLifecycles}
+                onDisplay={this.onPageDisplay}
+                value={props.match.params.name}
+              />
+            )}
           />
         </TabsWithNavigationBar>
         <Modal
