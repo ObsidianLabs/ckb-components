@@ -27,8 +27,8 @@ export default class CkbTransaction {
     return { outputs, outputsData }
   }
 
-  get hash () {
-    return rawTransactionToHash(this.serialize())
+  hash (tx = this.serialize()) {
+    return rawTransactionToHash(tx)
   }
 
   public serialize () {
@@ -61,7 +61,7 @@ export default class CkbTransaction {
   }
 
   public async sign (witnessesSigner, tx = this.serialize()) {
-    const transactionHash = rawTransactionToHash(tx)
+    const transactionHash = this.hash(tx)
 
     const signedWitnesses = await witnessesSigner({
       transactionHash,

@@ -1,8 +1,10 @@
 import React from 'react'
 import CacheRoute from 'react-router-cache-route'
 
-import { DockerImageSelector } from '@obsidians/docker'
 import { KeypairButton } from '@obsidians/keypair'
+import { QueueButton } from '@obsidians/ckb-queue'
+
+import { DockerImageSelector } from '@obsidians/docker'
 import ckbCompiler from '@obsidians/ckb-compiler'
 import { TerminalButton } from '@obsidians/ckb-project'
 
@@ -14,6 +16,7 @@ export default function CkbBottomBar (props) {
           <i className='fas fa-key' />
         </div>
       </KeypairButton>
+      <QueueButton txs={props.txs} />
       <div className='flex-1' />
       <CacheRoute
         path={`/guest/:project?`}
@@ -28,6 +31,7 @@ export default function CkbBottomBar (props) {
               <DockerImageSelector
                 key='compiler-capsule'
                 channel={ckbCompiler.capsule}
+                size='sm'
                 icon='fas fa-hammer'
                 title='Capsule'
                 noneName='Capsule'
@@ -42,6 +46,7 @@ export default function CkbBottomBar (props) {
               <DockerImageSelector
                 key='compiler-regular'
                 channel={ckbCompiler.regular}
+                size='sm'
                 icon='fas fa-hammer'
                 title='CKB Compiler'
                 noneName='CKB compiler'

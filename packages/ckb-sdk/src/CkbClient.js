@@ -11,11 +11,14 @@ export default class CkbClient {
     this.txsCache = {}
   }
 
-  async loadTransaction (txHash) {
-    if (!this.txsCache[txHash]) {
+  async loadTransaction (txHash, noCache) {
+    if (noCache || !this.txsCache[txHash]) {
       this.txsCache[txHash] = this.core.rpc.getTransaction(txHash)
     }
     const tx = await this.txsCache[txHash]
+    if (!tx || !tx.txStatus || tx.txStatus.status === 'pending' || tx.txStatus.status === 'proposed') {
+      this.txsCache[txHash] = undefined
+    }
     return cloneDeep(tx)
   }
   

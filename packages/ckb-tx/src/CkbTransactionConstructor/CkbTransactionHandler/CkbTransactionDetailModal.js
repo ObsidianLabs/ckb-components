@@ -10,6 +10,7 @@ import { CkbScript } from '@obsidians/ckb-tx-builder'
 import keypairManager from '@obsidians/keypair'
 import notification from '@obsidians/notification'
 import { kp } from '@obsidians/ckb-sdk'
+import queue from '@obsidians/ckb-queue'
 import { networkManager } from '@obsidians/ckb-network'
 
 import CkbWalletContext from '../../CkbWalletContext'
@@ -25,6 +26,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
       selected: {},
       value: '',
       signed: false,
+      txHash: '',
       signedTx: null,
       pushing: false,
     }
@@ -55,26 +57,35 @@ export default class CkbTransactionDetailModal extends PureComponent {
         signatureProvider.set(lock.hash, signer)
       }))
       const witnessesSigner = networkManager.sdk.ckbClient.core.signWitnesses(signatureProvider)
-      const signedTx = await this.state.tx.sign(witnessesSigner, JSON.parse(this.state.value))
+      const modifiedTx = JSON.parse(this.state.value)
+      const signedTx = await this.state.tx.sign(witnessesSigner, modifiedTx)
+      const txHash = this.state.tx.hash(modifiedTx)
       const value = JSON.stringify(signedTx, null, 2)
-      this.setState({ value, signed: true, signedTx })
+      this.setState({ value, signed: true, txHash, signedTx })
     } catch (e) {
       console.warn(e)
       notification.error('Push Transaction Failed', e.message)
     }
   }
 
-  pushTransaction = async () => {
+  pushTransaction = () => {
     this.setState({ pushing: true })
-    try {
-      const txHash = await networkManager.sdk.ckbClient.core.rpc.sendTransaction(this.state.signedTx)
-      notification.success('Transaction Pushed', `Transaction hash: ${txHash}`)
-      this.onResolve()
-      this.modal.current.closeModal()
-    } catch (e) {
-      notification.error('Push Transaction Failed', e.message)
-    }
-    this.setState({ pushing: false })
+    const { txHash, signedTx } = this.state
+    queue.add(
+      () => ({
+        txHash,
+        push: () => networkManager.sdk.ckbClient.core.rpc.sendTransaction(signedTx)
+      }),
+      { tx: signedTx },
+      {
+        pending: () => {
+          this.setState({ pushing: false })
+          this.onResolve()
+          this.modal.current.closeModal()
+        },
+        failed: () => this.setState({ pushing: false })
+      }
+    )
   }
   
   renderSigners = (signers, selected) => {
