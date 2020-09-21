@@ -84,8 +84,8 @@ export default class ScriptInput extends PureComponent {
         <DebouncedInput
           size='sm'
           inputGroupClassName='mb-2'
-          addon='Code Hash'
-          placeholder='Hex string starts with 0x'
+          addon={<span key='code-hash'><i className='fas fa-hashtag' /></span>}
+          placeholder='Code Hash - hex string starts with 0x'
           maxLength='66'
           value={this.script.codeHash}
           invalid={!this.script.isValid || undefined}
@@ -93,7 +93,6 @@ export default class ScriptInput extends PureComponent {
         >
           <Dropdown
             header={`Deps' ${type} hash`}
-            icon='fas fa-hashtag'
             items={hashs}
             onChange={codeHash => this.onChange({ codeHash })}
           />

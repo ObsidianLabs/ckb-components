@@ -103,11 +103,13 @@ export default class ArgsInput extends PureComponent {
     return (
       <React.Fragment>
         <MultiSelect
-          addon='Args'
+          size='sm'
+          addon={<i className='fas fa-brackets' />}
           options={this.options}
           value={this.props.args.value.map(optionItemFromData)}
           onChange={this.onChange}
           onClickLabel={this.onClickLabel}
+          placeholder='Args - click to add array items'
         />
         <Modal
           ref={this.modal}

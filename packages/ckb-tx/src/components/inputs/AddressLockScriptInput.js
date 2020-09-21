@@ -6,9 +6,10 @@ import {
   Dropdown,
 } from '@obsidians/ui-components'
 
+import { KeypairSelector } from '@obsidians/keypair'
 import { CkbScript } from '@obsidians/ckb-tx-builder'
 
-export default function AddressLockScriptInput ({ initialScript, onChange, addressBook }) {
+export default function AddressLockScriptInput ({ initialScript, onChange }) {
   const [value, setValue] = useState(initialScript.isAddress() ? initialScript.getAddress() : '')
   const [invalid, setInvalid] = useState()
 
@@ -28,33 +29,25 @@ export default function AddressLockScriptInput ({ initialScript, onChange, addre
   }
 
   return (
-    <React.Fragment>
-      <DebouncedInput
-        placeholder='Address starts with ckt/ckb'
-        maxLength='66'
-        value={value}
-        onChange={onChangeValue}
-        invalid={invalid}
-      >
-        <Dropdown
-          header='Address Book'
-          icon='fas fa-address-book'
-          items={addressBook.map(item => item.address)}
-          onChange={onChangeValue}
-        />
-      </DebouncedInput>
-    </React.Fragment>
+    <KeypairSelector
+      editable
+      noCaret
+      icon='fas fa-map-marker-alt'
+      placeholder='Address starts with ckt/ckb'
+      maxLength={66}
+      value={value}
+      onChange={onChangeValue}
+      invalid={invalid}
+    />
   )
 }
 
 AddressLockScriptInput.propTypes = {
   initialScript: PropTypes.instanceOf(CkbScript),
   onChange: PropTypes.func,
-  addressBook: PropTypes.array,
 }
 
 AddressLockScriptInput.defaultProps = {
   initialScript: new CkbScript(),
   onChange: () => {},
-  addressBook: [],
 }
