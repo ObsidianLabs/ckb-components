@@ -49,11 +49,8 @@ export default class CkbAccountPage extends PureComponent {
 
     let wallet
     try {
-      console.log(value)
       wallet = networkManager.sdk?.walletFrom(value)
-      console.log('wallet', wallet)
       await wallet.info()
-      console.log('info')
       this.setState({ error: null, wallet })
     } catch (e) {
       let error = e.message
