@@ -73,7 +73,7 @@ export default class CkbCellExplorer extends PureComponent {
   }
 
   render () {
-    const value = this.state.value
+    const { network } = this.props
 
     return (
       <TabsWithNavigationBar
@@ -97,6 +97,7 @@ export default class CkbCellExplorer extends PureComponent {
       >
         <CacheRoute
           path={`/contract/:name`}
+          cacheKey={props => `contract-${network}-${props.match?.params?.name}`}
           multiple={5}
           className='h-100 overflow-hidden'
           render={props => (

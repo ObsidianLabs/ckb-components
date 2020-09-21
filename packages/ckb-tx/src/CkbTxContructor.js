@@ -66,6 +66,7 @@ export default class CkbTx extends PureComponent {
   }
 
   render () {
+    const { network } = this.props
     const { initialSelected, initialTabs } = this.state
 
     return (
@@ -84,6 +85,7 @@ export default class CkbTx extends PureComponent {
             <CkbTransactionConstructor />
             <CkbCellExplorer
               ref={this.explorer}
+              network={network}
               initialSelected={initialSelected}
               initialTabs={initialTabs}
               starred={this.props.starred}

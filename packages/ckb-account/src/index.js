@@ -99,7 +99,8 @@ export default class CkbAccount extends PureComponent {
   }
 
   render () {
-    const { initialSelected, initialTabs, value } = this.state
+    const { network } = this.props
+    const { initialSelected, initialTabs } = this.state
 
     return (
       <React.Fragment>
@@ -117,6 +118,7 @@ export default class CkbAccount extends PureComponent {
         >
           <CacheRoute
             path={`/account/:name`}
+            cacheKey={props => `account-${network}-${props.match?.params?.name}`}
             multiple={5}
             className='h-100 overflow-auto'
             render={props => (

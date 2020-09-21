@@ -1,5 +1,6 @@
 import { networkManager } from '@obsidians/ckb-network'
 import notification from '@obsidians/notification'
+import { getCachingKeys, dropByCacheKey } from 'react-router-cache-route'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -88,6 +89,9 @@ class NodeManager {
   }
 
   async stop ({ name, version }) {
+    const cachingKeys = getCachingKeys()
+    cachingKeys.filter(key => key.startsWith('contract-') || key.startsWith('account-')).forEach(dropByCacheKey)
+    
     let n
     if (this._minerTerminal) {
       n = notification.info('Stopping CKB cMiner...', '', 0)
