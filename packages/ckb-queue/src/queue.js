@@ -2,16 +2,9 @@ import notification from '@obsidians/notification'
 import { BaseQueueManager } from '@obsidians/queue'
 import { networkManager } from '@obsidians/ckb-network'
 
-import moment from 'moment'
-
 class Queue extends BaseQueueManager {
   async process (pendingTransaction, txHash, data, callbacks) {
-    this.addToQueue({
-      txHash,
-      status: 'PUSHING',
-      ts: moment().unix(),
-      data,
-    })
+    this.updateStatus(txHash, 'PUSHING', data, callbacks)
     notification.info(`Pushing Transaction...`, `Hash: ${txHash}`)
 
     try {
