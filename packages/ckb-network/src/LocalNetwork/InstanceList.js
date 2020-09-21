@@ -101,7 +101,7 @@ export default class InstanceList extends PureComponent {
               <DockerImageButton
                 channel={instanceChannel.ckbNode}
                 icon='fas fa-server'
-                title='CKB Versions'
+                title='CKB Version Manager'
                 noneName='CKB node'
                 modalTitle='CKB Version Manager'
                 downloadingTitle='Downloading CKB'

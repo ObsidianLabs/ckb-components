@@ -1,5 +1,6 @@
-import { networkManager } from '@obsidians/ckb-network'
+import { networkManager, instanceChannel } from '@obsidians/ckb-network'
 import notification from '@obsidians/notification'
+
 import { getCachingKeys, dropByCacheKey } from 'react-router-cache-route'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -27,7 +28,13 @@ class NodeManager {
 
   async start ({ name, version, miner = true }) {
     if (!this._terminal) {
-      return
+      throw new Error()
+    }
+
+    const versions = await instanceChannel.ckbNode.versions()
+    if (!versions.find(v => v.Tag === version)) {
+      notification.error(`CKB Node ${version} not Installed`, `Please install the version in <b>CKB Version Manager</b>`)
+      throw new Error('Version not installed')
     }
 
     const [ckbRun, ckbIndexer, ckbMiner] = this.generateCommands({ name, version })
