@@ -52,7 +52,8 @@
     "immutable": "^4.0.0-rc.12",
     "moment": "^2.24.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router-cache-route": "^1.8.4"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -2,6 +2,8 @@ import notification from '@obsidians/notification'
 import redux from '@obsidians/redux'
 import Sdk from '@obsidians/ckb-sdk'
 
+import { getCachingKeys, dropByCacheKey } from 'react-router-cache-route'
+
 import networks from './networks'
 
 class NetworkManager {
@@ -33,6 +35,10 @@ class NetworkManager {
     if (networkId === redux.getState().network) {
       return
     }
+
+    const cachingKeys = getCachingKeys()
+    cachingKeys.filter(key => key.startsWith('contract-') || key.startsWith('account-')).forEach(dropByCacheKey)
+
     const network = networks.find(n => n.id === networkId)
     if (!network) {
       return
