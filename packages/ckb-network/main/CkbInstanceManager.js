@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
-const semverLt = require('semver/functions/lt')
 const { IpcChannel } = require('@obsidians/ipc')
 const { DockerImageChannel } = require('@obsidians/docker')
 
@@ -9,11 +8,11 @@ class CkbInstanceManager extends IpcChannel {
   constructor () {
     super('ckb-instances')
 
-    this.ckbNode = new DockerImageChannel('nervos/ckb', {
-      filter: tag => tag.startsWith('v'),
-      sort: (x, y) => semverLt(x, y) ? 1 : -1
+    this.ckbNode = new DockerImageChannel('nervos/ckb')
+    this.ckbIndexer = new DockerImageChannel('nervos/ckb-indexer', {
+      filter: false,
+      sort: false,
     })
-    this.ckbIndexer = new DockerImageChannel('nervos/ckb-indexer')
   }
 
   async create ({ name, version, chain, lockArg }) {
