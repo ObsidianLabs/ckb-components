@@ -83,32 +83,30 @@ export default class CkbNewCellButton extends PureComponent {
     const { minCapacity } = this.state
     const { errorInCapacity, errorInData, errorInFee } = this.state
 
-    return (
-      <React.Fragment>
-        <Button size='sm' color='success' className='ml-2' onClick={this.openModal}>
-          <i className='fas fa-plus mr-1' />New Cell
-        </Button>
-        <Modal
-          ref={this.modal}
-          overflow
-          title='New Cell'
-          textConfirm='Preview'
-          onConfirm={this.preview}
-          confirmDisabled={errorInCapacity || errorInData || errorInFee}
-        >
-          <CapacityInput
-            ref={this.capacityInput}
-            onChange={this.onChangeCapacity}
-            placeholder={`Minimal: ${minCapacity.toString()}`}
-          />
-          <DataInput initialData={this.data} onChange={this.onChangeData} />
-          <CapacityInput
-            label='Fee'
-            onChange={this.onChangeFee}
-            placeholder='Default: 0.001'
-          />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button size='sm' color='success' className='ml-2' onClick={this.openModal}>
+        <i className='fas fa-plus mr-1' />New Cell
+      </Button>
+      <Modal
+        ref={this.modal}
+        overflow
+        title='New Cell'
+        textConfirm='Preview'
+        onConfirm={this.preview}
+        confirmDisabled={errorInCapacity || errorInData || errorInFee}
+      >
+        <CapacityInput
+          ref={this.capacityInput}
+          onChange={this.onChangeCapacity}
+          placeholder={`Minimal: ${minCapacity.toString()}`}
+        />
+        <DataInput initialData={this.data} onChange={this.onChangeData} />
+        <CapacityInput
+          label='Fee'
+          onChange={this.onChangeFee}
+          placeholder='Default: 0.001'
+        />
+      </Modal>
+    </>
   }
 }

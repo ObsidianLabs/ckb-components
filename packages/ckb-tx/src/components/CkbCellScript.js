@@ -37,33 +37,31 @@ export default class CkbCellScript extends PureComponent {
       return null
     }
 
-    return (
-      <React.Fragment>
-        <Button
-          size='sm'
-          color='transparent'
-          className='text-muted hover-show ml-1'
-          onClick={this.openModal}
-        >
-          <i className='fas fa-pencil-alt' />
-        </Button>
-        <Modal
-          ref={this.modal}
-          overflow
-          title={`Modify ${this.props.type ? 'Type' : 'Lock'} Script`}
-          onConfirm={this.onModifyScript}
-          confirmDisabled={this.state.errorInScript}
-        >
-          <ScriptInput
-            label={`${this.props.type ? 'Type' : 'Lock'} Script`}
-            noAddress={this.props.type}
-            initialScript={this.props.script}
-            depCells={this.props.depCells}
-            onChange={this.onChangeScript}
-          />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        size='sm'
+        color='transparent'
+        className='text-muted hover-show ml-1'
+        onClick={this.openModal}
+      >
+        <i className='fas fa-pencil-alt' />
+      </Button>
+      <Modal
+        ref={this.modal}
+        overflow
+        title={`Modify ${this.props.type ? 'Type' : 'Lock'} Script`}
+        onConfirm={this.onModifyScript}
+        confirmDisabled={this.state.errorInScript}
+      >
+        <ScriptInput
+          label={`${this.props.type ? 'Type' : 'Lock'} Script`}
+          noAddress={this.props.type}
+          initialScript={this.props.script}
+          depCells={this.props.depCells}
+          onChange={this.onChangeScript}
+        />
+      </Modal>
+    </>
   }
 
   render () {

@@ -102,40 +102,38 @@ export default class CkbAccount extends PureComponent {
     const { network } = this.props
     const { initialSelected, initialTabs } = this.state
 
-    return (
-      <React.Fragment>
-        <TabsWithNavigationBar
-          ref={this.tabs}
-          initialSelected={initialSelected}
-          initialTabs={initialTabs}
-          starred={this.props.starred}
-          maxTabWidth={46}
-          getTabText={this.getTabText}
-          onValue={this.onValue}
-          onChangeStarred={this.props.onChangeStarred}
-          onRefresh={this.onRefresh}
-          onTabsUpdated={this.props.onTabsUpdated}
-        >
-          <CacheRoute
-            path={`/account/:name`}
-            cacheKey={props => `account-${network}-${props.match?.params?.name}`}
-            multiple={5}
-            className='h-100 overflow-auto'
-            render={props => (
-              <CkbAccountPage
-                cacheLifecycles={props.cacheLifecycles}
-                onDisplay={this.onPageDisplay}
-                value={props.match.params.name}
-              />
-            )}
-          />
-        </TabsWithNavigationBar>
-        <Modal
-          ref={this.modal}
-          title='Cell Detail'
-        >
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <TabsWithNavigationBar
+        ref={this.tabs}
+        initialSelected={initialSelected}
+        initialTabs={initialTabs}
+        starred={this.props.starred}
+        maxTabWidth={46}
+        getTabText={this.getTabText}
+        onValue={this.onValue}
+        onChangeStarred={this.props.onChangeStarred}
+        onRefresh={this.onRefresh}
+        onTabsUpdated={this.props.onTabsUpdated}
+      >
+        <CacheRoute
+          path={`/account/:name`}
+          cacheKey={props => `account-${network}-${props.match?.params?.name}`}
+          multiple={5}
+          className='h-100 overflow-auto'
+          render={props => (
+            <CkbAccountPage
+              cacheLifecycles={props.cacheLifecycles}
+              onDisplay={this.onPageDisplay}
+              value={props.match.params.name}
+            />
+          )}
+        />
+      </TabsWithNavigationBar>
+      <Modal
+        ref={this.modal}
+        title='Cell Detail'
+      >
+      </Modal>
+    </>
   }
 }

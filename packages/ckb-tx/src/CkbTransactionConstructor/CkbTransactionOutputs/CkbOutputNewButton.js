@@ -70,32 +70,30 @@ export default class CkbOutputNewButton extends PureComponent {
   render () {
     const { errorInCapacity, errorInLock, errorInType, errorInData } = this.state
 
-    return (
-      <React.Fragment>
-        <Button size='sm' color='success' className='ml-2' onClick={this.onClickButton}>
-          <i className='fas fa-plus mr-1' />New
-        </Button>
-        <Modal
-          ref={this.modal}
-          title='New Output'
-          onConfirm={this.onConfirmNewOutput}
-          confirmDisabled={errorInCapacity || errorInLock || errorInType || errorInData}
-        >
-          <CapacityInput ref={this.capacityInput} onChange={this.onChangeCapacity} />
-          <ScriptInput
-            label='Lock script'
-            depCells={this.props.depCells}
-            onChange={this.onChangeLock}
-          />
-          <ScriptInput
-            label='Type script'
-            noAddress
-            depCells={this.props.depCells}
-            onChange={this.onChangeType}
-          />
-          <DataInput onChange={this.onChangeData} />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button size='sm' color='success' className='ml-2' onClick={this.onClickButton}>
+        <i className='fas fa-plus mr-1' />New
+      </Button>
+      <Modal
+        ref={this.modal}
+        title='New Output'
+        onConfirm={this.onConfirmNewOutput}
+        confirmDisabled={errorInCapacity || errorInLock || errorInType || errorInData}
+      >
+        <CapacityInput ref={this.capacityInput} onChange={this.onChangeCapacity} />
+        <ScriptInput
+          label='Lock script'
+          depCells={this.props.depCells}
+          onChange={this.onChangeLock}
+        />
+        <ScriptInput
+          label='Type script'
+          noAddress
+          depCells={this.props.depCells}
+          onChange={this.onChangeType}
+        />
+        <DataInput onChange={this.onChangeData} />
+      </Modal>
+    </>
   }
 }

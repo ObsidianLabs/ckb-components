@@ -79,30 +79,28 @@ export default class ScriptInput extends PureComponent {
 
     const hashs = this.props.depCells.map(cell => cell[type].hash).filter(Boolean)
 
-    return (
-      <React.Fragment>
-        <DebouncedInput
-          size='sm'
-          inputGroupClassName='mb-2'
-          addon={<span key='code-hash'><i className='fas fa-hashtag' /></span>}
-          placeholder='Code Hash - hex string starts with 0x'
-          maxLength='66'
-          value={this.script.codeHash}
-          invalid={!this.script.isValid || undefined}
+    return <>
+      <DebouncedInput
+        size='sm'
+        inputGroupClassName='mb-2'
+        addon={<span key='code-hash'><i className='fas fa-hashtag' /></span>}
+        placeholder='Code Hash - hex string starts with 0x'
+        maxLength='66'
+        value={this.script.codeHash}
+        invalid={!this.script.isValid || undefined}
+        onChange={codeHash => this.onChange({ codeHash })}
+      >
+        <Dropdown
+          header={`Deps' ${type} hash`}
+          items={hashs}
           onChange={codeHash => this.onChange({ codeHash })}
-        >
-          <Dropdown
-            header={`Deps' ${type} hash`}
-            items={hashs}
-            onChange={codeHash => this.onChange({ codeHash })}
-          />
-        </DebouncedInput>
-        <ArgsInput
-          args={this.script.args}
-          onChange={args => this.onChange({ args })}
         />
-      </React.Fragment>
-    )
+      </DebouncedInput>
+      <ArgsInput
+        args={this.script.args}
+        onChange={args => this.onChange({ args })}
+      />
+    </>
   }
 
   renderScriptHash = () => {

@@ -111,84 +111,82 @@ export default class CustomNetwork extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <div className='d-flex flex-1 flex-column overflow-auto'>
-          <div className='d-flex'>
-            <div className='col-6 p-0 border-right-black'>
-              <TableCard title='Custom Network' right={this.renderEditButton()}>
-                <TableCardRow
-                  name='Node URL'
-                  badge={this.props.customNetwork?.node}
-                  badgeColor='primary'
-                />
-                <TableCardRow
-                  name='Indexer URL'
-                  badge={this.props.customNetwork?.indexer}
-                  badgeColor='primary'
-                />
-                <TableCardRow
-                  name='Chain'
-                  badge={this.state.blockchainInfo?.chain}
-                />
-                <TableCardRow
-                  name='Chain ID'
-                  badge={this.state.nodeInfo?.nodeId}
-                />
-                <TableCardRow
-                  name='Version'
-                  badge={this.state.nodeInfo?.version}
-                />
-              </TableCard>
-            </div>
-            <div className='col-6 p-0'>
-              <TableCard title='Blocks'>
-                <TableCardRow
-                  name='Block Number'
-                  badge={this.state.block && parseInt(this.state.block.number, 16)}
-                />
-                <TableCardRow
-                  name='Timestamp'
-                  badge={this.state.block && moment(parseInt(this.state.block.timestamp, 16)).format('LL LTS')}
-                />
-                <TableCardRow
-                  name='Epoch'
-                  badge={this.state.epoch && Number(this.state.epoch.number)}
-                />
-                <TableCardRow
-                  name='Difficulty'
-                  badge={this.state.blockchainInfo && `${(Number(this.state.blockchainInfo.difficulty)/1000000).toFixed(2)} MH`}
-                />
-              </TableCard>
-            </div>
+    return <>
+      <div className='d-flex flex-1 flex-column overflow-auto'>
+        <div className='d-flex'>
+          <div className='col-6 p-0 border-right-black'>
+            <TableCard title='Custom Network' right={this.renderEditButton()}>
+              <TableCardRow
+                name='Node URL'
+                badge={this.props.customNetwork?.node}
+                badgeColor='primary'
+              />
+              <TableCardRow
+                name='Indexer URL'
+                badge={this.props.customNetwork?.indexer}
+                badgeColor='primary'
+              />
+              <TableCardRow
+                name='Chain'
+                badge={this.state.blockchainInfo?.chain}
+              />
+              <TableCardRow
+                name='Chain ID'
+                badge={this.state.nodeInfo?.nodeId}
+              />
+              <TableCardRow
+                name='Version'
+                badge={this.state.nodeInfo?.version}
+              />
+            </TableCard>
           </div>
-          <div className='d-flex flex-fill'>
-            <div className='col-12 p-0 border-top-black'>
-            </div>
+          <div className='col-6 p-0'>
+            <TableCard title='Blocks'>
+              <TableCardRow
+                name='Block Number'
+                badge={this.state.block && parseInt(this.state.block.number, 16)}
+              />
+              <TableCardRow
+                name='Timestamp'
+                badge={this.state.block && moment(parseInt(this.state.block.timestamp, 16)).format('LL LTS')}
+              />
+              <TableCardRow
+                name='Epoch'
+                badge={this.state.epoch && Number(this.state.epoch.number)}
+              />
+              <TableCardRow
+                name='Difficulty'
+                badge={this.state.blockchainInfo && `${(Number(this.state.blockchainInfo.difficulty)/1000000).toFixed(2)} MH`}
+              />
+            </TableCard>
           </div>
         </div>
-        <Modal
-          ref={this.modal}
-          title='Custom Network'
-          onConfirm={this.onConfirmCustomNetwork}
-        >
-          <DebouncedFormGroup
-            label='Node URL'
-            placeholder='https://...'
-            maxLength='200'
-            value={this.state.nodeUrl}
-            onChange={nodeUrl => this.setState({ nodeUrl })}
-          />
-          <DebouncedFormGroup
-            label='Indexer URL'
-            placeholder='https://...'
-            maxLength='200'
-            value={this.state.indexerUrl}
-            onChange={indexerUrl => this.setState({ indexerUrl })}
-          />
-        </Modal>
-      </React.Fragment>
-    )
+        <div className='d-flex flex-fill'>
+          <div className='col-12 p-0 border-top-black'>
+          </div>
+        </div>
+      </div>
+      <Modal
+        ref={this.modal}
+        title='Custom Network'
+        onConfirm={this.onConfirmCustomNetwork}
+      >
+        <DebouncedFormGroup
+          label='Node URL'
+          placeholder='https://...'
+          maxLength='200'
+          value={this.state.nodeUrl}
+          onChange={nodeUrl => this.setState({ nodeUrl })}
+        />
+        <DebouncedFormGroup
+          label='Indexer URL'
+          placeholder='https://...'
+          maxLength='200'
+          value={this.state.indexerUrl}
+          onChange={indexerUrl => this.setState({ indexerUrl })}
+        />
+      </Modal>
+    </>
   }
 }
 

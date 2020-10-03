@@ -38,22 +38,20 @@ export default class CkbDebuggerButton extends PureComponent {
       ? <span key='ckb-debugging-icon'><i className='fas fa-spinner fa-spin' /></span>
       : <span key='ckb-debug-icon'><i className='fas fa-bug' /></span>
 
-    return (
-      <React.Fragment>
-        <Button
-          color={color}
-          size={size}
-          id='tooltip-ckb-debug-btn'
-          key='tooltip-ckb-debug-btn'
-          className={className}
-          onClick={this.onClick}
-        >
-          {icon}
-        </Button>
-        <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-ckb-debug-btn'>
-          { this.state.debugging ? 'Debugging' : `Debug`}
-        </UncontrolledTooltip>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        color={color}
+        size={size}
+        id='tooltip-ckb-debug-btn'
+        key='tooltip-ckb-debug-btn'
+        className={className}
+        onClick={this.onClick}
+      >
+        {icon}
+      </Button>
+      <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-ckb-debug-btn'>
+        { this.state.debugging ? 'Debugging' : `Debug`}
+      </UncontrolledTooltip>
+    </>
   }
 }

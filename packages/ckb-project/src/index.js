@@ -16,10 +16,8 @@ export { default as navbarItem } from './navbarItem'
 export { default as redux } from './redux'
 
 export default function (props) {
-  return (
-    <React.Fragment>
-      <CkbProject {...props} />
-      <CkbDebuggerWindow />
-    </React.Fragment>
-  )
+  return <>
+    <CkbProject {...props} />
+    <CkbDebuggerWindow />
+  </>
 }

@@ -92,37 +92,33 @@ export default class InstanceList extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <Card
-          title={`CKB Instances (${this.props.chain})`}
-          right={(
-            <React.Fragment>
-              <DockerImageButton
-                channel={instanceChannel.ckbNode}
-                icon='fas fa-server'
-                title='CKB Version Manager'
-                noneName='CKB node'
-                modalTitle='CKB Version Manager'
-                downloadingTitle='Downloading CKB'
-              />
-              <CreateInstanceButton
-                className='ml-2'
-                chain={this.props.chain}
-                onRefresh={this.refreshInstances}
-              />
-            </React.Fragment>
-          )}
-        >
-          <div className='flex-grow-1 overflow-auto'>
-            {this.renderTable()}
-          </div>
-        </Card>
-        <InstanceConfigModal
-          ref={this.configModal}
-          onRefresh={this.refreshInstances}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <Card
+        title={`CKB Instances (${this.props.chain})`}
+        right={<>
+          <DockerImageButton
+            channel={instanceChannel.ckbNode}
+            icon='fas fa-server'
+            title='CKB Version Manager'
+            noneName='CKB node'
+            modalTitle='CKB Version Manager'
+            downloadingTitle='Downloading CKB'
+          />
+          <CreateInstanceButton
+            className='ml-2'
+            chain={this.props.chain}
+            onRefresh={this.refreshInstances}
+          />
+        </>}
+      >
+        <div className='flex-grow-1 overflow-auto'>
+          {this.renderTable()}
+        </div>
+      </Card>
+      <InstanceConfigModal
+        ref={this.configModal}
+        onRefresh={this.refreshInstances}
+      />
+    </>
   }
 }

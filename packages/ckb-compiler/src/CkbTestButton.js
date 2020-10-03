@@ -34,29 +34,23 @@ export default class CkbTestButton extends PureComponent {
 
     let icon = <span key='test-icon'><i className='fas fa-vial' /></span>
     if (this.state.testing) {
-      icon = (
-        <React.Fragment>
-          <span key='testing-icon'><i className='fas fa-spinner fa-spin' /></span>
-        </React.Fragment>
-      )
+      icon = <><span key='testing-icon'><i className='fas fa-spinner fa-spin' /></span></>
     }
 
-    return (
-      <React.Fragment>
-        <Button
-          color={color}
-          size={size}
-          id='tooltip-test-btn'
-          key='tooltip-test-btn'
-          className={`hover-block ${className}`}
-          onClick={this.onClick}
-        >
-          {icon}
-        </Button>
-        <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-test-btn'>
-          { this.state.testing ? 'Testing' : 'Test'}
-        </UncontrolledTooltip>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        color={color}
+        size={size}
+        id='tooltip-test-btn'
+        key='tooltip-test-btn'
+        className={`hover-block ${className}`}
+        onClick={this.onClick}
+      >
+        {icon}
+      </Button>
+      <UncontrolledTooltip trigger='hover' delay={0} placement='bottom' target='tooltip-test-btn'>
+        { this.state.testing ? 'Testing' : 'Test'}
+      </UncontrolledTooltip>
+    </>
   }
 }

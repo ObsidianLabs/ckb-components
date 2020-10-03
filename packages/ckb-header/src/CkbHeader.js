@@ -100,14 +100,12 @@ export default class CkbHeader extends PureComponent {
       },
     ]
 
-    return (
-      <React.Fragment>
-        <Navbar
-          navbarLeft={navbarLeft}
-          navbarRight={navbarRight}
-        />
-        <NewProjectModal />
-      </React.Fragment>
-    )
+    return <>
+      <Navbar
+        navbarLeft={navbarLeft}
+        navbarRight={navbarRight}
+      />
+      <NewProjectModal />
+    </>
   }
 }

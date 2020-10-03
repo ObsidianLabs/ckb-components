@@ -40,26 +40,24 @@ export default class CkbCellCapacity extends PureComponent {
       return null
     }
 
-    return (
-      <React.Fragment>
-        <Button
-          size='sm'
-          color='transparent'
-          className='text-muted hover-show ml-1'
-          onClick={this.openModal}
-        >
-          <i className='fas fa-pencil-alt' />
-        </Button>
-        <Modal
-          ref={this.modal}
-          title='Modify Capacity'
-          onConfirm={this.onModifyCapacity}
-          confirmDisabled={this.state.errorInCapacity}
-        >
-          <CapacityInput ref={this.capacityInput} initial={this.props.capacity} onChange={this.onChangeCapacity} />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        size='sm'
+        color='transparent'
+        className='text-muted hover-show ml-1'
+        onClick={this.openModal}
+      >
+        <i className='fas fa-pencil-alt' />
+      </Button>
+      <Modal
+        ref={this.modal}
+        title='Modify Capacity'
+        onConfirm={this.onModifyCapacity}
+        confirmDisabled={this.state.errorInCapacity}
+      >
+        <CapacityInput ref={this.capacityInput} initial={this.props.capacity} onChange={this.onChangeCapacity} />
+      </Modal>
+    </>
   }
 
   render () {

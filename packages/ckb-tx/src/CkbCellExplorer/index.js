@@ -87,13 +87,11 @@ export default class CkbCellExplorer extends PureComponent {
         onChangeStarred={this.props.onChangeStarred}
         onRefresh={this.onRefresh}
         onTabsUpdated={this.props.onTabsUpdated}
-        NavbarButtons={(
-          <React.Fragment>
-            <CkbTransferButton sender={this.state.value} />
-            <CkbMintUdtButton issuer={this.state.value} />
-            {/* <CkbCellManifest sender={this.state.value} /> */}
-          </React.Fragment>
-        )}
+        NavbarButtons={<>
+          <CkbTransferButton sender={this.state.value} />
+          <CkbMintUdtButton issuer={this.state.value} />
+          {/* <CkbCellManifest sender={this.state.value} /> */}
+        </>}
       >
         <CacheRoute
           path={`/contract/:name`}

@@ -37,30 +37,28 @@ export default class CkbCellData extends PureComponent {
       return null
     }
 
-    return (
-      <React.Fragment>
-        <Button
-          size='sm'
-          color='transparent'
-          className='hover-show'
-          onClick={this.openModal}
-        >
-          <i className='text-muted fas fa-pencil-alt' />
-        </Button>
-        <Modal
-          ref={this.modal}
-          title='Modify Data'
-          onConfirm={this.onModifyData}
-          confirmDisabled={this.state.errorInData}
-        >
-          <DataInput
-            ref={this.input}
-            initialData={this.props.data}
-            onChange={this.onChangeData}
-          />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        size='sm'
+        color='transparent'
+        className='hover-show'
+        onClick={this.openModal}
+      >
+        <i className='text-muted fas fa-pencil-alt' />
+      </Button>
+      <Modal
+        ref={this.modal}
+        title='Modify Data'
+        onConfirm={this.onModifyData}
+        confirmDisabled={this.state.errorInData}
+      >
+        <DataInput
+          ref={this.input}
+          initialData={this.props.data}
+          onChange={this.onChangeData}
+        />
+      </Modal>
+    </>
   }
 
   render () {

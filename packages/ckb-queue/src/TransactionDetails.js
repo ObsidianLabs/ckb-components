@@ -65,28 +65,26 @@ export default class TransactionDetails extends PureComponent {
     }
     try {
       const obj = JSON.parse(error)
-      return (
-        <React.Fragment>
-          <TableCardRow
-            name='Error Code'
-            icon='fas fa-exclamation-triangle'
-            badge={obj.code}
-            badgeColor='danger'
-          />
-          <TableCardRow
-            name='Error Message'
-            icon='fas fa-exclamation-triangle'
-          >
-            <code className='small'>{obj.message}</code>
-          </TableCardRow>
-          <TableCardRow
-            name='Error Data'
-            icon='fas fa-exclamation-triangle'
-          >
-            <code className='small'>{obj.data}</code>
-          </TableCardRow>
-        </React.Fragment>
-      )
+      return <>
+        <TableCardRow
+          name='Error Code'
+          icon='fas fa-exclamation-triangle'
+          badge={obj.code}
+          badgeColor='danger'
+        />
+        <TableCardRow
+          name='Error Message'
+          icon='fas fa-exclamation-triangle'
+        >
+          <code className='small'>{obj.message}</code>
+        </TableCardRow>
+        <TableCardRow
+          name='Error Data'
+          icon='fas fa-exclamation-triangle'
+        >
+          <code className='small'>{obj.data}</code>
+        </TableCardRow>
+      </>
     } catch (e) {
       <TableCardRow
         name='Error'
@@ -109,19 +107,17 @@ export default class TransactionDetails extends PureComponent {
       options.push({ key: 'error', text: 'Error' })
     }
 
-    return (
-      <React.Fragment>
-        <div>
-          <ButtonOptions
-            size='sm'
-            className='mb-3'
-            options={options}
-            selected={selected}
-            onSelect={selected => this.setState({ selected })}
-          />
-        </div>
-        {this.renderContent(tx, selected)}
-      </React.Fragment>
-    )
+    return <>
+      <div>
+        <ButtonOptions
+          size='sm'
+          className='mb-3'
+          options={options}
+          selected={selected}
+          onSelect={selected => this.setState({ selected })}
+        />
+      </div>
+      {this.renderContent(tx, selected)}
+    </>
   }
 }

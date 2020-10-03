@@ -100,31 +100,29 @@ export default class ArgsInput extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <MultiSelect
-          size='sm'
-          addon={<i className='fas fa-brackets' />}
-          options={this.options}
-          value={this.props.args.value.map(optionItemFromData)}
-          onChange={this.onChange}
-          onClickLabel={this.onClickLabel}
-          placeholder='Args - click to add array items'
+    return <>
+      <MultiSelect
+        size='sm'
+        addon={<i className='fas fa-brackets' />}
+        options={this.options}
+        value={this.props.args.value.map(optionItemFromData)}
+        onChange={this.onChange}
+        onClickLabel={this.onClickLabel}
+        placeholder='Args - click to add array items'
+      />
+      <Modal
+        ref={this.modal}
+        title='Enter Arg...'
+        onConfirm={this.onConfirm}
+        confirmDisabled={this.state.errorInData}
+      >
+        <DataInput
+          ref={this.input}
+          noFile
+          initialData={this.data}
+          onChange={this.onChangeData}
         />
-        <Modal
-          ref={this.modal}
-          title='Enter Arg...'
-          onConfirm={this.onConfirm}
-          confirmDisabled={this.state.errorInData}
-        >
-          <DataInput
-            ref={this.input}
-            noFile
-            initialData={this.data}
-            onChange={this.onChangeData}
-          />
-        </Modal>
-      </React.Fragment>
-    )
+      </Modal>
+    </>
   }
 }

@@ -7,36 +7,34 @@ import { CkbDebuggerButton } from '@obsidians/ckb-debugger'
 import ckbProjectManager from '../ckbProjectManager'
 
 export default function CkbToolbar ({ projectRoot, projectLanguage, compilerVersion }) {
-  return (
-    <React.Fragment>
-      <CkbCompilerButton
+  return <>
+    <CkbCompilerButton
+      className='rounded-0 border-0 flex-none w-5'
+      version={compilerVersion}
+      projectLanguage={projectLanguage}
+      onClick={() => ckbProjectManager.compile()}
+    />
+    {
+      projectLanguage === 'rust' &&
+      <CkbTestButton
         className='rounded-0 border-0 flex-none w-5'
-        version={compilerVersion}
-        projectLanguage={projectLanguage}
-        onClick={() => ckbProjectManager.compile()}
+        onClick={() => ckbProjectManager.test()}
       />
-      {
-        projectLanguage === 'rust' &&
-        <CkbTestButton
-          className='rounded-0 border-0 flex-none w-5'
-          onClick={() => ckbProjectManager.test()}
-        />
-      }
-      {
-        (projectLanguage === 'c' || projectLanguage === 'javascript') &&
-        <CkbDebuggerButton
-          className='rounded-0 border-0 flex-none w-5'
-          projectRoot={projectRoot}
-          onClick={() => ckbProjectManager.debug()}
-        />
-      }
-      <div className='flex-1' />
-      <ToolbarButton
-        id='settings'
-        icon='fas fa-cog'
-        tooltip='Project Settings'
-        onClick={() => ckbProjectManager.openProjectSettings()}
+    }
+    {
+      (projectLanguage === 'c' || projectLanguage === 'javascript') &&
+      <CkbDebuggerButton
+        className='rounded-0 border-0 flex-none w-5'
+        projectRoot={projectRoot}
+        onClick={() => ckbProjectManager.debug()}
       />
-    </React.Fragment>
-  )
+    }
+    <div className='flex-1' />
+    <ToolbarButton
+      id='settings'
+      icon='fas fa-cog'
+      tooltip='Project Settings'
+      onClick={() => ckbProjectManager.openProjectSettings()}
+    />
+  </>
 }

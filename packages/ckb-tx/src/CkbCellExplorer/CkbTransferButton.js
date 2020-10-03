@@ -112,43 +112,41 @@ export default class CkbTransferButton extends PureComponent {
   render () {
     const { udts, token, errorInCapacity, errorInReceiver } = this.state
 
-    return (
-      <React.Fragment>
-        <ToolbarButton
-          id='navbar-transfer'
-          size='md'
-          icon='fas fa-sign-out-alt'
-          tooltip='Transfer'
-          onClick={this.openModal}
-        />
-        <Modal
-          ref={this.modal}
-          overflow
-          title='Transfer'
-          textConfirm='Preview'
-          confirmDisabled={errorInCapacity || errorInReceiver}
-          onConfirm={this.preview}
-        >
-          <FormGroup>
-            <Label>Token</Label>
-            <CustomInput
-              id='transfer-token'
-              type='select'
-              value={token}
-              onChange={event => this.setState({ token: event.target.value })}
-            >
-              <option value='CKB'>CKB</option>
-              {udts.map(udt => (
-                <option key={`transfer-token-${udt.issuer}`} value={udt.issuer}>
-                  [UDT] {udt.symbol ? `${udt.symbol}${udt.name ? ` - ${udt.name}` : ''}` : udt.issuer}
-                </option>
-              ))}
-            </CustomInput>
-          </FormGroup>
-          <CapacityInput ref={this.capacityInput} label='Amount' onChange={this.onChangeCapacity} decimals={token === 'CKB' ? 8 : 0} />
-          <ScriptInput label='Receiver' addressOnly onChange={this.onChangeReceiver} />
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <ToolbarButton
+        id='navbar-transfer'
+        size='md'
+        icon='fas fa-sign-out-alt'
+        tooltip='Transfer'
+        onClick={this.openModal}
+      />
+      <Modal
+        ref={this.modal}
+        overflow
+        title='Transfer'
+        textConfirm='Preview'
+        confirmDisabled={errorInCapacity || errorInReceiver}
+        onConfirm={this.preview}
+      >
+        <FormGroup>
+          <Label>Token</Label>
+          <CustomInput
+            id='transfer-token'
+            type='select'
+            value={token}
+            onChange={event => this.setState({ token: event.target.value })}
+          >
+            <option value='CKB'>CKB</option>
+            {udts.map(udt => (
+              <option key={`transfer-token-${udt.issuer}`} value={udt.issuer}>
+                [UDT] {udt.symbol ? `${udt.symbol}${udt.name ? ` - ${udt.name}` : ''}` : udt.issuer}
+              </option>
+            ))}
+          </CustomInput>
+        </FormGroup>
+        <CapacityInput ref={this.capacityInput} label='Amount' onChange={this.onChangeCapacity} decimals={token === 'CKB' ? 8 : 0} />
+        <ScriptInput label='Receiver' addressOnly onChange={this.onChangeReceiver} />
+      </Modal>
+    </>
   }
 }

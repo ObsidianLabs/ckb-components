@@ -47,48 +47,46 @@ export default class CkbCellManifest extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <ToolbarButton
-          id='navbar-cell-manifest'
-          size='md'
-          icon='fas fa-list-ul'
-          tooltip='Cell Manifest'
-          onClick={this.openModal}
-        />
-        <Modal
-          ref={this.modal}
-          title='Cell Manifest'
-          textActions={['New Item']}
-          onActions={[this.newItem]}
-          textCancel='Close'
-        >
-          <div>
-            <ButtonOptions
-              size='sm'
-              options={[
-                { key: 'network', text: 'Network' },
-                { key: 'global', text: 'Global' },
-              ]}
-              selected={this.state.key}
-              onSelect={this.onSelect}
-            />
-          </div>
-          <table className='table table-sm table-hover table-striped'>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th style={{ width: '70%' }}>Cell</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.renderManifest()}
-            </tbody>
-          </table>
-        </Modal>
-        <NewItemModal ref={this.newItemModal} />
-      </React.Fragment>
-    )
+    return <>
+      <ToolbarButton
+        id='navbar-cell-manifest'
+        size='md'
+        icon='fas fa-list-ul'
+        tooltip='Cell Manifest'
+        onClick={this.openModal}
+      />
+      <Modal
+        ref={this.modal}
+        title='Cell Manifest'
+        textActions={['New Item']}
+        onActions={[this.newItem]}
+        textCancel='Close'
+      >
+        <div>
+          <ButtonOptions
+            size='sm'
+            options={[
+              { key: 'network', text: 'Network' },
+              { key: 'global', text: 'Global' },
+            ]}
+            selected={this.state.key}
+            onSelect={this.onSelect}
+          />
+        </div>
+        <table className='table table-sm table-hover table-striped'>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th style={{ width: '70%' }}>Cell</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderManifest()}
+          </tbody>
+        </table>
+      </Modal>
+      <NewItemModal ref={this.newItemModal} />
+    </>
   }
 }

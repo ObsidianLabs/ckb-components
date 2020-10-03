@@ -59,45 +59,43 @@ export default class CreateInstanceButton extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <Button
-          key='new-instance'
-          color='success'
-          className={this.props.className}
-          onClick={this.onClickButton}
-        >
-          <i className='fas fa-plus mr-1' />
-          New Instance
-        </Button>
-        <Modal
-          ref={this.modal}
-          overflow
-          title={`New Instance (${this.props.chain})`}
-          textConfirm='Create'
-          onConfirm={this.onCreateInstance}
-          pending={this.state.pending}
-          confirmDisabled={!this.state.name || !this.state.version || !this.state.address}
-        >
-          <DebouncedFormGroup
-            label='Instance name'
-            placeholder='Can only contain alphanumeric characters, dots, hyphens or underscores.'
-            maxLength='50'
-            value={this.state.name}
-            onChange={name => this.setState({ name })}
-          />
-          <DockerImageInputSelector
-            channel={instanceChannel.ckbNode}
-            label='CKB version'
-            noneName='CKB node'
-            modalTitle='CKB Version Manager'
-            downloadingTitle='Downloading CKB'
-            selected={this.state.version}
-            onSelected={version => this.setState({ version })}
-          />
-          {this.renderBlockAssemberInput()}
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <Button
+        key='new-instance'
+        color='success'
+        className={this.props.className}
+        onClick={this.onClickButton}
+      >
+        <i className='fas fa-plus mr-1' />
+        New Instance
+      </Button>
+      <Modal
+        ref={this.modal}
+        overflow
+        title={`New Instance (${this.props.chain})`}
+        textConfirm='Create'
+        onConfirm={this.onCreateInstance}
+        pending={this.state.pending}
+        confirmDisabled={!this.state.name || !this.state.version || !this.state.address}
+      >
+        <DebouncedFormGroup
+          label='Instance name'
+          placeholder='Can only contain alphanumeric characters, dots, hyphens or underscores.'
+          maxLength='50'
+          value={this.state.name}
+          onChange={name => this.setState({ name })}
+        />
+        <DockerImageInputSelector
+          channel={instanceChannel.ckbNode}
+          label='CKB version'
+          noneName='CKB node'
+          modalTitle='CKB Version Manager'
+          downloadingTitle='Downloading CKB'
+          selected={this.state.version}
+          onSelected={version => this.setState({ version })}
+        />
+        {this.renderBlockAssemberInput()}
+      </Modal>
+    </>
   }
 }

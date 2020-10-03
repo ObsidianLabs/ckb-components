@@ -98,12 +98,10 @@ export default class CkbCompilerButton extends PureComponent {
 
     let icon = <span key='ckb-build-icon'><i className='fas fa-hammer' /></span>
     if (this.state.building) {
-      icon = (
-        <React.Fragment>
-          <span key='ckb-building-icon' className='hover-hide'><i className='fas fa-spinner fa-spin' /></span>
-          <span key='ckb-stop-build-icon' className='hover-show'><i className='fas fa-stop-circle' /></span>
-        </React.Fragment>
-      )
+      icon = <>
+        <span key='ckb-building-icon' className='hover-hide'><i className='fas fa-spinner fa-spin' /></span>
+        <span key='ckb-stop-build-icon' className='hover-show'><i className='fas fa-stop-circle' /></span>
+      </>
     }
 
     return (

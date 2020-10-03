@@ -146,50 +146,48 @@ export default class CkbMintUdtButton extends PureComponent {
   render () {
     const { udt, errorInCapacity, errorInReceiver } = this.state
 
-    return (
-      <React.Fragment>
-        <ToolbarButton
-          id='navbar-mint-udt'
-          size='md'
-          icon='far fa-coins'
-          tooltip='Mint UDT'
-          onClick={this.openModal}
+    return <>
+      <ToolbarButton
+        id='navbar-mint-udt'
+        size='md'
+        icon='far fa-coins'
+        tooltip='Mint UDT'
+        onClick={this.openModal}
+      />
+      <Modal
+        ref={this.modal}
+        overflow
+        title='Mint UDT'
+        textConfirm='Preview'
+        confirmDisabled={errorInCapacity || errorInReceiver}
+        onConfirm={this.preview}
+      >
+        {this.renderUdtInfo(udt)}
+        <CapacityInput ref={this.capacityInput} label='Amount' onChange={this.onChangeCapacity} decimals={0} />
+        <ScriptInput label='Receiver' addressOnly onChange={this.onChangeReceiver} />
+      </Modal>
+      <Modal
+        ref={this.udtInfoModal}
+        overflow
+        title='Update UDT Information'
+        textConfirm='Update'
+        onConfirm={this.updateUdtInfo}
+      >
+        <DebouncedFormGroup
+          label='Symbol'
+          value={this.state.udtSymbol}
+          onChange={udtSymbol => this.setState({ udtSymbol })}
         />
-        <Modal
-          ref={this.modal}
-          overflow
-          title='Mint UDT'
-          textConfirm='Preview'
-          confirmDisabled={errorInCapacity || errorInReceiver}
-          onConfirm={this.preview}
-        >
-          {this.renderUdtInfo(udt)}
-          <CapacityInput ref={this.capacityInput} label='Amount' onChange={this.onChangeCapacity} decimals={0} />
-          <ScriptInput label='Receiver' addressOnly onChange={this.onChangeReceiver} />
-        </Modal>
-        <Modal
-          ref={this.udtInfoModal}
-          overflow
-          title='Update UDT Information'
-          textConfirm='Update'
-          onConfirm={this.updateUdtInfo}
-        >
-          <DebouncedFormGroup
-            label='Symbol'
-            value={this.state.udtSymbol}
-            onChange={udtSymbol => this.setState({ udtSymbol })}
-          />
-          <DebouncedFormGroup
-            label='Name'
-            value={this.state.udtName}
-            onChange={udtName => this.setState({ udtName })}
-          />
-          <IconInput
-            value={this.state.udtIcon}
-            onChange={udtIcon => this.setState({ udtIcon })}
-          />
-        </Modal>
-      </React.Fragment>
-    )
+        <DebouncedFormGroup
+          label='Name'
+          value={this.state.udtName}
+          onChange={udtName => this.setState({ udtName })}
+        />
+        <IconInput
+          value={this.state.udtIcon}
+          onChange={udtIcon => this.setState({ udtIcon })}
+        />
+      </Modal>
+    </>
   }
 }

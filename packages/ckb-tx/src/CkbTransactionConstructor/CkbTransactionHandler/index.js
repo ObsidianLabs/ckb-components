@@ -59,15 +59,13 @@ export default class CkbTransactionHandler extends PureComponent {
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <Button color='primary' onClick={this.openTransactionDetail}>
-          <i className='fas fa-cloud-upload mr-1' />Push Transaction
-        </Button>
-        <CkbTransactionDetailModal
-          ref={this.modal}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <Button color='primary' onClick={this.openTransactionDetail}>
+        <i className='fas fa-cloud-upload mr-1' />Push Transaction
+      </Button>
+      <CkbTransactionDetailModal
+        ref={this.modal}
+      />
+    </>
   }
 }
