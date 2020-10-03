@@ -1,7 +1,7 @@
 {
   "name": "@obsidians/ckb-network",
   "version": "0.1.0",
-  "description": "CKB instance manager",
+  "description": "CKB network",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
   "source": "src/index.js",
