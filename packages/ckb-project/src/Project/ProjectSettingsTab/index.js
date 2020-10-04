@@ -30,7 +30,7 @@ export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
   }
   
   componentWillUnmount () {
-    projectManager.channel.off('settings')
+    projectManager.channel.off('settings', this.debouncedUpdate)
   }
 
   renderCompilerSelector = projectSettings => {

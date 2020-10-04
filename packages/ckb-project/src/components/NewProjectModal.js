@@ -119,6 +119,9 @@ export default class NewProjectModal extends PureComponent {
       const ckbconfig = {
         language: 'rust',
         main: `contracts/${projectName}/src/main.rs`,
+        compilers: {
+          capsule: 'v0.2.1',
+        },
       }
       await this.fs.writeFile(this.path.join(projectRoot, 'ckbconfig.json'), JSON.stringify(ckbconfig, null, 2))
     } else {
