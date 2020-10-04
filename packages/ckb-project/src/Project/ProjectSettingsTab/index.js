@@ -42,7 +42,7 @@ export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
           key='compiler-selector-riscv'
           channel={ckbCompiler.regular}
           disableAutoSelection
-          inputClassName='bg-black'
+          bg='bg-black'
           label='RISC-V compiler version'
           noneName='CKB compiler'
           modalTitle='CKB Compiler Manager'
@@ -57,7 +57,7 @@ export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
           key='compiler-selector-capsule'
           channel={ckbCompiler.capsule}
           disableAutoSelection
-          inputClassName='bg-black'
+          bg='bg-black'
           label='Capsule version'
           noneName='Capsule'
           modalTitle='Capsule Manager'

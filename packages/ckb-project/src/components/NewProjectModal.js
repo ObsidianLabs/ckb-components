@@ -196,12 +196,14 @@ export default class NewProjectModal extends PureComponent {
           options={[
             {
               group: 'Rust',
+              badge: 'Rust',
               children: [
                 { id: 'rust', display: 'CKB project in Rust' },
               ],
             },
             {
               group: 'JavaScript',
+              badge: 'JavaScript',
               children: [
                 { id: 'moleculec-es-template', display: 'moleculec-es' },
                 { id: 'molecule-javascript-template', display: 'molecule-javascript' },
@@ -211,6 +213,7 @@ export default class NewProjectModal extends PureComponent {
             },
             {
               group: 'C',
+              badge: 'C',
               children: [
                 { id: 'carrot', display: 'carrot' },
                 { id: 'simple-udt', display: 'Simple UDT' },
@@ -218,16 +221,12 @@ export default class NewProjectModal extends PureComponent {
             },
             {
               group: 'Other',
+              badge: 'Other',
               children: [
                 { id: 'duktape', display: 'Duktape' },
               ],
             },
           ]}
-          renderText={option => (
-            <div className='d-flex align-items-center mr-1'>
-              <Badge color='info' style={{ top: 0 }}>{option.group}</Badge>
-            </div>
-          )}
           value={this.state.template}
           onChange={template => this.setState({ template })}
         />
