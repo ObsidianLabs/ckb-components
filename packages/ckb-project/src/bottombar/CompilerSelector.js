@@ -6,41 +6,33 @@ import ckbCompiler from '@obsidians/ckb-compiler'
 
 import projectManager from '../projectManager'
 
-export default props => {
+export default () => {
   const [language, setLanguage] = React.useState('')
   const [selected, onSelected] = React.useState('')
 
-  const onLanguage = React.useMemo(() => language => {
+  React.useEffect(projectManager.effect('settings:language', language => {
     setLanguage(language)
     onSelected(projectManager.compilerVersion)
-  }, [])
+  }), [])
 
-  React.useEffect(() => {
-    projectManager.channel.off('settings:language', onLanguage)
-    projectManager.channel.on('settings:language', onLanguage)
-  }, [props.match?.params?.project])
+  React.useEffect(projectManager.effect('settings:compilers.riscv', v => {
+    const language = projectManager.projectSettings?.get('language')
+    if (language === 'c' || language === 'other') {
+      if (!v) {
+        notification.info('No Compiler Specified', 'Please select a version for the compiler.')
+      }
+      onSelected(v)
+    }
+  }), [])
 
-  React.useEffect(() => {
-    projectManager.channel.off('settings:compilers.riscv')
-    projectManager.channel.on('settings:compilers.riscv', v => {
-      const language = projectManager.projectSettings?.get('language')
-      if (language === 'c' || language === 'other') {
-        if (!v) {
-          notification.info('No Compiler Specified', 'Please select a version for the compiler.')
-        }
-        onSelected(v)
+  React.useEffect(projectManager.effect('settings:compilers.capsule', v => {
+    if (projectManager.projectSettings?.get('language') === 'rust') {
+      if (!v) {
+        notification.info('No Compiler Specified', 'Please select a version for capsule.')
       }
-    })
-    projectManager.channel.off('settings:compilers.capsule')
-    projectManager.channel.on('settings:compilers.capsule', v => {
-      if (projectManager.projectSettings?.get('language') === 'rust') {
-        if (!v) {
-          notification.info('No Compiler Specified', 'Please select a version for capsule.')
-        }
-        onSelected(v)
-      }
-    })
-  }, [props.match?.params?.project])
+      onSelected(v)
+    }
+  }), [])
 
   if (language === 'rust') {
     return (
