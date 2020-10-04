@@ -61,7 +61,7 @@ class CkbProjectManager extends ProjectManager {
     this.toggleTerminal(true)
 
     try {
-      await ckbCompiler.build(settings)
+      await ckbCompiler.build(this.compilerVersion, settings)
     } catch (e) {
       return false
     }
@@ -86,7 +86,7 @@ class CkbProjectManager extends ProjectManager {
     this.toggleTerminal(true)
 
     try {
-      await ckbCompiler.build(settings)
+      await ckbCompiler.build(this.compilerVersion, settings)
       await ckbCompiler.test(settings)
     } catch (e) {
       return false

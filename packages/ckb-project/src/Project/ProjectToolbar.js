@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react'
 
+import { WorkspaceContext } from '@obsidians/workspace'
 import { ToolbarButton } from '@obsidians/ui-components'
 import { CkbCompilerButton, CkbTestButton } from '@obsidians/ckb-compiler'
 import { CkbDebuggerButton } from '@obsidians/ckb-debugger'
 
-import ProjectContext from './ProjectContext'
-
 import projectManager from '../projectManager'
 
 export default class ProjectToolbar extends PureComponent {
-  static contextType = ProjectContext
+  static contextType = WorkspaceContext
 
   state = {
     language: ''

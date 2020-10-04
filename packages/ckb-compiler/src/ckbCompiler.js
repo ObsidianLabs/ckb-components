@@ -2,8 +2,6 @@ import { DockerImageChannel } from '@obsidians/docker'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
-import { projectManager } from '@obsidians/ckb-project'
-
 class CkbCompiler {
   constructor () {
     this.capsule = new DockerImageChannel(`obsidians/capsule`)
@@ -38,8 +36,7 @@ class CkbCompiler {
     }
   }
 
-  async build (config = {}) {
-    const version = projectManager.compilerVersion
+  async build (version, config = {}) {
     const projectRoot = this.projectRoot
 
     this._button.setState({ building: true })

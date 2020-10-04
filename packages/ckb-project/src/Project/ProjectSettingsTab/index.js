@@ -8,6 +8,7 @@ import {
 } from '@obsidians/ui-components'
 
 import {
+  WorkspaceContext,
   AbstractProjectSettingsTab,
   ProjectPath,
 } from '@obsidians/workspace'
@@ -21,10 +22,8 @@ import OtherLanguageSettings from './OtherLanguageSettings'
 
 import projectManager from '../../projectManager'
 
-import ProjectContext from '../ProjectContext'
-
 export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
-  static contextType = ProjectContext
+  static contextType = WorkspaceContext
 
   componentDidMount () {
     projectManager.channel.on('settings', this.debouncedUpdate)

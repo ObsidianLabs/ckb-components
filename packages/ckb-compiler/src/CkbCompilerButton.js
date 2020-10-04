@@ -35,10 +35,8 @@ export default class CkbCompilerButton extends PureComponent {
   onClick = () => {
     if (this.state.building) {
       ckbCompiler.stop()
-    } else if (this.props.onClick) {
-      this.props.onClick(this.state.mode)
     } else {
-      ckbCompiler.build({})
+      this.props.onClick(this.state.mode)
     }
   }
 
