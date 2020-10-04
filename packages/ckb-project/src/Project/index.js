@@ -1,19 +1,18 @@
 import React, { PureComponent } from 'react'
 
-import redux from '@obsidians/redux'
 import Workspace, { ProjectLoading, ProjectInvalid } from '@obsidians/workspace'
 import fileOps from '@obsidians/file-ops'
 import { useBuiltinCustomTabs, modelSessionManager, defaultModeDetector } from '@obsidians/code-editor'
 import ckbCompiler, { CkbCompilerTerminal } from '@obsidians/ckb-compiler'
 
-import ckbProjectManager from '../ckbProjectManager'
-import CkbSettings from './CkbSettings'
+import ProjectContext from './ProjectContext'
+import projectManager from '../projectManager'
 
-import CkbToolbar from './CkbToolbar'
-import CkbSettingsTab from './CkbSettingsTab'
+import ProjectToolbar from './ProjectToolbar'
+import ProjectSettingsTab from './ProjectSettingsTab'
 
 useBuiltinCustomTabs(['markdown'])
-modelSessionManager.registerCustomTab('settings', CkbSettingsTab, 'Project Settings')
+modelSessionManager.registerCustomTab('settings', ProjectSettingsTab, 'Project Settings')
 modelSessionManager.registerModeDetector(filePath => {
   const { base } = fileOps.current.path.parse(filePath)
   if (base === 'ckbconfig.json') {
@@ -24,7 +23,7 @@ modelSessionManager.registerModeDetector(filePath => {
 })
 
 
-export default class CkbProject extends PureComponent {
+export default class Project extends PureComponent {
   constructor (props) {
     super(props)
     this.workspace = React.createRef()
@@ -33,11 +32,12 @@ export default class CkbProject extends PureComponent {
       invalid: false,
       initialFile: undefined,
       terminal: false,
+      context: {}
     }
   }
 
   async componentDidMount () {
-    ckbProjectManager.ckbProject = this
+    projectManager.project = this
     this.prepareProject(this.props.projectRoot)
   }
 
@@ -51,38 +51,41 @@ export default class CkbProject extends PureComponent {
   }
 
   async prepareProject (projectRoot) {
-    this.setState({ loading: true, invalid: false })
+    this.setState({ loading: true, invalid: false, context: {} })
 
     if (!await fileOps.current.isDirectory(projectRoot)) {
       this.setState({ loading: false, invalid: true })
       return
     }
 
-    this.ckbSettings = new CkbSettings(projectRoot)
-
+    let projectSettings
     try {
-      await this.ckbSettings.readSettings()
+      projectSettings = await projectManager.readProjectSettings()
     } catch (e) {
+      console.warn(e)
       this.setState({
         loading: false,
-        initialFile: this.ckbSettings.configPath,
+        initialFile: projectManager.settingsFilePath,
       })
       return
     }
 
-    redux.dispatch('UPDATE_GLOBAL_CONFIG', { projectLanguage: this.ckbSettings.language })
+    this.setState({ context: {
+      projectRoot,
+      projectSettings,
+    } })
 
-    if (await this.ckbSettings.isMainValid()) {
+    if (await projectManager.isMainValid()) {
       this.setState({
         loading: false,
-        initialFile: this.ckbSettings.mainPath,
+        initialFile: projectManager.mainFilePath,
       })
       return
     }
 
     this.setState({
       loading: false,
-      initialFile: this.ckbSettings.configPath,
+      initialFile: projectManager.settingsFilePath,
     })
   }
 
@@ -98,14 +101,12 @@ export default class CkbProject extends PureComponent {
   }
 
   openProjectSettings = () => {
-    this.workspace.current.openFile(this.ckbSettings.configPath)
+    this.workspace.current.openFile(projectManager.settingsFilePath)
   }
 
   render () {
     const {
       projectRoot,
-      projectLanguage,
-      compilerVersion,
       InvalidProjectActions = null,
     } = this.props
     const { terminal } = this.state
@@ -123,23 +124,19 @@ export default class CkbProject extends PureComponent {
     }
 
     return (
-      <Workspace
-        ref={this.workspace}
-        theme={this.props.theme}
-        projectRoot={projectRoot}
-        initialFile={this.state.initialFile}
-        terminal={terminal}
-        defaultSize={272}
-        Toolbar={(
-          <CkbToolbar
-            projectRoot={projectRoot}
-            projectLanguage={projectLanguage}
-            compilerVersion={compilerVersion}
-          />
-        )}
-        onToggleTerminal={terminal => ckbProjectManager.toggleTerminal(terminal)}
-        Terminal={<CkbCompilerTerminal active={terminal} cwd={projectRoot} />}
-      />
+      <ProjectContext.Provider value={this.state.context}>
+        <Workspace
+          ref={this.workspace}
+          theme={this.props.theme}
+          projectRoot={projectRoot}
+          initialFile={this.state.initialFile}
+          terminal={terminal}
+          defaultSize={272}
+          ProjectToolbar={ProjectToolbar}
+          onToggleTerminal={terminal => projectManager.toggleTerminal(terminal)}
+          Terminal={<CkbCompilerTerminal active={terminal} cwd={projectRoot} />}
+        />
+      </ProjectContext.Provider>
     )
   }
 }

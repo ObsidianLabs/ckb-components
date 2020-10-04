@@ -4,9 +4,7 @@ import CacheRoute from 'react-router-cache-route'
 import { KeypairButton } from '@obsidians/keypair'
 import { QueueButton } from '@obsidians/ckb-queue'
 
-import { DockerImageSelector } from '@obsidians/docker'
-import ckbCompiler from '@obsidians/ckb-compiler'
-import { TerminalButton } from '@obsidians/ckb-project'
+import { TerminalButton, CompilerSelector } from '@obsidians/ckb-project'
 
 export default function CkbBottomBar (props) {
   return <>
@@ -25,38 +23,9 @@ export default function CkbBottomBar (props) {
           return null
         } else if (!props.projectValid) {
           return null
-        } else if (props.projectLanguage === 'rust') {
-          return (
-            <DockerImageSelector
-              key='compiler-capsule'
-              channel={ckbCompiler.capsule}
-              size='sm'
-              icon='fas fa-hammer'
-              title='Capsule'
-              noneName='Capsule'
-              modalTitle='Capsule Manager'
-              downloadingTitle='Downloading Capsule'
-              selected={props.compilerVersion}
-              onSelected={compilerVersion => props.onSelectCompiler(compilerVersion)}
-            />
-          )
-        } else if (props.projectLanguage === 'c') {
-          return (
-            <DockerImageSelector
-              key='compiler-regular'
-              channel={ckbCompiler.regular}
-              size='sm'
-              icon='fas fa-hammer'
-              title='CKB Compiler'
-              noneName='CKB compiler'
-              modalTitle='CKB Compiler Manager'
-              downloadingTitle='Downloading CKB Compiler'
-              selected={props.compilerVersion}
-              onSelected={compilerVersion => props.onSelectCompiler(compilerVersion)}
-            />
-          )
         }
-        return null
+        
+        return <CompilerSelector />
       }}
     />
     <CacheRoute

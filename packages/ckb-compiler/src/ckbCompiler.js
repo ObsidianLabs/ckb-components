@@ -2,6 +2,8 @@ import { DockerImageChannel } from '@obsidians/docker'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
+import { projectManager } from '@obsidians/ckb-project'
+
 class CkbCompiler {
   constructor () {
     this.capsule = new DockerImageChannel(`obsidians/capsule`)
@@ -30,13 +32,6 @@ class CkbCompiler {
     return this._terminal.props.cwd
   }
 
-  get compilerVersion () {
-    if (!this._button) {
-      throw new Error('CkbCompilerButton is not instantiated.')
-    }
-    return this._button.props.version
-  }
-
   focus () {
     if (this._terminal) {
       this._terminal.focus()
@@ -44,7 +39,7 @@ class CkbCompiler {
   }
 
   async build (config = {}) {
-    const version = this.compilerVersion
+    const version = projectManager.compilerVersion
     const projectRoot = this.projectRoot
 
     this._button.setState({ building: true })
@@ -60,7 +55,7 @@ class CkbCompiler {
       } else if (mode === 'release-w-debug-output') {
         this.notification = notification.info(`Building CKB Script`, `Building Release with Debug Output...`, 0)
       }
-    } else if (config.language === 'c') {
+    } else if (config.language === 'c' || config.language === 'other') {
       cmd = this.generateBuildCmdForC(config, { version, projectRoot })
       this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     } else {
@@ -80,7 +75,7 @@ class CkbCompiler {
   }
 
   async test (config = {}) {
-    const version = this.compilerVersion
+    const version = projectManager.compilerVersion
     const projectRoot = this.projectRoot
 
     this._testButton.setState({ testing: true })

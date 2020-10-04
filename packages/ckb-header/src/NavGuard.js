@@ -75,7 +75,6 @@ export default class NavGuard {
       project.name = found.get('name')
       project.path = found.get('path')
     }
-    redux.dispatch('UPDATE_GLOBAL_CONFIG', { compilerVersion: '' })
     redux.dispatch('SELECT_PROJECT', { project })
   }
 }

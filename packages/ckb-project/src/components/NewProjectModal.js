@@ -22,7 +22,7 @@ import ckbCompiler from '@obsidians/ckb-compiler'
 
 import actions from '../actions'
 
-export default class NewCkbProjectModal extends PureComponent {
+export default class NewProjectModal extends PureComponent {
   constructor (props) {
     super(props)
 

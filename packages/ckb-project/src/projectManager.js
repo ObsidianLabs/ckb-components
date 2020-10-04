@@ -1,55 +1,36 @@
 import notification from '@obsidians/notification'
+import { ProjectManager } from '@obsidians/workspace'
+
 import ckbCompiler from '@obsidians/ckb-compiler'
 import ckbDebugger from '@obsidians/ckb-debugger'
 
-class CkbProjectManager {
+import CkbProjectSettings from './CkbProjectSettings'
+
+class CkbProjectManager extends ProjectManager {
   constructor () {
-    this.project = null
-    this.modal = null
-    this.button = null
+    super()
+    this.ProjectSettings = CkbProjectSettings
+  }
+
+  get settingsFilePath () {
+    return this.pathForProjectFile('ckbconfig.json')
   }
   
-  set ckbProject (project) {
-    this.project = project
-  }
-  get ckbProject () {
-    return this.project
-  }
-
-  set terminalButton (button) {
-    this.button = button
-  }
-
-  get projectRoot () {
-    return this.project.props.projectRoot
-  }
-
   get compilerVersion () {
-    return this.project.props.compilerVersion
+    const language = this.projectSettings?.get('language')
+    const compilers = this.projectSettings?.get('compilers')
+    if (language === 'c' || language === 'other') {
+      return compilers.riscv
+    } else if (language === 'rust') {
+      return compilers.capsule
+    }
+    return ''
   }
 
   openProjectSettings () {
     if (this.project) {
       this.project.openProjectSettings()
     }
-  }
-
-  async checkSettings () {
-    if (!this.project) {
-      return
-    }
-
-    // notification.info('Not in Code Editor', 'Please switch to code editor and build.')
-    // return
-
-    const projectRoot = this.projectRoot
-    if (!projectRoot) {
-      notification.error('No Project', 'Please open a project first.')
-      return
-    }
-
-    const settings = await this.project.ckbSettings.readSettings()
-    return settings
   }
 
   async compile () {
@@ -60,9 +41,14 @@ class CkbProjectManager {
       return false
     }
 
-    if (settings.language !== 'javascript' && !this.compilerVersion) {
-      notification.error('No CKB Compiler', 'Please install and select a CKB compiler.')
-      return false
+    if (!this.compilerVersion) {
+      if (settings.language === 'c' || settings.language === 'other') {
+        notification.error('No CKB Compiler', 'Please install and select a CKB compiler.')
+        return false
+      } else if (settings.language === 'rust') {
+        notification.error('No Capsule', 'Please install Capsule and select a version.')
+        return false
+      }
     }
 
     const main = settings.main
@@ -92,7 +78,7 @@ class CkbProjectManager {
     }
 
     if (!this.compilerVersion) {
-      notification.error('No Capsule Version', 'Please install Capsule and select a version.')
+      notification.error('No Capsule', 'Please install Capsule and select a version.')
       return false
     }
 
@@ -143,15 +129,6 @@ class CkbProjectManager {
     }
 
     return true
-  }
-
-  toggleTerminal (terminal) {
-    if (this.button) {
-      this.button.setState({ terminal })
-    }
-    if (this.project) {
-      this.project.toggleTerminal(terminal)
-    }
   }
 }
 

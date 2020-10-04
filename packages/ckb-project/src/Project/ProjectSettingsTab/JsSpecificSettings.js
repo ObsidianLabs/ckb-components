@@ -5,14 +5,14 @@ import {
 } from '@obsidians/ui-components'
 
 export default function JsSpecificSettings (props) {
-  const { settings, onChange } = props
+  const { projectSettings, onChange } = props
 
   return <>
     <DebouncedFormGroup
       code
       label='Build script'
       className='bg-black'
-      value={settings.scripts.build}
+      value={projectSettings?.get('scripts.build')}
       onChange={onChange('scripts.build')}
       placeholder={`Required`}
     />
@@ -21,7 +21,7 @@ export default function JsSpecificSettings (props) {
       code
       label='Mock file'
       className='bg-black'
-      value={settings.debug.mock}
+      value={projectSettings?.get('debug.mock')}
       onChange={onChange('debug.mock')}
       placeholder={`Default: mock/tx.json`}
     />
@@ -29,7 +29,7 @@ export default function JsSpecificSettings (props) {
       code
       label='Debug target'
       className='bg-black'
-      value={settings.debug.target}
+      value={projectSettings?.get('debug.target')}
       onChange={onChange('debug.target')}
       placeholder={`Required`}
     />
@@ -37,7 +37,7 @@ export default function JsSpecificSettings (props) {
       code
       label='Cycles'
       className='bg-black'
-      value={settings.debug.cycles}
+      value={projectSettings?.get('debug.cycles')}
       onChange={onChange('debug.cycles')}
       placeholder={`Default: 1000000000 (1 Billion)`}
     />

@@ -5,7 +5,7 @@ import {
 } from '@obsidians/ui-components'
 
 export default function OtherLanguageSettings (props) {
-  const { settings, onChange } = props
+  const { projectSettings, onChange } = props
 
   const readonly = false
 
@@ -14,7 +14,7 @@ export default function OtherLanguageSettings (props) {
       code
       label='Build script'
       className='bg-black'
-      value={settings.scripts.build}
+      value={projectSettings?.get('scripts.build')}
       onChange={onChange('scripts.build')}
       placeholder={`Required`}
       disabled={readonly}
