@@ -38,12 +38,17 @@ class NodeManager {
     }
 
     const [ckbRun, ckbIndexer, ckbMiner] = this.generateCommands({ name, version })
-    await this._terminal.exec(ckbRun, { resolveOnFirstLog: true })
+    await this._terminal.exec(ckbRun, {
+      resolveOnFirstLog: true,
+      stopCommand: `docker stop ckb-${name}-${version}`,
+    })
     if (miner) {
       await delay(2000)
       await this._minerTerminal.exec(ckbMiner, { resolveOnFirstLog: true })
     }
-    this._indexerTerminal.exec(ckbIndexer)
+    this._indexerTerminal.exec(ckbIndexer, {
+      stopCommand: `docker stop -t 1 ckb-${name}-indexer`,
+    })
     return {
       url: 'http://localhost:8114',
       indexer: 'http://localhost:8116',
@@ -95,24 +100,23 @@ class NodeManager {
     }
   }
 
-  async stop ({ name, version }) {
+  async stop () {
     const cachingKeys = getCachingKeys()
     cachingKeys.filter(key => key.startsWith('contract-') || key.startsWith('account-')).forEach(dropByCacheKey)
     
     let n
     if (this._minerTerminal) {
-      n = notification.info('Stopping CKB cMiner...', '', 0)
+      n = notification.info('Stopping CKB Miner...', '', 0)
       await this._minerTerminal.stop()
       n.dismiss()
     }
     if (this._indexerTerminal) {
       n = notification.info('Stopping CKB Indexer...', '', 0)
-      await this._indexerTerminal.execAsChildProcess(`docker stop ckb-${name}-indexer`)
+      await this._indexerTerminal.stop()
       n.dismiss()
     }
     if (this._terminal) {
       n = notification.info('Stopping CKB Node...', '', 0)
-      await this._terminal.execAsChildProcess(`docker stop ckb-${name}-${version}`)
       await this._terminal.stop()
       n.dismiss()
     }
