@@ -39,7 +39,7 @@ export default class NewProjectModal extends PureComponent {
     this.terminal = React.createRef()
     this.path = fileOps.current.path
     this.fs = fileOps.current.fs
-    this.channel = new IpcChannel('ckb-project')
+    this.channel = new IpcChannel('project')
 
     actions.newProjectModal = this
   }

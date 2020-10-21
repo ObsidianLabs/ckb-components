@@ -1,15 +1,16 @@
 import notification from '@obsidians/notification'
-import { ProjectManager } from '@obsidians/workspace'
+import { ProjectManager, BaseProjectManager } from '@obsidians/workspace'
 
 import ckbCompiler from '@obsidians/ckb-compiler'
 import ckbDebugger from '@obsidians/ckb-debugger'
 
 import CkbProjectSettings from './CkbProjectSettings'
 
+BaseProjectManager.ProjectSettings = CkbProjectSettings
+
 class CkbProjectManager extends ProjectManager {
   constructor () {
     super()
-    this.ProjectSettings = CkbProjectSettings
   }
 
   get settingsFilePath () {
