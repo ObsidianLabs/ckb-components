@@ -10,9 +10,6 @@ export default function (props) {
   </>
 }
 
-export { default as projectManager } from './projectManager'
-
-export { default as TerminalButton } from './bottombar/TerminalButton'
 export { default as CompilerSelector } from './bottombar/CompilerSelector'
 
 export { default as NewProjectModal } from './components/NewProjectModal'

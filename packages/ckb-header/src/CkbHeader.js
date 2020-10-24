@@ -24,6 +24,7 @@ export default class CkbHeader extends PureComponent {
 
   render () {
     const {
+      profile,
       projects,
       selectedProject,
       starred,
@@ -102,6 +103,7 @@ export default class CkbHeader extends PureComponent {
 
     return <>
       <Navbar
+        profile={profile}
         navbarLeft={navbarLeft}
         navbarRight={navbarRight}
       />

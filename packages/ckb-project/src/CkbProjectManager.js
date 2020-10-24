@@ -8,9 +8,9 @@ import CkbProjectSettings from './CkbProjectSettings'
 
 BaseProjectManager.ProjectSettings = CkbProjectSettings
 
-class CkbProjectManager extends ProjectManager {
-  constructor () {
-    super()
+export default class CkbProjectManager extends ProjectManager {
+  constructor (project, projectRoot) {
+    super(project, projectRoot)
   }
 
   get settingsFilePath () {
@@ -27,13 +27,7 @@ class CkbProjectManager extends ProjectManager {
     }
     return ''
   }
-
-  openProjectSettings () {
-    if (this.project) {
-      this.project.openProjectSettings()
-    }
-  }
-
+  
   async compile () {
     let settings
     try {
@@ -88,7 +82,7 @@ class CkbProjectManager extends ProjectManager {
 
     try {
       await ckbCompiler.build(this.compilerVersion, settings)
-      await ckbCompiler.test(settings)
+      await ckbCompiler.test(this.compilerVersion, settings)
     } catch (e) {
       return false
     }
@@ -132,5 +126,3 @@ class CkbProjectManager extends ProjectManager {
     return true
   }
 }
-
-export default new CkbProjectManager()

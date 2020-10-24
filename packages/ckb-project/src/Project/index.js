@@ -3,7 +3,7 @@ import fileOps from '@obsidians/file-ops'
 import { useBuiltinCustomTabs, modelSessionManager, defaultModeDetector } from '@obsidians/code-editor'
 import ckbCompiler, { CkbCompilerTerminal } from '@obsidians/ckb-compiler'
 
-import projectManager from '../projectManager'
+import CkbProjectManager from '../CkbProjectManager'
 
 import ProjectToolbar from './ProjectToolbar'
 import ProjectSettingsTab from './ProjectSettingsTab'
@@ -20,7 +20,7 @@ modelSessionManager.registerModeDetector(filePath => {
 })
 
 Workspace.defaultProps = {
-  projectManager,
+  ProjectManager: CkbProjectManager,
   compilerManager: ckbCompiler,
   ProjectToolbar,
   CompilerTerminal: CkbCompilerTerminal,

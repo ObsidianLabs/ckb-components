@@ -2,21 +2,20 @@ import React from 'react'
 
 import notification from '@obsidians/notification'
 import { DockerImageSelector } from '@obsidians/docker'
+import { BaseProjectManager } from '@obsidians/workspace'
 import ckbCompiler from '@obsidians/ckb-compiler'
-
-import projectManager from '../projectManager'
 
 export default () => {
   const [language, setLanguage] = React.useState('')
   const [selected, onSelected] = React.useState('')
 
-  React.useEffect(projectManager.effect('settings:language', language => {
+  React.useEffect(BaseProjectManager.effect('settings:language', language => {
     setLanguage(language)
-    onSelected(projectManager.compilerVersion)
+    onSelected(BaseProjectManager.instance.compilerVersion)
   }), [])
 
-  React.useEffect(projectManager.effect('settings:compilers.riscv', v => {
-    const language = projectManager.projectSettings?.get('language')
+  React.useEffect(BaseProjectManager.effect('settings:compilers.riscv', v => {
+    const language = BaseProjectManager.instance.projectSettings?.get('language')
     if (language === 'c' || language === 'other') {
       if (!v) {
         notification.info('No Compiler Specified', 'Please select a version for the compiler.')
@@ -25,8 +24,8 @@ export default () => {
     }
   }), [])
 
-  React.useEffect(projectManager.effect('settings:compilers.capsule', v => {
-    if (projectManager.projectSettings?.get('language') === 'rust') {
+  React.useEffect(BaseProjectManager.effect('settings:compilers.capsule', v => {
+    if (BaseProjectManager.instance.projectSettings?.get('language') === 'rust') {
       if (!v) {
         notification.info('No Compiler Specified', 'Please select a version for capsule.')
       }
@@ -47,7 +46,7 @@ export default () => {
         modalTitle='Capsule Manager'
         downloadingTitle='Downloading Capsule'
         selected={selected}
-        onSelected={v => projectManager.projectSettings?.set('compilers.capsule', v)}
+        onSelected={v => BaseProjectManager.instance.projectSettings?.set('compilers.capsule', v)}
       />
     )
   } else if (language === 'c' || language === 'other') {
@@ -63,7 +62,7 @@ export default () => {
         modalTitle='CKB Compiler Manager'
         downloadingTitle='Downloading CKB Compiler'
         selected={selected}
-        onSelected={v => projectManager.projectSettings?.set('compilers.riscv', v)}
+        onSelected={v => BaseProjectManager.instance.projectSettings?.set('compilers.riscv', v)}
       />
     )
   }

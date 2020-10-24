@@ -1,11 +1,9 @@
 import React, { PureComponent } from 'react'
 
-import { WorkspaceContext } from '@obsidians/workspace'
+import { WorkspaceContext, BaseProjectManager } from '@obsidians/workspace'
 import { ToolbarButton } from '@obsidians/ui-components'
 import { CkbCompilerButton, CkbTestButton } from '@obsidians/ckb-compiler'
 import { CkbDebuggerButton } from '@obsidians/ckb-debugger'
-
-import projectManager from '../projectManager'
 
 export default class ProjectToolbar extends PureComponent {
   static contextType = WorkspaceContext
@@ -18,11 +16,11 @@ export default class ProjectToolbar extends PureComponent {
     const language = this.context.projectSettings?.get('language') || ''
     this.setState({ language })
 
-    projectManager.channel.on('settings:language', this.onLanguage)
+    BaseProjectManager.channel.on('settings:language', this.onLanguage)
   }
 
   componentWillUnmount () {
-    projectManager.channel.off('settings:language', this.onLanguage)
+    BaseProjectManager.channel.off('settings:language', this.onLanguage)
   }
 
   onLanguage = language => this.setState({ language })
@@ -35,13 +33,13 @@ export default class ProjectToolbar extends PureComponent {
       <CkbCompilerButton
         className='rounded-0 border-0 flex-none w-5'
         projectLanguage={language}
-        onClick={() => projectManager.compile()}
+        onClick={() => this.context.projectManager.compile()}
       />
       {
         language === 'rust' &&
         <CkbTestButton
           className='rounded-0 border-0 flex-none w-5'
-          onClick={() => projectManager.test()}
+          onClick={() => this.context.projectManager.test()}
         />
       }
       {
@@ -49,7 +47,7 @@ export default class ProjectToolbar extends PureComponent {
         <CkbDebuggerButton
           className='rounded-0 border-0 flex-none w-5'
           projectRoot={projectRoot}
-          onClick={() => projectManager.debug()}
+          onClick={() => this.context.projectManager.debug()}
         />
       }
       <div className='flex-1' />
@@ -57,7 +55,7 @@ export default class ProjectToolbar extends PureComponent {
         id='settings'
         icon='fas fa-cog'
         tooltip='Project Settings'
-        onClick={() => projectManager.openProjectSettings()}
+        onClick={() => this.context.projectManager.openProjectSettings()}
       />
     </>
   }

@@ -9,6 +9,7 @@ import {
 
 import {
   WorkspaceContext,
+  BaseProjectManager,
   AbstractProjectSettingsTab,
   ProjectPath,
 } from '@obsidians/workspace'
@@ -20,17 +21,15 @@ import CSpecificSettings from './CSpecificSettings'
 import JsSpecificSettings from './JsSpecificSettings'
 import OtherLanguageSettings from './OtherLanguageSettings'
 
-import projectManager from '../../projectManager'
-
 export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
   static contextType = WorkspaceContext
 
   componentDidMount () {
-    projectManager.channel.on('settings', this.debouncedUpdate)
+    BaseProjectManager.channel.on('settings', this.debouncedUpdate)
   }
   
   componentWillUnmount () {
-    projectManager.channel.off('settings', this.debouncedUpdate)
+    BaseProjectManager.channel.off('settings', this.debouncedUpdate)
   }
 
   renderCompilerSelector = projectSettings => {

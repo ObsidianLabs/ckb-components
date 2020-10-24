@@ -71,8 +71,7 @@ class CkbCompiler {
     notification.success('Build Successful', `CKB script is built.`)
   }
 
-  async test (config = {}) {
-    const version = projectManager.compilerVersion
+  async test (version, config = {}) {
     const projectRoot = this.projectRoot
 
     this._testButton.setState({ testing: true })
