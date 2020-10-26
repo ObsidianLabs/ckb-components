@@ -1,4 +1,5 @@
 import { List } from 'immutable'
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 const networkList = [
@@ -25,7 +26,7 @@ const networkList = [
   }
 ]
 
-if (fileOps.fsType === 'electron') {
+if (platform.isDesktop) {
   networkList.unshift({
     id: 'custom',
     group: 'default',
