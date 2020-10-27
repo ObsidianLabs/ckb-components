@@ -21,7 +21,7 @@ export default class NavGuard {
     }
 
     const [first] = this.parsePathname(pathname)
-    if (first === 'guest') {
+    if (first !== 'contract' && first !== 'account' && first !== 'network') {
       this.updateSelectedProject(pathname)
     }
   }
@@ -74,6 +74,8 @@ export default class NavGuard {
     if (found) {
       project.name = found.get('name')
       project.path = found.get('path')
+    } else if (id) {
+      project.name = `${author}/${id}`
     }
     redux.dispatch('SELECT_PROJECT', { project })
   }

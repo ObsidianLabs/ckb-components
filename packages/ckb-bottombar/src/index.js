@@ -17,7 +17,7 @@ export default function CkbBottomBar (props) {
     <QueueButton txs={props.txs} />
     <div className='flex-1' />
     <CacheRoute
-      path={`/guest/:project?`}
+      path={`/local/:project?`}
       render={({ match }) => {
         const project = match?.params?.project
         if (!project) {
@@ -30,7 +30,7 @@ export default function CkbBottomBar (props) {
       }}
     />
     <CacheRoute
-      path={`/guest/:project`}
+      path={`/local/:project`}
       component={TerminalButton}
     />
   </>

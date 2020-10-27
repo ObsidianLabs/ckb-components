@@ -10,17 +10,17 @@ import {
   Button,
   DebouncedFormGroup,
   DropdownInput,
-  Badge,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
+import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import { IpcChannel } from '@obsidians/ipc'
+import { actions } from '@obsidians/workspace'
 import Terminal from '@obsidians/terminal'
 import { DockerImageInputSelector } from '@obsidians/docker'
 import ckbCompiler from '@obsidians/ckb-compiler'
-
-import actions from '../actions'
 
 export default class NewProjectModal extends PureComponent {
   constructor (props) {
@@ -77,13 +77,25 @@ export default class NewProjectModal extends PureComponent {
   createProject = async () => {
     let projectRoot
     const { name, template } = this.state
-    if (!this.state.projectRoot) {
-      projectRoot = this.path.join(fileOps.current.workspace, name)
-    } else if (!this.path.isAbsolute(this.state.projectRoot)) {
-      projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
-    } else {
-      projectRoot = this.state.projectRoot
+
+    if (platform.isDesktop) {
+      if (!this.state.projectRoot) {
+        projectRoot = this.path.join(fileOps.current.workspace, name)
+      } else if (!this.path.isAbsolute(this.state.projectRoot)) {
+        projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
+      } else {
+        projectRoot = this.state.projectRoot
+      }
     }
+
+    try {
+      await this.channel.invoke('post', '', { projectRoot, name, template })
+    } catch (e) {
+      notification.error('Cannot Create the Project', e.message)
+      return false
+    }
+
+    return
 
     if (await fileOps.current.isDirectoryNotEmpty(projectRoot)) {
       notification.error('Cannot Create the Project', `<b>${projectRoot}</b> is not an empty directory.`)
@@ -137,6 +149,35 @@ export default class NewProjectModal extends PureComponent {
     return { projectRoot, name }
   }
 
+  renderLocation = () => {
+    if (platform.isWeb) {
+      return null
+    }
+
+    let placeholder = 'Project path'
+    if (!this.state.projectRoot) {
+      placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
+    }
+
+    return (        
+      <FormGroup>
+        <Label>Project location</Label>
+        <InputGroup>
+          <Input
+            placeholder={placeholder}
+            value={this.state.projectRoot}
+            onChange={e => this.setState({ projectRoot: e.target.value })}
+          />
+          <InputGroupAddon addonType='append'>
+            <Button color='secondary' onClick={this.chooseProjectPath}>
+              Choose...
+            </Button>
+          </InputGroupAddon>
+        </InputGroup>
+      </FormGroup>
+    )
+  }
+
   renderCapsuleVersion = () => {
     if (this.state.template !== 'rust') {
       return null
@@ -157,11 +198,6 @@ export default class NewProjectModal extends PureComponent {
   render () {
     const { name, creating } = this.state
 
-    let placeholder = 'Project path'
-    if (!this.state.projectRoot) {
-      placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
-    }
-
     return (
       <Modal
         ref={this.modal}
@@ -172,21 +208,7 @@ export default class NewProjectModal extends PureComponent {
         pending={creating && 'Creating...'}
         confirmDisabled={!name}
       >
-        <FormGroup>
-          <Label>Project location</Label>
-          <InputGroup>
-            <Input
-              placeholder={placeholder}
-              value={this.state.projectRoot}
-              onChange={e => this.setState({ projectRoot: e.target.value })}
-            />
-            <InputGroupAddon addonType='append'>
-              <Button color='secondary' onClick={this.chooseProjectPath}>
-                Choose...
-              </Button>
-            </InputGroupAddon>
-          </InputGroup>
-        </FormGroup>
+        {this.renderLocation()}
         <DebouncedFormGroup
           label='Project name'
           onChange={name => this.setState({ name })}
