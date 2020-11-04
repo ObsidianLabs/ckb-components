@@ -1,5 +1,5 @@
 import CKBCore from '@nervosnetwork/ckb-sdk-core'
-import { RPC } from 'ckb-js-toolkit'
+import { RPC, validators } from 'ckb-js-toolkit'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,6 +9,11 @@ export default class CkbClient {
     this.core = new CKBCore(nodeUrl)
     this.rpc = new RPC(nodeUrl)
     this.txsCache = {}
+  }
+
+  async sendTransaction(tx) {
+    validators.ValidateTransaction(tx)
+    return await this.rpc.send_transaction(tx)
   }
 
   async loadTransaction (txHash, noCache) {

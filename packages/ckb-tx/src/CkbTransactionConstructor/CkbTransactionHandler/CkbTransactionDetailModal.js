@@ -74,7 +74,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
     queue.add(
       () => ({
         txHash,
-        push: () => networkManager.sdk.ckbClient.core.rpc.sendTransaction(signedTx)
+        push: () => networkManager.sdk.ckbClient.sendTransaction(signedTx)
       }),
       { tx: signedTx },
       {
