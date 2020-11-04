@@ -44,7 +44,6 @@ export default class CkbCells extends PureComponent {
       selected: new Set([]),
     }
 
-    this.updateCellsThrottled = throttle(() => this.updateCells(), 1000)
     props.cacheLifecycles.didRecover(this.componentDidRecover)
   }
 
@@ -69,7 +68,6 @@ export default class CkbCells extends PureComponent {
       return
     }
 
-    this.cells = []
     this.setState({
       cellsCount: 0,
       totalCapacity: new CkbCapacity(),
@@ -97,73 +95,13 @@ export default class CkbCells extends PureComponent {
     }
 
     const { balance, live_cells_count } = await wallet.info()
-    this.used = new CkbCapacity()
-    this.unused = new CkbCapacity()
     this.setState({
       cellsCount: live_cells_count,
       totalCapacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
     })
     this.context.cellCollection.clearCellsForLockHash(wallet.lockHash)
-    this.loader = this.loadCells(wallet)
+    this.cellManager = wallet.ckbCellManager
     this.displayMoreCell()
-  }
-
-  async *loadCells (wallet) {
-    this.xloader = null
-
-    if (!wallet) {
-      this.setState({ cells: [], loading: false })
-      return
-    }
-
-    let loader
-    try {
-      loader = wallet.loadCells()
-    } catch (e) {
-      console.warn(e)
-      this.setState({ cells: [], loading: false })
-      return
-    }
-
-    this.setState({ loading: true })
-    this.xloader = loader
-
-    let i = 0
-    for await (const cell of loader) {
-      if (this.xloader !== loader) {
-        return
-      }
-      const { cellsCount, cells } = this.state
-      if (typeof cellsCount === 'number' && cells.length >= cellsCount) {
-        return
-      }
-      if (cell.isEmpty()) {
-        this.unused.plus(cell.capacity)
-      } else {
-        this.used.plus(cell.capacity)
-      }
-      this.cells.push(cell)
-
-      this.updateCellsThrottled()
-  
-      this.context.cellCollection.push(cell)
-      i++
-      if (i >= LOAD_STEP) {
-        i = 0
-        this.setState({ loading: false })
-        yield
-        this.setState({ loading: true })
-      }
-    }
-    this.setState({ loading: false })
-  }
-
-  updateCells = () => {
-    this.setState({
-      used: this.used,
-      unused: this.unused,
-      cells: [...this.cells],
-    })
   }
 
   displayMoreCell = () => {
@@ -175,9 +113,22 @@ export default class CkbCells extends PureComponent {
   }
 
   loadMoreCell = async () => {
-    const result = await this.loader.next()
-    if (result.done) {
-      this.setState({ done: true })
+    this.setState({ loading: true })
+    try {
+      const { done, cells, capacity } = await this.cellManager.loadMoreCells()
+
+      this.context.cellCollection.pushCells(cells)
+
+      this.setState({
+        done,
+        cells,
+        used: new CkbCapacity(capacity.used),
+        unused: new CkbCapacity(capacity.free),
+        loading: false,
+      })
+    } catch (e) {
+      console.warn(e)
+      this.setState({ loading: false })
     }
   }
 

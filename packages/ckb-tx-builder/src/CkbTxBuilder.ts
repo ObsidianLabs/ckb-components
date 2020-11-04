@@ -1,5 +1,4 @@
 import CkbRawTransaction from './CkbRawTransaction'
-import CkbTransaction from './CkbTransaction'
 
 import CkbCellCollection from './CkbCellCollection'
 import { setFs } from './CkbData'

@@ -1,7 +1,7 @@
 import { CkbLiveCell } from '@obsidians/ckb-tx-builder'
 
 export default class IndexerCellCollector {
-  constructor(rpc, indexer, lockScript) {
+  constructor (rpc, indexer, lockScript) {
     this.rpc = rpc
     this.indexer = indexer
     this.lockScript = lockScript
@@ -10,16 +10,16 @@ export default class IndexerCellCollector {
     this.hasMore = true
   }
 
-  async *collect() {
+  async *collect (step) {
     while (this.hasMore) {
-      const { last_cursor, cells } = await this.indexer.getCells(this.lockScript, this.cursor)
-      for (const cell of cells) {
-        yield toCkbLiveCell(cell)
-      }
+      const { last_cursor, cells } = await this.indexer.getCells(this.lockScript, this.cursor, step)
+      
       this.cursor = last_cursor
       if (cells.length < 20) {
         this.hasMore = false
       }
+
+      yield cells.map(toCkbLiveCell)
     }
   }
 }

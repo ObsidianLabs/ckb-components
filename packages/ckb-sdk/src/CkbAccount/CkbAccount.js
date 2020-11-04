@@ -1,6 +1,6 @@
 import { CkbScript, lib } from '@obsidians/ckb-tx-builder'
 
-import IndexerCellCollector from './IndexerCellCollector'
+import CkbCellManager from './CkbCellManager'
 import TxCell from './TxCell'
 
 export default class CkbAccount {
@@ -9,7 +9,12 @@ export default class CkbAccount {
     this.ckbIndexer = sdk.ckbIndexer
     this.ckbExplorer = sdk.ckbExplorer
     this.value = value
+    this.ckbCellManager = new CkbCellManager(this, this.ckbIndexer)
     this._getInfo = null
+  }
+
+  get rpc () {
+    return this.ckbClient.rpc
   }
 
   get lockHash () {
@@ -67,19 +72,6 @@ export default class CkbAccount {
     return {
       cursor: last_cursor,
       txs: txs.map(tx => new TxCell(tx, this.ckbClient)),
-    }
-  }
-
-  async *loadCells () {
-    if (!this.collector) {
-      const lockScript = await this.lockScript()
-      if (!lockScript) {
-        return
-      }
-      this.collector = new IndexerCellCollector(this.ckbClient.rpc, this.ckbIndexer, lockScript)
-    }
-    for await (const cell of this.collector.collect()) {
-      yield cell
     }
   }
 }

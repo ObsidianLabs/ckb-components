@@ -16,6 +16,10 @@ export default class CkbCellCollection {
     this.#collections.get(lockHash).push(cell)
   }
 
+  pushCells (cells: CkbLiveCell[]) {
+    cells.forEach(cell => this.push(cell))
+  }
+
   clearCellsForLockHash (lockHash: string) {
     this.#collections.delete(lockHash)
   }
