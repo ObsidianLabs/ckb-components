@@ -1,3 +1,4 @@
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import { SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
@@ -32,6 +33,11 @@ class CkbTxManager {
   async loadCellManifest () {
     if (this._cellManifest) {
       return this._cellManifest
+    }
+
+    if (platform.isWeb) {
+      this._cellManifest = []
+      return []
     }
 
     const manifestFile = this.cellManifestFile
