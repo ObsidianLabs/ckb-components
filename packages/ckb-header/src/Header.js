@@ -58,7 +58,7 @@ export default class Header extends PureComponent {
       {
         route: 'contract',
         title: 'TX Constructor',
-        icon: 'fa-file-invoice',
+        icon: 'fas fa-file-invoice',
         selected: { id: selectedContract, name: contractName },
         dropdown: [...dropdownKeypairs, ...dropdownStarred],
         onClickItem: contract => headerActions.selectContract(network.id, contract),
@@ -75,7 +75,7 @@ export default class Header extends PureComponent {
       {
         route: 'account',
         title: 'Explorer',
-        icon: 'fa-file-invoice',
+        icon: 'fas fa-file-invoice',
         selected: { id: selectedAccount, name: accountName },
         dropdown: [...dropdownKeypairs, ...dropdownStarred],
         onClickItem: account => headerActions.selectAccount(network.id, account),
