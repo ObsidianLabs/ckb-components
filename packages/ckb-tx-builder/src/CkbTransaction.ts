@@ -39,40 +39,47 @@ export default class CkbTransaction {
       outPoint: { txHash: depHash[this.network], index: '0x0' },
     }].concat(deps.map(cell => cell.serializeAsDep()))
 
-    const witnesses: Array<string | object> = inputs.map(() => '0x')
-    witnesses[0] = {
-      lock: '',
-      inputType: '',
-      outputType: ''
-    }
-
     return {
       version: '0x0',
       cellDeps,
       headerDeps: [],
       inputs: inputs.map(input => input.serialize()),
       ...this.serializeOutputs(outputs),
-      witnesses,
     } as CKBComponents.RawTransaction
   }
 
   public getSigners () {
-    return uniq(this.inputs.map(input => input.lock.isAddress({ secp256k1Only: true }) && input.lock.getAddress()).filter(Boolean))
+    return this.inputs.map(input => input.lock.isAddress({ secp256k1Only: true }) && input.lock.getAddress())
+  }
+
+  public getUniqueSigners () {
+    return uniq(this.getSigners().filter(Boolean))
   }
 
   public async sign (witnessesSigner, tx = this.serialize()) {
     const transactionHash = this.hash(tx)
 
+    const witnesses: Array<string | object> = tx.inputs.map(() => '0x')
+    this.getSigners().forEach((address, i) => {
+      if (address) {
+        witnesses[i] = {
+          lock: '',
+          inputType: '',
+          outputType: '',
+        }
+      }
+    })
+
     const signedWitnesses = await witnessesSigner({
       transactionHash,
-      witnesses: tx.witnesses,
+      witnesses,
       inputCells: this.inputs.map(input => input.toCachedCell()),
       skipMissingKeys: true,
     })
     return {
       ...tx,
       witnesses: signedWitnesses.map(witness =>
-        typeof witness === 'string' ? witness : serializeWitnessArgs(witness),
+        typeof witness === 'string' ? witness : serializeWitnessArgs(witness)
       ),
     }
   }

@@ -3,15 +3,16 @@ import React, { PureComponent } from 'react'
 import {
   Modal,
   CustomInput,
-  DebouncedInput,
 } from '@obsidians/ui-components'
 
 import { CkbScript } from '@obsidians/ckb-tx-builder'
 import keypairManager from '@obsidians/keypair'
 import notification from '@obsidians/notification'
-import { kp } from '@obsidians/ckb-sdk'
+import { CkbKeypair } from '@obsidians/ckb-sdk'
 import queue from '@obsidians/ckb-queue'
 import { networkManager } from '@obsidians/ckb-network'
+
+import Highlight from 'react-highlight'
 
 import CkbWalletContext from '../../CkbWalletContext'
 
@@ -27,17 +28,17 @@ export default class CkbTransactionDetailModal extends PureComponent {
       value: '',
       signed: false,
       txHash: '',
-      signedTx: null,
       pushing: false,
     }
     this.modal = React.createRef()
+    this.witnessModal = React.createRef()
   }
 
   openModal = tx => {
-    const signers = tx.getSigners()
+    const signers = tx.getUniqueSigners()
     tx.network = networkManager.network?.id || 'local'
     const value = JSON.stringify(tx.serialize(), null, 2)
-    this.setState({ tx, value, signers, selected: {}, signed: false, signedTx: null, pushing: false })
+    this.setState({ tx, value, signers, selected: {}, signed: false, pushing: false })
     this.modal.current.openModal()
     return new Promise(resolve => this.onResolve = resolve)
   }
@@ -52,16 +53,14 @@ export default class CkbTransactionDetailModal extends PureComponent {
         }
         const lock = new CkbScript(address)
         const secret = await keypairManager.getSigner(address)
-        const keypair = kp.importKeypair(secret)
+        const keypair = CkbKeypair.fromPrivateKey(secret)
         const signer = message => keypair.sign(message)
         signatureProvider.set(lock.hash, signer)
       }))
       const witnessesSigner = networkManager.sdk.ckbClient.core.signWitnesses(signatureProvider)
-      const modifiedTx = JSON.parse(this.state.value)
-      const signedTx = await this.state.tx.sign(witnessesSigner, modifiedTx)
-      const txHash = this.state.tx.hash(modifiedTx)
+      const signedTx = await this.state.tx.sign(witnessesSigner)
       const value = JSON.stringify(signedTx, null, 2)
-      this.setState({ value, signed: true, txHash, signedTx })
+      this.setState({ signed: true, value, witnesses: signedTx.witnesses })
     } catch (e) {
       console.warn(e)
       notification.error('Push Transaction Failed', e.message)
@@ -70,7 +69,9 @@ export default class CkbTransactionDetailModal extends PureComponent {
 
   pushTransaction = () => {
     this.setState({ pushing: true })
-    const { txHash, signedTx } = this.state
+    const { tx, value } = this.state
+    const signedTx = JSON.parse(value)
+    const txHash = tx.hash()
     queue.add(
       () => ({
         txHash,
@@ -103,36 +104,42 @@ export default class CkbTransactionDetailModal extends PureComponent {
     ))
   }
 
-  onChange = value => {
-    if (this.state.signed) {
-      this.setState({ value, signedTx: value })
-    } else {
-      this.setState({ value })
-    }
+  openWitnessModal = () => {
+    this.witnessModal.current.openModal()
   }
 
   render () {
+    const actions = this.state.signed ? [this.openWitnessModal] : []
+
     return (
-      <Modal
-        ref={this.modal}
-        h100
-        title='Transaction'
-        textConfirm={this.state.signed ? 'Push transaction' : 'Sign transaction'}
-        pending={this.state.pushing && 'Pushing...'}
-        onConfirm={this.state.signed ? this.pushTransaction : this.signTransaction}
-      >
-        <DebouncedInput
-          size='sm'
-          type='textarea'
-          inputGroupClassName='flex-grow-1'
-          className='h-100 code'
-          value={this.state.value}
-          onChange={this.onChange}
-        />
-        <div className='mt-2'>
-          {this.renderSigners(this.state.signers, this.state.selected)}
-        </div>
-      </Modal>
+      <>
+        <Modal
+          ref={this.modal}
+          h100
+          title='Transaction'
+          textConfirm={this.state.signed ? 'Push transaction' : 'Sign transaction'}
+          pending={this.state.pushing && 'Pushing...'}
+          onConfirm={this.state.signed ? this.pushTransaction : this.signTransaction}
+          textActions={this.state.signed ? ['Witnesses'] : []}
+          onActions={actions}
+        >
+          <Highlight language='javascript' className='pre-box bg2 pre-wrap break-all small' element='pre'>
+            <code>{this.state.value}</code>
+          </Highlight>
+          <div className='mt-2'>
+            {this.renderSigners(this.state.signers, this.state.selected)}
+          </div>
+        </Modal>
+        <Modal
+          ref={this.witnessModal}
+          title='Witnesses'
+          onConfirm={() => {}}
+        >
+          <Highlight language='javascript' className='pre-box bg2 pre-wrap break-all small' element='pre'>
+            <code>123123 123</code>
+          </Highlight>
+        </Modal>
+      </>
     )
   }
 }

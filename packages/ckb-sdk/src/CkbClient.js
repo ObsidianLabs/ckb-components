@@ -12,8 +12,8 @@ export default class CkbClient {
   }
 
   async sendTransaction(tx) {
-    validators.ValidateTransaction(tx)
-    return await this.rpc.send_transaction(tx)
+    // validators.ValidateTransaction(tx)
+    return await this.core.rpc.sendTransaction(tx)
   }
 
   async loadTransaction (txHash, noCache) {
