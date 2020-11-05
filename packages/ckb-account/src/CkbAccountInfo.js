@@ -6,7 +6,7 @@ import {
   TableCardRow,
 } from '@obsidians/ui-components'
 
-import { CkbScript } from '@obsidians/ckb-tx-builder'
+import { CkbScript } from '@obsidians/ckb-objects'
 
 export default class CkbAccountInfo extends PureComponent {
   state = {

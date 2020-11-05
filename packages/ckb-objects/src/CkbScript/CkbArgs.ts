@@ -5,7 +5,7 @@ import {
   AddressType,
   serializeStruct,
 } from '@nervosnetwork/ckb-sdk-utils'
-import CkbData, { ckbDataFormat } from '../CkbData'
+import CkbData, { ckbDataFormat } from './CkbData'
 
 export default class CkbArgs {
   #args: CkbData[]

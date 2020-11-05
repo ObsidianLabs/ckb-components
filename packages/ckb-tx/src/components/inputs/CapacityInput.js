@@ -3,7 +3,7 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 
 export default forwardRef(CapacityInput)
 

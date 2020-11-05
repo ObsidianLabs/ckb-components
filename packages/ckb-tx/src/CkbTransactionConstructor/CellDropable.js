@@ -2,7 +2,7 @@ import React, { forwardRef, useState, useImperativeHandle } from 'react'
 
 import { useDrop } from 'react-dnd'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 
 export default forwardRef(CellDropable)
 

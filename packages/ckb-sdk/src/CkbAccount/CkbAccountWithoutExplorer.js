@@ -1,4 +1,4 @@
-import { CkbScript, lib } from '@obsidians/ckb-tx-builder'
+import { CkbScript, lib } from '@obsidians/ckb-objects'
 
 import CkbAccount from './CkbAccount'
 

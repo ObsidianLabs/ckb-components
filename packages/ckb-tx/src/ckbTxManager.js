@@ -1,7 +1,7 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
-import { SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
+import { SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-objects'
 
 const defaultCellManifest = [
   { hash: SIMPLE_UDT_CODE_HASH, name: 'Simple UDT' },

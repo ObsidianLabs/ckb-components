@@ -7,7 +7,7 @@ import {
 
 import notification from '@obsidians/notification'
 
-import { CkbCapacity, CkbData } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity, CkbData } from '@obsidians/ckb-objects'
 
 import CapacityInput from '../../components/inputs/CapacityInput'
 import DataInput from '../../components/inputs/DataInput'

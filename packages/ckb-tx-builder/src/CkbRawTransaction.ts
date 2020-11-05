@@ -1,13 +1,17 @@
 import uniq from 'lodash/uniq'
 
+import {
+  CkbTransaction,
+  CkbLiveCell,
+  CkbOutputCell,
+  CkbCapacity,
+  CkbScript,
+  CkbData,
+  SIMPLE_UDT_CODE_HASH,
+} from '@obsidians/ckb-objects'
+
 import CkbTxBuilder from './CkbTxBuilder'
 import CkbCellCollection from './CkbCellCollection'
-import CkbTransaction from './CkbTransaction'
-import { CkbLiveCell, CkbOutputCell } from './CkbCell'
-import CkbCapacity from './CkbCapacity'
-import CkbScript from './CkbScript'
-import CkbData from './CkbData'
-import { SIMPLE_UDT_CODE_HASH } from './lib/constants'
 
 class CkbTransactionPart {
   #capacity: CkbCapacity
@@ -233,7 +237,7 @@ export default class CkbRawTransaction {
     inputs.forEach((inputPart, index) => {
       let amount = BigInt(0) - inputPart.capacity.value // inputPart capacity is negative
       if (!index) {
-        amount += overpay // first input pays the fee
+        amount += BigInt(overpay) // first input pays the fee
       }
       const {
         cells,

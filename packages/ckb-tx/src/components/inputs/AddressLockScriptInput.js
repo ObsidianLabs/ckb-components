@@ -1,13 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import {
-  DebouncedInput,
-  Dropdown,
-} from '@obsidians/ui-components'
-
 import { KeypairSelector } from '@obsidians/keypair'
-import { CkbScript } from '@obsidians/ckb-tx-builder'
+import { CkbScript } from '@obsidians/ckb-objects'
 
 export default function AddressLockScriptInput ({ initialScript, onChange }) {
   const [value, setValue] = useState(initialScript.isAddress() ? initialScript.getAddress() : '')

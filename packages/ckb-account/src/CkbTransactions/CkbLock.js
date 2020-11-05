@@ -7,7 +7,7 @@ import {
 
 import { Link } from 'react-router-dom'
 
-import { CkbScript } from '@obsidians/ckb-tx-builder'
+import { CkbScript } from '@obsidians/ckb-objects'
 
 export default function CkbLock (props) {
   const { lock } = props

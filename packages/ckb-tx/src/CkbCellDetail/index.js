@@ -7,7 +7,7 @@ import {
   Badge,
 } from '@obsidians/ui-components'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 
 import CkbScriptRow from './CkbScriptRow'
 import CkbDataRow from './CkbDataRow'

@@ -2,7 +2,7 @@ import { scriptToHash, AddressPrefix } from '@nervosnetwork/ckb-sdk-utils'
 import { assertToBeHexString } from '@nervosnetwork/ckb-sdk-utils/lib/validators'
 
 import CkbArgs from './CkbArgs'
-import CkbData from '../CkbData'
+import CkbData from './CkbData'
 
 import { BLOCK_ASSEMBLER_CODE_HASH, ANYONE_CAN_PAY_CODE_HASH } from '../lib/constants'
 

@@ -3,7 +3,7 @@ import {
   DebouncedInput,
 } from '@obsidians/ui-components'
 
-import { lib } from '@obsidians/ckb-tx-builder'
+import { lib } from '@obsidians/ckb-objects'
 
 const toHex = (value, format) => {
   let hex

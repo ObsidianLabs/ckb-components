@@ -4,7 +4,7 @@ import {
   ButtonOptions,
 } from '@obsidians/ui-components'
 
-import { CkbData, lib } from '@obsidians/ckb-tx-builder'
+import { CkbData, lib } from '@obsidians/ckb-objects'
 
 import NonHexInput from './NonHexInput'
 import HexInput from './HexInput'

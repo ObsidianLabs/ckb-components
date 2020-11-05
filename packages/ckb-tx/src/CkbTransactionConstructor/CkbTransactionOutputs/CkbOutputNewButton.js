@@ -5,7 +5,7 @@ import {
   Modal,
 } from '@obsidians/ui-components'
 
-import { CkbOutputCell, CkbCapacity, CkbScript, CkbData } from '@obsidians/ckb-tx-builder'
+import { CkbOutputCell, CkbCapacity, CkbScript, CkbData } from '@obsidians/ckb-objects'
 
 import CapacityInput from '../../components/inputs/CapacityInput'
 import ScriptInput from '../../components/inputs/ScriptInput'

@@ -5,7 +5,7 @@ import {
   DeleteButton,
 } from '@obsidians/ui-components'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 
 import CkbOutputNewButton from './CkbOutputNewButton'
 

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
-    "@obsidians/ckb-tx-builder": "^0.1.0",
+    "@obsidians/ckb-objects": "^0.1.0",
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ui-components": "^0.2.2",
     "ckb-standalone-debugger": "0.2.0"

@@ -1,5 +1,4 @@
-import CkbCapacity from './CkbCapacity'
-import { CkbLiveCell, CellStatus } from './CkbCell'
+import { CkbCapacity, CkbLiveCell, CkbCellStatus } from '@obsidians/ckb-objects'
 
 export default class CkbCellCollection {
   #collections: Map<string, Set<CkbLiveCell>>
@@ -50,7 +49,7 @@ export default class CkbCellCollection {
 
     let acc
     for (let cell of liveCells) {
-      if (cell.status !== CellStatus.Live) {
+      if (cell.status !== CkbCellStatus.Live) {
         continue
       }
 

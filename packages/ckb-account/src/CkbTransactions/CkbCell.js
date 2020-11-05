@@ -8,7 +8,7 @@ import CkbLock from './CkbLock'
 import CkbType from './CkbType'
 import CkbData from './CkbData'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 
 export default function CkbCell (props) {
   if (!props || !props.capacity) {

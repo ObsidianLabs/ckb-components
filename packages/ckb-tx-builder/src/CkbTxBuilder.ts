@@ -1,14 +1,14 @@
-import CkbRawTransaction from './CkbRawTransaction'
+import { CkbData, FileReader } from '@obsidians/ckb-objects'
 
+import CkbRawTransaction from './CkbRawTransaction'
 import CkbCellCollection from './CkbCellCollection'
-import { setFs } from './CkbData'
 
 export default class CkbTxBuilder {
   #cellCollection: CkbCellCollection
 
   constructor (cellCollection: CkbCellCollection, fs) {
     this.#cellCollection = cellCollection
-    setFs(fs)
+    CkbData.fileReader = new FileReader(fs)
   }
 
   newTx () {

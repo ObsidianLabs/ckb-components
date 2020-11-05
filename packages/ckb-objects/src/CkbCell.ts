@@ -1,6 +1,6 @@
 import CkbCapacity from './CkbCapacity'
 import CkbScript from './CkbScript'
-import CkbData from './CkbData'
+import CkbData from './CkbScript/CkbData'
 import ckbEvents from './CkbEvents'
 
 import { BLOCK_ASSEMBLER_CODE_HASH, SIMPLE_UDT_CODE_HASH, ANYONE_CAN_PAY_CODE_HASH } from './lib/constants'
@@ -16,14 +16,14 @@ export interface CkbCell {
   data: CKBComponents.Bytes,
 }
 
-export enum CellStatus {
+export enum CkbCellStatus {
   Live = 'live',
   Pending = 'pending',
   Used = 'used',
 }
 
 export class CkbLiveCell {
-  #status: CellStatus
+  #status: CkbCellStatus
   readonly outPoint: CKBComponents.OutPoint
   readonly cellbase: boolean
   readonly blockHash: string
@@ -34,7 +34,7 @@ export class CkbLiveCell {
   readonly data: CkbData
 
   constructor (cell: CkbCell) {
-    this.#status = CellStatus.Live
+    this.#status = CkbCellStatus.Live
     
     this.outPoint = cell.outPoint
     this.cellbase = cell.cellbase
@@ -123,11 +123,11 @@ export class CkbLiveCell {
   setStatus (status: string) {
     ckbEvents.trigger(`cell:status:${this.id}`, status)
     if (status === 'live') {
-      this.#status = CellStatus.Live
+      this.#status = CkbCellStatus.Live
     } else if (status === 'pending') {
-      this.#status = CellStatus.Pending
+      this.#status = CkbCellStatus.Pending
     } else if (status === 'used') {
-      this.#status = CellStatus.Used
+      this.#status = CkbCellStatus.Used
     }
   }
 

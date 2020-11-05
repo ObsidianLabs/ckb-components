@@ -1,7 +1,7 @@
 import fileOps from '@obsidians/file-ops'
 
 import * as ckbUtils from '@nervosnetwork/ckb-sdk-utils'
-import { lib } from '@obsidians/ckb-tx-builder'
+import { lib } from '@obsidians/ckb-objects'
 
 import get from 'lodash/get'
 

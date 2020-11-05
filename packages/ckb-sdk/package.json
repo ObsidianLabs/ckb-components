@@ -10,7 +10,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@obsidians/ckb-tx-builder": "^0.1.0",
+    "@obsidians/ckb-objects": "^0.1.0",
     "ckb-js-toolkit": "git+https://git@github.com/xxuejie/ckb-js-toolkit.git"
   },
   "devDependencies": {

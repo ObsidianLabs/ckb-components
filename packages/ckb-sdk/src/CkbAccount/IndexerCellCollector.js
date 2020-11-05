@@ -1,4 +1,4 @@
-import { CkbLiveCell } from '@obsidians/ckb-tx-builder'
+import { CkbLiveCell } from '@obsidians/ckb-objects'
 
 export default class IndexerCellCollector {
   constructor (rpc, indexer, lockScript) {

@@ -4,7 +4,7 @@ import {
 } from '@obsidians/ui-components'
 
 import * as ckbUtils from '@nervosnetwork/ckb-sdk-utils'
-import { CkbTransaction } from '@obsidians/ckb-tx-builder'
+import { CkbTransaction } from '@obsidians/ckb-objects'
 import notification from '@obsidians/notification'
 
 import CkbTransactionDetailModal from './CkbTransactionDetailModal'

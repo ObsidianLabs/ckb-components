@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@obsidians/ckb-network": "^0.1.0",
-    "@obsidians/ckb-tx-builder": "^0.1.0",
+    "@obsidians/ckb-objects": "^0.1.0",
     "@obsidians/keypair": "^0.1.0",
     "@obsidians/ui-components": "^0.2.2"
   },

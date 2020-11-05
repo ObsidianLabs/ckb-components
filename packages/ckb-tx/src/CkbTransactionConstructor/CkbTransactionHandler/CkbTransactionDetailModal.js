@@ -6,7 +6,7 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
-import { CkbScript } from '@obsidians/ckb-tx-builder'
+import { CkbScript } from '@obsidians/ckb-objects'
 import keypairManager from '@obsidians/keypair'
 import notification from '@obsidians/notification'
 import { CkbKeypair } from '@obsidians/ckb-sdk'

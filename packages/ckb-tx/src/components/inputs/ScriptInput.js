@@ -8,7 +8,7 @@ import {
   FormText,
 } from '@obsidians/ui-components'
 
-import { CkbScript } from '@obsidians/ckb-tx-builder'
+import { CkbScript } from '@obsidians/ckb-objects'
 
 import CkbWalletContext from '../../CkbWalletContext'
 

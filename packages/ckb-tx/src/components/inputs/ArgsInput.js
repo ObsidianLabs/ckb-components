@@ -6,7 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import fileOps from '@obsidians/file-ops'
-import { CkbArgs, CkbData } from '@obsidians/ckb-tx-builder'
+import { CkbArgs, CkbData } from '@obsidians/ckb-objects'
 
 import DataInput from './DataInput'
 

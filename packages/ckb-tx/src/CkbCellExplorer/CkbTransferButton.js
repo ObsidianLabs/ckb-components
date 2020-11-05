@@ -9,7 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { CkbLiveCell, CkbScript, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
+import { CkbLiveCell, CkbScript, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-objects'
 import { networkManager } from '@obsidians/ckb-network'
 
 import CkbWalletContext from '../CkbWalletContext'

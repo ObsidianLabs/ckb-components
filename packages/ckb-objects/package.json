@@ -1,5 +1,5 @@
 {
-  "name": "@obsidians/ckb-tx-builder",
+  "name": "@obsidians/ckb-objects",
   "license": "GPL-3.0",
   "version": "0.1.0",
   "main": "lib/index.js",
@@ -11,9 +11,6 @@
   "scripts": {
     "build": "tsc",
     "prepare": "yarn build"
-  },
-  "dependencies": {
-    "@obsidians/ckb-objects": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^3.8.3"

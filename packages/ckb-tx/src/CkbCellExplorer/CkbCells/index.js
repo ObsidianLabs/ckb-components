@@ -8,7 +8,7 @@ import {
   CustomInput,
 } from '@obsidians/ui-components'
 
-import { CkbCapacity } from '@obsidians/ckb-tx-builder'
+import { CkbCapacity } from '@obsidians/ckb-objects'
 import { networkManager } from '@obsidians/ckb-network'
 
 import CkbWalletContext from '../../CkbWalletContext'

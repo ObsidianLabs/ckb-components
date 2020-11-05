@@ -7,7 +7,7 @@ import {
   Button,
 } from '@obsidians/ui-components'
 
-import { CkbLiveCell, CkbScript, CkbData, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-tx-builder'
+import { CkbLiveCell, CkbScript, CkbData, SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-objects'
 
 import notification from '@obsidians/notification'
 import { networkManager } from '@obsidians/ckb-network'
