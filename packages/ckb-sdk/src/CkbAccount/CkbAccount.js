@@ -1,6 +1,5 @@
 import { CkbScript, lib } from '@obsidians/ckb-objects'
 
-import CkbCellManager from './CkbCellManager'
 import TxCell from './TxCell'
 
 export default class CkbAccount {
@@ -9,7 +8,6 @@ export default class CkbAccount {
     this.ckbIndexer = sdk.ckbIndexer
     this.ckbExplorer = sdk.ckbExplorer
     this.value = value
-    this.ckbCellManager = new CkbCellManager(this, this.ckbIndexer)
     this._getInfo = null
   }
 
@@ -62,15 +60,15 @@ export default class CkbAccount {
     return lock_script
   }
 
-  async getTransactions (cursor, size = 20) {
+  async getTransactions (lastCursor, size = 20) {
     const lockScript = await this.lockScript()
     if (!lockScript) {
       return { txs: [] }
     }
-    const { last_cursor, txs } = await this.ckbIndexer.getTransactions(lockScript, cursor, size)
+    const { cursor, txs } = await this.ckbIndexer.getTransactions(lockScript, lastCursor, size)
 
     return {
-      cursor: last_cursor,
+      cursor,
       txs: txs.map(tx => new TxCell(tx, this.ckbClient)),
     }
   }

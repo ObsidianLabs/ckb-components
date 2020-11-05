@@ -1,6 +1,6 @@
 export { default as CkbTransaction } from './CkbTransaction'
 
-export { CkbLiveCell, CkbOutputCell, CkbCellStatus } from './CkbCell'
+export { CkbCell, CkbLiveCell, CkbOutputCell, CkbCellStatus } from './CkbCell'
 export { default as CkbCapacity } from './CkbCapacity'
 export { default as CkbScript } from './CkbScript'
 export { default as CkbData } from './CkbScript/CkbData'

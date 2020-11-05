@@ -1,30 +1,45 @@
-import { CkbCapacity, CkbLiveCell, CkbCellStatus } from '@obsidians/ckb-objects'
+import { CkbCapacity, CkbLiveCell, CkbCellStatus, CkbScript } from '@obsidians/ckb-objects'
+import CkbCellCollector from './CkbCellCollector'
 
-export default class CkbCellCollection {
-  #collections: Map<string, Set<CkbLiveCell>>
+export default class CkbCellCache {
+  #cellCollectors: Map<string, CkbCellCollector>
+  #cache: Map<string, Set<CkbLiveCell>>
 
   constructor () {
-    this.#collections = new Map()
+    this.#cellCollectors = new Map()
+    this.#cache = new Map()
+  }
+
+  cellCollector (indexer, lock) {
+    // if (!this.#cellCollectors.has(lockHash)) {
+    //   this.#cellCollectors.set(lockHash, new CkbCellCollector(this, lockHash))
+    // }
+    // return this.#cellCollectors.get(lockHash)
+
+    const script = new CkbScript({ hashType: lock.hash_type, codeHash: lock.code_hash, args: lock.args })
+    const lockHash = script.hash
+    this.clearCellsForLockHash(lockHash)
+    return new CkbCellCollector(this, indexer, lock)
   }
 
   push (cell: CkbLiveCell) {
     const lockHash = cell.lockHash
-    if (!this.#collections.has(lockHash)) {
-      this.#collections.set(lockHash, new Set())
+    if (!this.#cache.has(lockHash)) {
+      this.#cache.set(lockHash, new Set())
     }
-    this.#collections.get(lockHash).add(cell)
+    this.#cache.get(lockHash).add(cell)
   }
 
-  pushCells (cells: CkbLiveCell[]) {
+  pushCells (cells: Set<CkbLiveCell>) {
     cells.forEach(cell => this.push(cell))
   }
 
   clearCellsForLockHash (lockHash: string) {
-    this.#collections.delete(lockHash)
+    this.#cache.delete(lockHash)
   }
 
   updateLiveCells (lockHash: string, cells: Array<CkbLiveCell>) {
-    this.#collections.set(lockHash, new Set(cells))
+    this.#cache.set(lockHash, new Set(cells))
   }
 
   gatherCells (lockHash: string, amount: bigint, typeHash?: string) {
@@ -40,10 +55,10 @@ export default class CkbCellCollection {
     accumulator: accumulator<T>,
   ) {
     const cells: Set<CkbLiveCell> = new Set()
-    if (!this.#collections.has(lockHash)) {
+    if (!this.#cache.has(lockHash)) {
       throw new Error(`No cells for lock hash "${lockHash}".`)
     }
-    const liveCells = this.#collections.get(lockHash)
+    const liveCells = this.#cache.get(lockHash)
 
     const totalCapacity = new CkbCapacity()
 

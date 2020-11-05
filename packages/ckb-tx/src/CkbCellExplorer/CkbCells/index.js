@@ -9,6 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import { CkbCapacity } from '@obsidians/ckb-objects'
+
 import { networkManager } from '@obsidians/ckb-network'
 
 import CkbWalletContext from '../../CkbWalletContext'
@@ -96,8 +97,8 @@ export default class CkbCells extends PureComponent {
       cellsCount: live_cells_count,
       totalCapacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
     })
-    this.context.txBuilder.clearCellsForLockHash(wallet.lockHash)
-    this.cellManager = wallet.ckbCellManager
+
+    this.cellCollector = this.context.txBuilder.cellCollector(await wallet.lockScript())
     this.displayMoreCell()
   }
 
@@ -112,9 +113,7 @@ export default class CkbCells extends PureComponent {
   loadMoreCell = async () => {
     this.setState({ loading: true })
     try {
-      const { done, cells, capacity } = await this.cellManager.loadMoreCells()
-
-      this.context.txBuilder.pushCells(cells)
+      const { done, cells, capacity } = await this.cellCollector.loadMoreCells()
 
       this.setState({
         done,

@@ -9,7 +9,7 @@ import {
   SIMPLE_UDT_CODE_HASH,
 } from '@obsidians/ckb-objects'
 
-import CkbCellCollection from './CkbCellCollection'
+import CkbCellCache from './CkbCellCache'
 import CkbTransactionPart from './CkbTransactionPart'
 
 export default class CkbRawTransaction {
@@ -18,7 +18,7 @@ export default class CkbRawTransaction {
   #inputs: Set<CkbLiveCell>
   #deps: Map<string, CkbLiveCell>
 
-  constructor(private cellCollection: CkbCellCollection) {
+  constructor(private cellCache: CkbCellCache) {
     this.#fee = new CkbCapacity(0.001)
     this.#txParts = new Map()
     this.#inputs = new Set()
@@ -69,7 +69,7 @@ export default class CkbRawTransaction {
       cells,
       totalCapacity,
       accumulation,
-    } = this.cellCollection.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
+    } = this.cellCache.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
 
     cells.forEach(this.#inputs.add, this.#inputs)
     const returns = accumulation - amount
@@ -163,7 +163,7 @@ export default class CkbRawTransaction {
       const {
         cells,
         totalCapacity,
-      } = this.cellCollection.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
+      } = this.cellCache.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
       const returns = totalCapacity.value - amount
 
       cells.forEach(gatheredCells.add, gatheredCells)

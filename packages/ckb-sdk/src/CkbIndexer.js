@@ -29,7 +29,7 @@ export default class CkbIndexer {
     const params = this.prepareParams(lockScript, cursor, step, order)
     const result = await this.rpc.get_cells(...params)
     return {
-      last_cursor: result.last_cursor,
+      cursor: result.last_cursor,
       cells: result.objects,
     }
   }
@@ -38,7 +38,7 @@ export default class CkbIndexer {
     const params = this.prepareParams(lockScript, cursor, step, order)
     const result = await this.rpc.get_transactions(...params)
     return {
-      last_cursor: result.last_cursor,
+      cursor: result.last_cursor,
       txs: result.objects,
     }
   }
