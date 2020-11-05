@@ -14,18 +14,26 @@ import CkbDataRow from './CkbDataRow'
 
 import ckbTxManager from '../ckbTxManager'
 
+const statusColors = {
+  live: 'success',
+  pending: 'warning',
+  used: 'danger',
+}
+
 export default class CkbCellDetail extends PureComponent {
   constructor(props) {
     super(props)
 
     this.state = {
-      cell: undefined,
-      name: 'name',
+      cell: null,
+      status: '',
+      name: '',
       outPoint: null,
       udt: undefined,
     }
 
     this.modal = React.createRef()
+    this.clearOnStatus = null
   }
 
   componentDidMount () {
@@ -33,12 +41,18 @@ export default class CkbCellDetail extends PureComponent {
   }
 
   openModal = cell => {
+    this.clearOnStatus = cell.onStatus(status => this.setState({ status }))
     this.refresh(cell)
     this.modal.current.openModal()
   }
 
+  onClosed = () => {
+    this.clearOnStatus && this.clearOnStatus()
+    this.setState({ cell: null, status: '', name: '', outPoint: null, udt: undefined })
+  }
+
   refresh = async cell => {
-    this.setState({ cell, name: '', outPoint: null, udt: undefined })
+    this.setState({ cell, status: cell.status, name: '', outPoint: null, udt: undefined })
     ckbTxManager.getCellInfo(cell.dataHash).then(info => {
       if (info) {
         this.setState({ name: info.name || '', outPoint: info.outPoint || null })
@@ -73,7 +87,7 @@ export default class CkbCellDetail extends PureComponent {
     )
   }
 
-  renderCellDetail = cell => {
+  renderCellDetail = ({ cell, status }) => {
     if (!cell) {
       return null
     }
@@ -96,6 +110,12 @@ export default class CkbCellDetail extends PureComponent {
 
     return (
       <TableCard noPadding title={this.state.name} right={this.renderReferenceButton()}>
+        <TableCardRow
+          name='Status'
+          icon='fad fa-spinner-third'
+          badge={status.toUpperCase()}
+          badgeColor={statusColors[status]}
+        />
         <TableCardRow
           name='Capacity'
           icon='far fa-wallet'
@@ -120,8 +140,9 @@ export default class CkbCellDetail extends PureComponent {
       <Modal
         ref={this.modal}
         title='Cell Detail'
+        onClosed={this.onClosed}
       >
-        {this.renderCellDetail(this.state.cell)}
+        {this.renderCellDetail(this.state)}
       </Modal>
     )
   }

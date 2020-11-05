@@ -94,11 +94,18 @@ export default class CkbTransactionDetailModal extends PureComponent {
       { tx },
       {
         pending: () => {
+          this.tx.updateInputsCellStatus('pending')
           this.setState({ pushing: false })
           this.onResolve()
           this.modal.current.closeModal()
         },
-        failed: () => this.setState({ pushing: false })
+        failed: () => {
+          this.tx.updateInputsCellStatus('live')
+          this.setState({ pushing: false })
+        },
+        proposed: () => {
+          this.tx.updateInputsCellStatus('used')
+        }
       }
     )
   }

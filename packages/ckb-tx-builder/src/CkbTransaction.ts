@@ -83,4 +83,8 @@ export default class CkbTransaction {
       ),
     }
   }
+
+  updateInputsCellStatus (status) {
+    this.inputs.forEach(input => input.setStatus(status))
+  }
 }

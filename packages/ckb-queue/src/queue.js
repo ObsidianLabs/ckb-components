@@ -17,9 +17,11 @@ class Queue extends BaseQueueManager {
       notification.error('Push Transaction Failed', e.message)
     }
 
+    let proposed = false
     const h = setInterval(async () => {
       const confirmed = await networkManager.sdk?.ckbClient.loadTransaction(txHash)
-      if (confirmed?.txStatus?.status === 'proposed') {
+      if (confirmed?.txStatus?.status === 'proposed' && !proposed) {
+        proposed = true
         this.updateStatus(txHash, 'PROPOSED', {}, callbacks)
       } else if (confirmed?.txStatus?.status === 'committed') {
         clearInterval(h)

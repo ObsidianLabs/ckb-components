@@ -87,7 +87,7 @@ export default class CkbRawTransaction {
 
   #fee: CkbCapacity
   #txParts:  Map<string, CkbTransactionPart[]>
-  #inputs: CkbLiveCell[]
+  #inputs: Set<CkbLiveCell>
   #deps: Map<string, CkbLiveCell>
 
   constructor(builder, cellCollection) {
@@ -96,7 +96,7 @@ export default class CkbRawTransaction {
     
     this.#fee = new CkbCapacity(0.001)
     this.#txParts = new Map()
-    this.#inputs = []
+    this.#inputs = new Set()
     this.#deps = new Map()
   }
 
@@ -146,7 +146,7 @@ export default class CkbRawTransaction {
       accumulation,
     } = this.#cellCollection.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
 
-    this.#inputs = this.#inputs.concat(cells)
+    cells.forEach(this.#inputs.add, this.#inputs)
     const returns = accumulation - amount
 
     this.to(toLockScript, 142, new CkbData(amount.toString(), 'uint128'), udtScript)
@@ -228,7 +228,7 @@ export default class CkbRawTransaction {
   private gatherInputCells (inputs: CkbTransactionPart[]) {
     const overpay = this.overpay()
 
-    let gatheredCells: CkbLiveCell[] = []
+    let gatheredCells: Set<CkbLiveCell> = new Set()
     const outputsFromReturns: CkbTransactionPart[] = []
     inputs.forEach((inputPart, index) => {
       let amount = BigInt(0) - inputPart.capacity.value // inputPart capacity is negative
@@ -241,7 +241,7 @@ export default class CkbRawTransaction {
       } = this.#cellCollection.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
       const returns = totalCapacity.value - amount
 
-      gatheredCells = gatheredCells.concat(cells)
+      cells.forEach(gatheredCells.add, gatheredCells)
       if (returns > BigInt(0)) {
         outputsFromReturns.push(new CkbTransactionPart(inputPart.lock, returns))
       }

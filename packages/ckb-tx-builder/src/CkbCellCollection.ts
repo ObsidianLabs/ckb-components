@@ -1,8 +1,8 @@
 import CkbCapacity from './CkbCapacity'
-import { CkbLiveCell, CkbCell } from './CkbCell'
+import { CkbLiveCell, CellStatus } from './CkbCell'
 
 export default class CkbCellCollection {
-  #collections: Map<string, CkbLiveCell[]>
+  #collections: Map<string, Set<CkbLiveCell>>
 
   constructor () {
     this.#collections = new Map()
@@ -11,9 +11,9 @@ export default class CkbCellCollection {
   push (cell: CkbLiveCell) {
     const lockHash = cell.lockHash
     if (!this.#collections.has(lockHash)) {
-      this.#collections.set(lockHash, [])
+      this.#collections.set(lockHash, new Set())
     }
-    this.#collections.get(lockHash).push(cell)
+    this.#collections.get(lockHash).add(cell)
   }
 
   pushCells (cells: CkbLiveCell[]) {
@@ -24,8 +24,8 @@ export default class CkbCellCollection {
     this.#collections.delete(lockHash)
   }
 
-  updateLiveCells (lockHash: string, cells: Array<CkbCell>) {
-    this.#collections.set(lockHash, cells.map(cell => new CkbLiveCell(cell)))
+  updateLiveCells (lockHash: string, cells: Array<CkbLiveCell>) {
+    this.#collections.set(lockHash, new Set(cells))
   }
 
   gatherCells (lockHash: string, amount: bigint, typeHash?: string) {
@@ -40,22 +40,26 @@ export default class CkbCellCollection {
     lockHash: string,
     accumulator: accumulator<T>,
   ) {
-    const cells: CkbLiveCell[] = []
+    const cells: Set<CkbLiveCell> = new Set()
     if (!this.#collections.has(lockHash)) {
       throw new Error(`No cells for lock hash "${lockHash}".`)
     }
-    const liveCells = [...this.#collections.get(lockHash)]
+    const liveCells = this.#collections.get(lockHash)
 
     const totalCapacity = new CkbCapacity()
-    let acc
 
-    while (true) {
-      const cell = liveCells.shift()
+    let acc
+    for (let cell of liveCells) {
+      if (cell.status !== CellStatus.Live) {
+        continue
+      }
+
       const result = accumulator(cell, acc)
       if (!result.accepted) {
         continue
       }
-      cells.push(cell)
+
+      cells.add(cell)
       totalCapacity.plus(cell.capacity)
       acc = result.acc
       if (result.done) {

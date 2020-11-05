@@ -11,8 +11,6 @@ import {
 import { CkbCapacity } from '@obsidians/ckb-tx-builder'
 import { networkManager } from '@obsidians/ckb-network'
 
-import throttle from 'lodash/throttle'
-
 import CkbWalletContext from '../../CkbWalletContext'
 
 import CkbNewCellButton from './CkbNewCellButton'
@@ -21,7 +19,6 @@ import CkbCell from './CkbCell'
 import ckbTxManager from '../../ckbTxManager'
 
 const DISPLAY_STEP = 20
-const LOAD_STEP = 200
 
 export default class CkbCells extends PureComponent {
   static contextType = CkbWalletContext

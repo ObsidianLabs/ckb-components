@@ -3,12 +3,17 @@ import React, { useState, useEffect } from 'react'
 import { useDrag } from 'react-dnd'
 import ckbTxManager from '../../ckbTxManager'
 
+import './styles.scss'
+
 export default function CkbCell (props) {
   const { selected, cell } = props
 
   const [name, setName] = useState('')
+  const [status, setStatus] = useState(cell.status)
+
   useEffect(() => {
     ckbTxManager.getCellInfo(cell.dataHash).then(info => info && setName(info.name || ''))
+    return cell.onStatus(status => setStatus(status))
   }, [cell.id])
 
   const [{ isDragging }, drag] = useDrag({
@@ -23,7 +28,6 @@ export default function CkbCell (props) {
       isDragging: monitor.isDragging(),
     }),
   })
-
 
   let icon = null
   if (cell.anyoneCanPay()) {
@@ -54,10 +58,30 @@ export default function CkbCell (props) {
     }
   }
 
+  if (status === 'pending') {
+    icon = (
+      <div className='p-relative' key='cell-pending'>
+        <i className='fa-3x fal fa-file' />
+        <div className='ckb-cell-status-icon'>
+          <i className='fas fa-spin fa-spinner' />
+        </div>
+      </div>
+    )
+  } else if (status === 'used') {
+    icon = (
+      <div className='p-relative' key='cell-used'>
+        <i className='fa-3x fal fa-file' />
+        <div className='ckb-cell-status-icon'>
+          <i className='fas fa-ban' />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       ref={drag}
-      className='d-flex flex-column align-items-center small p-2 m-1 rounded'
+      className={`ckb-cell ckb-cell-${status}`}
       style={{ width: '90px', opacity: isDragging ? 0.3 : 1 }}
       onMouseDown={e => e.button === 0 && props.onSelect()}
       onDoubleClick={props.onDoubleClick}

@@ -1,0 +1,30 @@
+.ckb-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  margin: 0.25rem;
+  font-size: 80%;
+  border-radius: 0.4rem;
+
+  & .ckb-cell-status-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: var(--color-text);
+  }
+
+  &.ckb-cell-pending {
+    color: var(--color-text-muted);
+  }
+
+  &.ckb-cell-used {
+    opacity: 0.5 !important;
+  }
+}
