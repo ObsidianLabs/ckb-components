@@ -3,101 +3,22 @@ import uniq from 'lodash/uniq'
 import {
   CkbTransaction,
   CkbLiveCell,
-  CkbOutputCell,
   CkbCapacity,
   CkbScript,
   CkbData,
   SIMPLE_UDT_CODE_HASH,
 } from '@obsidians/ckb-objects'
 
-import CkbTxBuilder from './CkbTxBuilder'
 import CkbCellCollection from './CkbCellCollection'
-
-class CkbTransactionPart {
-  #capacity: CkbCapacity
-  readonly lock: CkbScript
-  readonly type: CkbScript
-  readonly data: CkbData
-
-  readonly capacityByContents: boolean
-
-  constructor(lock: CkbScript, capacity: number | string | bigint | CkbCapacity, data?: CkbData, type?: CkbScript) {
-    this.#capacity = new CkbCapacity(capacity)
-    this.lock = lock
-    this.type = type || new CkbScript()
-    this.data = data || new CkbData()
-
-    this.capacityByContents = this.#capacity.isZero() && Boolean(data)
-  }
-
-  get capacity () {
-    return this.capacityByContents ? this.calculateCapacity() : this.#capacity
-  }
-
-  calculateCapacity () {
-    return new CkbCapacity(8 + this.lock.size() + this.type.size() + this.data.size())
-  }
-
-  get lockHash () {
-    return this.lock?.hash || ''
-  }
-
-  get typeHash () {
-    return this.type?.hash || ''
-  }
-
-  hasData () {
-    return !!this.data.size()
-  }
-
-  inverse () {
-    this.#capacity.inverse()
-    return this
-  }
-
-  get mergeable () {
-    return !(this.capacityByContents || this.data)
-  }
-
-  merge (other: CkbTransactionPart) {
-    this.#capacity.plus(other.capacity)
-  }
-
-  static mergeAll (parts: CkbTransactionPart[]): CkbTransactionPart[] {
-    const unmergeables = []
-    const mergeables = new Map<string, CkbTransactionPart>()
-    parts.forEach(part => {
-      if (!part.mergeable) {
-        unmergeables.push(part)
-        return
-      }
-      if (!mergeables.has(part.typeHash)) {
-        mergeables.set(part.typeHash, part)
-        return
-      }
-      mergeables.get(part.typeHash).merge(part)
-    })
-    return Array.from(mergeables.values()).filter(part => !part.capacity.isZero()).concat(unmergeables)
-  }
-
-  toCkbOutput () {
-    return new CkbOutputCell(this.capacity, this.lock, this.type, this.data)
-  }
-}
+import CkbTransactionPart from './CkbTransactionPart'
 
 export default class CkbRawTransaction {
-  #builder: CkbTxBuilder
-  #cellCollection: CkbCellCollection
-
   #fee: CkbCapacity
   #txParts:  Map<string, CkbTransactionPart[]>
   #inputs: Set<CkbLiveCell>
   #deps: Map<string, CkbLiveCell>
 
-  constructor(builder, cellCollection) {
-    this.#builder = builder
-    this.#cellCollection = cellCollection
-    
+  constructor(private cellCollection: CkbCellCollection) {
     this.#fee = new CkbCapacity(0.001)
     this.#txParts = new Map()
     this.#inputs = new Set()
@@ -148,7 +69,7 @@ export default class CkbRawTransaction {
       cells,
       totalCapacity,
       accumulation,
-    } = this.#cellCollection.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
+    } = this.cellCollection.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
 
     cells.forEach(this.#inputs.add, this.#inputs)
     const returns = accumulation - amount
@@ -242,7 +163,7 @@ export default class CkbRawTransaction {
       const {
         cells,
         totalCapacity,
-      } = this.#cellCollection.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
+      } = this.cellCollection.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
       const returns = totalCapacity.value - amount
 
       cells.forEach(gatheredCells.add, gatheredCells)

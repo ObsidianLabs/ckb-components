@@ -6,7 +6,7 @@ export { default as CkbScript } from './CkbScript'
 export { default as CkbData } from './CkbScript/CkbData'
 export { default as CkbArgs } from './CkbScript/CkbArgs'
 
-export { default as FileReader } from './FileReader'
+export { default as FileReaderInterface } from './CkbScript/FileReader'
 
 export * as lib from './lib'
 export * from './lib/constants'

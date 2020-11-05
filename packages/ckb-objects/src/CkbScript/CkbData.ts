@@ -1,16 +1,16 @@
 import { assertToBeHexString } from '@nervosnetwork/ckb-sdk-utils/lib/validators'
 
 import { hex2Blake2b, toHex, fromHex } from '../lib'
-import { LocalFile } from '../FileReader'
+import FileReaderInterface, { FileData } from './FileReader'
 
 export type ckbDataFormat = 'file' | 'utf8' | 'hex' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'uint128' | 'uint256'
 
 export default class CkbData {
-  static fileReader = null
+  static fileReader : FileReaderInterface
 
   readonly format: ckbDataFormat
   #value?: string
-  #file?: LocalFile
+  #file?: FileData
   #size: number
   #hash: string
 
@@ -21,7 +21,7 @@ export default class CkbData {
     } else if (format === 'file') {
       this.format = 'file'
       if (!CkbData.fileReader) {
-        throw new Error('No file reader specified')
+        throw new Error('CkbData.fileReader is not specified')
       }
       this.#file = CkbData.fileReader.open(value.toString())
     } else if (format === 'utf8') {

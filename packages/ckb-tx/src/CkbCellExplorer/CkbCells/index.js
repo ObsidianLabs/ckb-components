@@ -96,7 +96,7 @@ export default class CkbCells extends PureComponent {
       cellsCount: live_cells_count,
       totalCapacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
     })
-    this.context.cellCollection.clearCellsForLockHash(wallet.lockHash)
+    this.context.txBuilder.clearCellsForLockHash(wallet.lockHash)
     this.cellManager = wallet.ckbCellManager
     this.displayMoreCell()
   }
@@ -114,7 +114,7 @@ export default class CkbCells extends PureComponent {
     try {
       const { done, cells, capacity } = await this.cellManager.loadMoreCells()
 
-      this.context.cellCollection.pushCells(cells)
+      this.context.txBuilder.pushCells(cells)
 
       this.setState({
         done,
