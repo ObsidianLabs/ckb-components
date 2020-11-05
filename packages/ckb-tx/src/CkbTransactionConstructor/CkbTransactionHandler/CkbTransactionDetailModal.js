@@ -86,7 +86,6 @@ export default class CkbTransactionDetailModal extends PureComponent {
     }
     this.setState({ pushing: true })
 
-    console.log(tx)
     queue.add(
       () => ({
         txHash: this.tx.hash(),
