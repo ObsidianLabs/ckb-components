@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   Modal,
   CustomInput,
+  DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
 import { CkbScript } from '@obsidians/ckb-tx-builder'
@@ -22,23 +23,31 @@ export default class CkbTransactionDetailModal extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      tx: null,
       signers: [],
       selected: {},
-      value: '',
+      serializedTx: '',
+      witnesses: [],
       signed: false,
-      txHash: '',
       pushing: false,
     }
+
+    this.tx = null
     this.modal = React.createRef()
     this.witnessModal = React.createRef()
   }
 
   openModal = tx => {
-    const signers = tx.getUniqueSigners()
     tx.network = networkManager.network?.id || 'local'
-    const value = JSON.stringify(tx.serialize(), null, 2)
-    this.setState({ tx, value, signers, selected: {}, signed: false, pushing: false })
+    this.tx = tx
+
+    this.setState({
+      signers: tx.getUniqueSigners(),
+      selected: {},
+      serializedTx: JSON.stringify(tx.serialize(), null, 2),
+      witnesses: [],
+      signed: false,
+      pushing: false,
+    })
     this.modal.current.openModal()
     return new Promise(resolve => this.onResolve = resolve)
   }
@@ -58,9 +67,11 @@ export default class CkbTransactionDetailModal extends PureComponent {
         signatureProvider.set(lock.hash, signer)
       }))
       const witnessesSigner = networkManager.sdk.ckbClient.core.signWitnesses(signatureProvider)
-      const signedTx = await this.state.tx.sign(witnessesSigner)
-      const value = JSON.stringify(signedTx, null, 2)
-      this.setState({ signed: true, value, witnesses: signedTx.witnesses })
+      const signedTx = await this.tx.sign(witnessesSigner)
+      this.setState({
+        signed: true,
+        witnesses: signedTx.witnesses,
+      })
     } catch (e) {
       console.warn(e)
       notification.error('Push Transaction Failed', e.message)
@@ -68,16 +79,20 @@ export default class CkbTransactionDetailModal extends PureComponent {
   }
 
   pushTransaction = () => {
+    const { serializedTx, witnesses } = this.state
+    const tx = {
+      ...JSON.parse(serializedTx),
+      witnesses,
+    }
     this.setState({ pushing: true })
-    const { tx, value } = this.state
-    const signedTx = JSON.parse(value)
-    const txHash = tx.hash()
+
+    console.log(tx)
     queue.add(
       () => ({
-        txHash,
-        push: () => networkManager.sdk.ckbClient.sendTransaction(signedTx)
+        txHash: this.tx.hash(),
+        push: () => networkManager.sdk.ckbClient.sendTransaction(tx)
       }),
-      { tx: signedTx },
+      { tx },
       {
         pending: () => {
           this.setState({ pushing: false })
@@ -89,7 +104,8 @@ export default class CkbTransactionDetailModal extends PureComponent {
     )
   }
   
-  renderSigners = (signers, selected) => {
+  renderSigners = () => {
+    const { signed, signers, selected } = this.state
     return signers.map(address => (
       <CustomInput
         type='checkbox'
@@ -97,7 +113,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
         id={`signer-${address}`}
         className='text-body'
         label={<code>{address}</code>}
-        disabled={this.state.signed}
+        disabled={signed}
         checked={!!selected[address]}
         onChange={event => this.setState({ selected: { ...selected, [address]: event.target.checked } })}
       />
@@ -108,8 +124,16 @@ export default class CkbTransactionDetailModal extends PureComponent {
     this.witnessModal.current.openModal()
   }
 
+  onChangeWitness = index => value => {
+    const witnesses = [...this.state.witnesses]
+    witnesses[index] = value
+    this.setState({ witnesses })
+  }
+
   render () {
-    const actions = this.state.signed ? [this.openWitnessModal] : []
+    const { signed, serializedTx, witnesses, pushing } = this.state
+
+    const actions = signed ? [this.openWitnessModal] : []
 
     return (
       <>
@@ -117,27 +141,34 @@ export default class CkbTransactionDetailModal extends PureComponent {
           ref={this.modal}
           h100
           title='Transaction'
-          textConfirm={this.state.signed ? 'Push transaction' : 'Sign transaction'}
-          pending={this.state.pushing && 'Pushing...'}
-          onConfirm={this.state.signed ? this.pushTransaction : this.signTransaction}
-          textActions={this.state.signed ? ['Witnesses'] : []}
+          textConfirm={signed ? 'Push transaction' : 'Sign transaction'}
+          pending={pushing && 'Pushing...'}
+          onConfirm={signed ? this.pushTransaction : this.signTransaction}
+          textActions={signed ? ['Witnesses'] : []}
           onActions={actions}
         >
           <Highlight language='javascript' className='pre-box bg2 pre-wrap break-all small' element='pre'>
-            <code>{this.state.value}</code>
+            <code>{serializedTx}</code>
           </Highlight>
           <div className='mt-2'>
-            {this.renderSigners(this.state.signers, this.state.selected)}
+            {this.renderSigners()}
           </div>
         </Modal>
         <Modal
           ref={this.witnessModal}
           title='Witnesses'
-          onConfirm={() => {}}
+          textCancel='Close'
         >
-          <Highlight language='javascript' className='pre-box bg2 pre-wrap break-all small' element='pre'>
-            <code>123123 123</code>
-          </Highlight>
+          {witnesses.map((w, index) => (
+            <DebouncedFormGroup
+              key={`witness-input-${index}`}
+              size='sm'
+              label={`Witness ${index + 1}`}
+              className='code'
+              value={w}
+              onChange={this.onChangeWitness(index)}
+            />
+          ))}
         </Modal>
       </>
     )
