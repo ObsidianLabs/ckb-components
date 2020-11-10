@@ -74,7 +74,7 @@ export default class CkbNewCellButton extends PureComponent {
     rawTx.from(this.props.address, this.capacity || this.state.minCapacity)
 
     try {
-      ckbTxManager.visualizeTransaction(rawTx.generate())
+      ckbTxManager.visualizeTransaction(await rawTx.generate())
     } catch (e) {
       notification.error('Error', e.message)
       return

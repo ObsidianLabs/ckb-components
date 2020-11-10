@@ -80,7 +80,7 @@ export default class CkbMintUdtButton extends PureComponent {
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
       
-      const tx = rawTx
+      const tx = await rawTx
         .from(this.props.issuer, 142)
         .to(
           this.lock, 142,

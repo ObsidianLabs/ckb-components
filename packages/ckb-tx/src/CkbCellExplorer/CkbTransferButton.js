@@ -71,7 +71,7 @@ export default class CkbTransferButton extends PureComponent {
       return
     }
     try {
-      const tx = this.context.txBuilder.newTx()
+      const tx = await this.context.txBuilder.newTx()
         .transfer(this.props.sender, this.lock, this.capacity)
         .generate()
 
@@ -96,10 +96,9 @@ export default class CkbTransferButton extends PureComponent {
         const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
-      
-      const tx = rawTx
-        .transferUdt(this.props.sender, this.lock, this.capacity.value, this.state.token)
-        .generate()
+
+      await rawTx.transferUdt(this.props.sender, this.lock, this.capacity.value, this.state.token)
+      const tx = await rawTx.generate()
 
       ckbTxManager.visualizeTransaction(tx)
     } catch (e) {

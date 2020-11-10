@@ -20,15 +20,15 @@ export default class CkbCellCache {
     return collector
   }
 
-  gatherCells (lock_hash: string, amount: bigint, type_hash?: string) {
+  async gatherCells (lock_hash: string, amount: bigint, type_hash?: string) {
     return this.gatherCellsByAccumulator(lock_hash, defaultAccumulator(amount))
   }
 
-  gatherUdtCells (lock_hash: string, amount: bigint, udtTypeHash: string) {
+  async gatherUdtCells (lock_hash: string, amount: bigint, udtTypeHash: string) {
     return this.gatherCellsByAccumulator<bigint>(lock_hash, udtAccumulator(amount, udtTypeHash))
   }
 
-  gatherCellsByAccumulator<T> (
+  async gatherCellsByAccumulator<T> (
     lock_hash: string,
     accumulator: accumulator<T>,
   ) {
@@ -40,7 +40,7 @@ export default class CkbCellCache {
     const totalCapacity = new CkbCapacity()
     const cells: Set<CkbLiveCell> = new Set()
     let acc
-    for (let cell of collector.cells) {
+    for await (const cell of collector.asyncCellIterator()) {
       if (cell.status !== CkbCellStatus.Live) {
         continue
       }

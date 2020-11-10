@@ -47,6 +47,18 @@ export default class CkbCellCollector {
     return this.#hasMore
   }
 
+  async *asyncCellIterator () {
+    for (let cell of this.#cells) {
+      yield cell
+    }
+    while (this.#hasMore) {
+      const cells = await this.loadMoreCells()
+      for (let cell of cells) {
+        yield cell
+      }
+    }
+  }
+
   async loadMoreCells () {
     const { done, value } = await this.#loader.next()
 
@@ -63,7 +75,7 @@ export default class CkbCellCollector {
       this.#cells.add(cell)
     })
 
-    return
+    return value
   }
 
   private async *collect (step: number) {

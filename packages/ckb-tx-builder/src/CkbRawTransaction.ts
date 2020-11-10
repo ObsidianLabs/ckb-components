@@ -56,7 +56,7 @@ export default class CkbRawTransaction {
     return this.from(from, amount).to(to, amount, data, type)
   }
 
-  public transferUdt(from: string | CkbScript, to: string | CkbScript, amount: bigint, udt: string) {
+  public async transferUdt(from: string | CkbScript, to: string | CkbScript, amount: bigint, udt: string) {
     const fromLockScript = new CkbScript(from)
     const toLockScript = new CkbScript(to)
     const udtScript = new CkbScript(
@@ -69,7 +69,7 @@ export default class CkbRawTransaction {
       cells,
       totalCapacity,
       accumulation = BigInt(0),
-    } = this.cellCache.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
+    } = await this.cellCache.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
 
     cells.forEach(this.#inputs.add, this.#inputs)
     const returns = accumulation - amount
@@ -150,12 +150,12 @@ export default class CkbRawTransaction {
     return overpay > BigInt(0) ? overpay : BigInt(0)
   }
 
-  private gatherInputCells (inputs: CkbTransactionPart[]) {
+  private async gatherInputCells (inputs: CkbTransactionPart[]) {
     const overpay = this.overpay()
 
     let gatheredCells: Set<CkbLiveCell> = new Set()
     const outputsFromReturns: CkbTransactionPart[] = []
-    inputs.forEach((inputPart, index) => {
+    await Promise.all(inputs.map(async (inputPart, index) => {
       let amount = BigInt(0) - inputPart.capacity.value // inputPart capacity is negative
       if (!index) {
         amount += BigInt(overpay) // first input pays the fee
@@ -163,21 +163,21 @@ export default class CkbRawTransaction {
       const {
         cells,
         totalCapacity,
-      } = this.cellCache.gatherCells(inputPart.lock_hash, amount, inputPart.type_hash)
+      } = await this.cellCache.gatherCells(inputPart.lock_hash, amount, inputPart.type_hash)
       const returns = totalCapacity.value - amount
 
       cells.forEach(gatheredCells.add, gatheredCells)
       if (returns > BigInt(0)) {
         outputsFromReturns.push(new CkbTransactionPart(inputPart.lock, returns))
       }
-    })
+    }))
     return {
       gatheredCells,
       outputsFromReturns,
     }
   }
 
-  private prepare () {
+  private async prepare () {
     this.mergeParts()
 
     if (this.estimate().in.isZero()) {
@@ -189,7 +189,7 @@ export default class CkbRawTransaction {
     }
 
     const { inputs, outputs } = this.separate()
-    const { gatheredCells, outputsFromReturns } = this.gatherInputCells(inputs)
+    const { gatheredCells, outputsFromReturns } = await this.gatherInputCells(inputs)
 
     return {
       inputs: [...gatheredCells, ...this.#inputs],
@@ -197,8 +197,8 @@ export default class CkbRawTransaction {
     }
   }
 
-  public generate () {
-    const { inputs, outputs } = this.prepare()
+  public async generate () {
+    const { inputs, outputs } = await this.prepare()
     const inputDeps = inputs.map(cell => [cell.lock.code_hash, cell.type.code_hash])
     const outputDeps = outputs.map(cell => [cell.lock.code_hash, cell.type.code_hash])
     const depHashes = uniq([...inputDeps, ...outputDeps].flat().filter(Boolean)) as string[]
@@ -206,8 +206,8 @@ export default class CkbRawTransaction {
     return new CkbTransaction(inputs, deps, outputs.map(output => output.toCkbOutput()))
   }
 
-  public toString () {
-    const tx = this.generate()
+  public async toString () {
+    const tx = await this.generate()
     return JSON.stringify(tx.serialize())
   }
 }
