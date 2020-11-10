@@ -1,11 +1,11 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
-import { SIMPLE_UDT_CODE_HASH } from '@obsidians/ckb-objects'
+import { SIMPLE_UDT_CODE_HASH, DUKTAPE_CODE_HASH } from '@obsidians/ckb-objects'
 
 const defaultCellManifest = [
   { hash: SIMPLE_UDT_CODE_HASH, name: 'Simple UDT' },
-  { hash: '0xfe833942a9277e7dbc25a6e67688670449301e9b6be968d3c203ab2a1859f081', name: 'Duktape' },
+  { hash: DUKTAPE_CODE_HASH, name: 'Duktape' },
 ]
 
 class CkbTxManager {
@@ -59,14 +59,14 @@ class CkbTxManager {
     }
   }
 
-  async getCellInfo (dataHash) {
+  async getCellInfo (data_hash) {
     const manifest = await this.loadCellManifest()
-    return manifest.find(item => item.hash === dataHash)
+    return manifest.find(item => item.hash === data_hash)
   }
 
   async addCellReference (cell) {
     const manifest = await this.loadCellManifest()
-    const index = manifest.findIndex(item => item.hash === cell.dataHash)
+    const index = manifest.findIndex(item => item.hash === cell.data_hash)
     if (index > -1) {
       manifest[index].out_point = cell.out_point
       await fileOps.current.writeFile(this.cellManifestFile, JSON.stringify(manifest, null, 2))
@@ -92,7 +92,7 @@ class CkbTxManager {
       await fileOps.current.writeFile(udtManifestFile, '[]')
       manifest = await fileOps.current.readFile(udtManifestFile)
     }
-    
+
     try {
       this._udtManifest = JSON.parse(manifest).map(({ issuer, name, symbol, precision, icon }) => ({ issuer, name, symbol, precision, icon }))
       return this._udtManifest

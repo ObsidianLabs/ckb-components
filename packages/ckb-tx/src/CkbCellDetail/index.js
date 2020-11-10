@@ -52,7 +52,7 @@ export default class CkbCellDetail extends PureComponent {
 
   refresh = async cell => {
     this.setState({ cell, status: cell.status, name: '', out_point: null, udt: undefined })
-    ckbTxManager.getCellInfo(cell.dataHash).then(info => {
+    ckbTxManager.getCellInfo(cell.data_hash).then(info => {
       if (info) {
         this.setState({ name: info.name || '', out_point: info.out_point || null })
       }
@@ -76,9 +76,7 @@ export default class CkbCellDetail extends PureComponent {
     }
     if (out_point) {
       if (cell.out_point.tx_hash === out_point.tx_hash && cell.out_point.index === out_point.index) {
-        return (
-          <Badge color='success'>In reference</Badge>
-        )
+        return <Badge color='success'>In reference</Badge>
       }
     }
     return (

@@ -15,6 +15,7 @@ class Queue extends BaseQueueManager {
       console.warn(e)
       this.updateStatus(txHash, 'FAILED', { error: e.message }, callbacks)
       notification.error('Push Transaction Failed', e.message)
+      return
     }
 
     let proposed = false

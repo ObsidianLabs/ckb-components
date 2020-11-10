@@ -12,7 +12,7 @@ export default function CkbCell (props) {
   const [status, setStatus] = useState(cell.status)
 
   useEffect(() => {
-    ckbTxManager.getCellInfo(cell.dataHash).then(info => info && setName(info.name || ''))
+    ckbTxManager.getCellInfo(cell.data_hash).then(info => info && setName(info.name || ''))
     return cell.onStatus(status => setStatus(status))
   }, [cell.id])
 
