@@ -2,24 +2,22 @@ import { CkbCapacity, CkbLiveCell, CkbCellStatus, CkbScript } from '@obsidians/c
 import CkbCellCollector from './CkbCellCollector'
 
 export default class CkbCellCache {
-  #cellCollectors: Map<string, CkbCellCollector>
   #cache: Map<string, Set<CkbLiveCell>>
 
   constructor () {
-    this.#cellCollectors = new Map()
     this.#cache = new Map()
   }
 
-  cellCollector (indexer, lock) {
+  cellCollector (indexer, lock_script) {
     // if (!this.#cellCollectors.has(lock_hash)) {
     //   this.#cellCollectors.set(lock_hash, new CkbCellCollector(this, lock_hash))
     // }
     // return this.#cellCollectors.get(lock_hash)
 
-    const script = new CkbScript(lock.hash_type, lock.code_hash, lock.args)
+    const script = new CkbScript(lock_script)
     const lock_hash = script.hash
     this.clearCellsForLockHash(lock_hash)
-    return new CkbCellCollector(this, indexer, lock)
+    return new CkbCellCollector(this, indexer, lock_script)
   }
 
   push (cell: CkbLiveCell) {

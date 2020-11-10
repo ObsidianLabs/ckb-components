@@ -106,7 +106,6 @@ export default class CkbCellExplorer extends PureComponent {
             />
           )}
         />
-        
       </TabsWithNavigationBar>
     )
   }
