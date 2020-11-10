@@ -7,7 +7,7 @@ export default class NodeStatus extends PureComponent {
     super(props)
     this.state = {
       lifecycle: 'stopped',
-      blockNumber: ''
+      block_number: ''
     }
   }
 
@@ -21,7 +21,7 @@ export default class NodeStatus extends PureComponent {
     }
     return (
       <div className="btn btn-sm btn-secondary">
-        <i className='fas fa-circle-notch fa-spin' /> {this.state.blockNumber}
+        <i className='fas fa-circle-notch fa-spin' /> {this.state.block_number}
       </div>
     )
   }

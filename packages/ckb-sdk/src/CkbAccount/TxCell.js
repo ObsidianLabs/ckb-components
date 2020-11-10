@@ -4,7 +4,7 @@ export default class TxCell {
     this.ckbClient = ckbClient
   }
 
-  get blockNumber () {
+  get block_number () {
     return BigInt(this.outpoint.block_number).toString()
   }
 
@@ -12,7 +12,7 @@ export default class TxCell {
     return this.outpoint.io_type
   }
 
-  get txHash () {
+  get tx_hash () {
     return this.outpoint.tx_hash
   }
 
@@ -21,6 +21,6 @@ export default class TxCell {
   }
 
   async fetchTransaction () {
-    return await this.ckbClient.loadTransaction(this.txHash)
+    return await this.ckbClient.loadTransaction(this.tx_hash)
   }
 }

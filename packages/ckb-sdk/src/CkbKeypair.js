@@ -76,21 +76,21 @@ export default class CkbKeypair {
     return this._testnetAddress
   }
 
-  get lockScript () {
-    if (!this._lockScript) {
+  get lock_script () {
+    if (!this._lock_script) {
       /**
        * calculate the lockHash by the address publicKeyHash
        * 1. the publicKeyHash of the address is required in the args field of lock script
        * 2. compose the lock script with the code hash(as a miner, we use BLOCK_ASSEMBLER_CODE_HASH here), and args
        * 3. calculate the hash of lock script via core.ckbUtils.scriptToHash method
        */
-      this._lockScript = {
-        hashType: 'type',
-        codeHash: BLOCK_ASSEMBLER_CODE_HASH,
+      this._lock_script = {
+        hash_type: 'type',
+        code_hash: BLOCK_ASSEMBLER_CODE_HASH,
         args: this.publicKeyHash,
       }
     }
-    return this._lockScript
+    return this._lock_script
   }
 
   get address () {
@@ -101,11 +101,11 @@ export default class CkbKeypair {
     return this._privateKey || ''
   }
 
-  get lockHash () {
-    if (!this._lockHash) {
-      this._lockHash = ckbUtils.scriptToHash(this.lockScript)
+  get lock_hash () {
+    if (!this._lock_hash) {
+      this._lock_hash = ckbUtils.scriptToHash(this.lock_script)
     }
-    return this._lockHash
+    return this._lock_hash
   }
 
   sign (message) {

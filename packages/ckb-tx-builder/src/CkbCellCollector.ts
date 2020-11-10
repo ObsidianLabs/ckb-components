@@ -14,7 +14,7 @@ export default class CkbCellCollector {
   constructor (
     private cache: CkbCellCache,
     readonly indexer,
-    readonly lockScript,
+    readonly lock_script,
     readonly step: number = 20
   ) {
     this.#loader = this.collect(step)
@@ -53,7 +53,7 @@ export default class CkbCellCollector {
   private async *collect (step: number) {
     while (this.#hasMore) {
       const { cursor, cells } = await this.indexer.getCells(
-        this.lockScript,
+        this.lock_script,
         this.#cursor,
         step
       ) as { cursor: string, cells: Array<any> }
@@ -69,27 +69,13 @@ export default class CkbCellCollector {
 }
 
 function toCkbLiveCell ({ out_point, output, output_data, block_number, cellbase }) {
-  const outPoint = {
-    txHash: out_point.tx_hash,
-    index: out_point.index,
-  }
-  const lock = output.lock && {
-    hashType: output.lock.hash_type,
-    codeHash: output.lock.code_hash,
-    args: output.lock.args,
-  }
-  const type = output.type && {
-    hashType: output.type.hash_type,
-    codeHash: output.type.code_hash,
-    args: output.type.args,
-  }
   return new CkbLiveCell({
-    outPoint,
+    out_point,
     capacity: output.capacity,
-    lock,
-    type,
+    lock: output.lock,
+    type: output.type,
     data: output_data,
-    blockNumber: block_number,
+    block_number,
     cellbase,
   } as CkbCell)
 }

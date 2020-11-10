@@ -6,13 +6,13 @@ export default class CkbIndexer {
     this.rpc = new RPC(endpoint)
   }
 
-  prepareParams (lockScript, cursor, step = 20, order = 'asc') {
+  prepareParams (lock_script, cursor, step = 20, order = 'asc') {
     const params = [
       {
         script: {
-          code_hash: lockScript.codeHash || lockScript.code_hash,
-          hash_type: lockScript.hashType || lockScript.hash_type,
-          args: lockScript.args,
+          code_hash: lock_script.code_hash,
+          hash_type: lock_script.hash_type,
+          args: lock_script.args,
         },
         script_type: 'lock',
       },
@@ -25,8 +25,8 @@ export default class CkbIndexer {
     return params
   }
 
-  async getCells (lockScript, cursor, step, order = 'asc') {
-    const params = this.prepareParams(lockScript, cursor, step, order)
+  async getCells (lock_script, cursor, step, order = 'asc') {
+    const params = this.prepareParams(lock_script, cursor, step, order)
     const result = await this.rpc.get_cells(...params)
     return {
       cursor: result.last_cursor,
@@ -34,8 +34,8 @@ export default class CkbIndexer {
     }
   }
 
-  async getTransactions (lockScript, cursor, step, order = 'desc') {
-    const params = this.prepareParams(lockScript, cursor, step, order)
+  async getTransactions (lock_script, cursor, step, order = 'desc') {
+    const params = this.prepareParams(lock_script, cursor, step, order)
     const result = await this.rpc.get_transactions(...params)
     return {
       cursor: result.last_cursor,

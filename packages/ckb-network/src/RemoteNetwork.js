@@ -45,8 +45,8 @@ export default class RemoteNetwork extends PureComponent {
     if (!networkManager.sdk) {
       return
     }
-    const nodeInfo = await networkManager.sdk?.ckbClient.core.rpc.localNodeInfo()
-    const blockchainInfo = await networkManager.sdk?.ckbClient.core.rpc.getBlockchainInfo()
+    const nodeInfo = await networkManager.sdk?.ckbClient.rpc.local_node_info()
+    const blockchainInfo = await networkManager.sdk?.ckbClient.rpc.get_blockchain_info()
     this.setState({ nodeInfo, blockchainInfo })
   }
 
@@ -54,8 +54,8 @@ export default class RemoteNetwork extends PureComponent {
     if (!networkManager.sdk) {
       return
     }
-    const block = await networkManager.sdk?.ckbClient.core.rpc.getTipHeader()
-    const epoch = await networkManager.sdk?.ckbClient.core.rpc.getCurrentEpoch()
+    const block = await networkManager.sdk?.ckbClient.rpc.get_tip_header()
+    const epoch = await networkManager.sdk?.ckbClient.rpc.get_current_epoch()
     this.setState({ block, epoch })
   }
 

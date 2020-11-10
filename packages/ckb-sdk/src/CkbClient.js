@@ -1,4 +1,3 @@
-import CKBCore from '@nervosnetwork/ckb-sdk-core'
 import { RPC, validators } from 'ckb-js-toolkit'
 
 import cloneDeep from 'lodash/cloneDeep'
@@ -6,37 +5,36 @@ import cloneDeep from 'lodash/cloneDeep'
 export default class CkbClient {
   constructor(nodeUrl) {
     this.nodeUrl = nodeUrl
-    this.core = new CKBCore(nodeUrl)
     this.rpc = new RPC(nodeUrl)
     this.txsCache = {}
   }
 
   async sendTransaction(tx) {
-    // validators.ValidateTransaction(tx)
-    return await this.core.rpc.sendTransaction(tx)
+    validators.ValidateTransaction(tx)
+    return await this.rpc.send_transaction(tx)
   }
 
-  async loadTransaction (txHash, noCache) {
-    if (noCache || !this.txsCache[txHash]) {
-      this.txsCache[txHash] = this.core.rpc.getTransaction(txHash)
+  async loadTransaction (tx_hash, noCache) {
+    if (noCache || !this.txsCache[tx_hash]) {
+      this.txsCache[tx_hash] = this.rpc.get_transaction(tx_hash)
     }
-    const tx = await this.txsCache[txHash]
-    if (!tx || !tx.txStatus || tx.txStatus.status === 'pending' || tx.txStatus.status === 'proposed') {
-      this.txsCache[txHash] = undefined
+    const tx = await this.txsCache[tx_hash]
+    if (!tx || !tx.tx_status || tx.tx_status.status === 'pending' || tx.tx_status.status === 'proposed') {
+      this.txsCache[tx_hash] = undefined
     }
     return cloneDeep(tx)
   }
   
-  async loadOutpoint (outPoint) {
-    const tx = await this.loadTransaction(outPoint.txHash)
+  async loadOutpoint (out_point) {
+    const tx = await this.loadTransaction(out_point.tx_hash)
     if (!tx || !tx.transaction || !tx.transaction.outputs) {
       return
     }
 
-    const index = parseInt(outPoint.index, 16)
+    const index = parseInt(out_point.index, 16)
     const type = tx.transaction.outputs[index].type
-    const data = tx.transaction.outputsData[index]
+    const data = tx.transaction.outputs_data[index]
     const cell = tx.transaction.outputs[index]
-    return { outPoint, type, data, ...cell }
+    return { out_point, type, data, ...cell }
   }
 }

@@ -1,4 +1,4 @@
-import { assertToBeHexString } from '@nervosnetwork/ckb-sdk-utils/lib/validators'
+import { utils, HexString } from '@ckb-lumos/base'
 
 export default class CkbCapacity {
   #value: bigint
@@ -18,7 +18,7 @@ export default class CkbCapacity {
       }
     } else if (typeof value === 'string') {
       try {
-        assertToBeHexString(value)
+        utils.assertHexadecimal(`CkbCapacity([string])`, value)
         this.#value = BigInt(value)
       } catch (e) {
         const converted = Number(value)
@@ -65,8 +65,8 @@ export default class CkbCapacity {
   }
 
   toString () {
-    const q = this.value / BigInt(10 ** this.#decimals)
-    const r = this.value % BigInt(10 ** this.#decimals)
+    const q = this.#value / BigInt(10 ** this.#decimals)
+    const r = this.#value % BigInt(10 ** this.#decimals)
     if (!r) {
       return q.toString()
     } else {
@@ -80,8 +80,8 @@ export default class CkbCapacity {
   }
 
   display () {
-    const q = this.value / BigInt(10 ** this.#decimals)
-    const r = this.value % BigInt(10 ** this.#decimals)
+    const q = this.#value / BigInt(10 ** this.#decimals)
+    const r = this.#value % BigInt(10 ** this.#decimals)
 
     const integer = q.toString()
     if (integer.length > 8) {
@@ -112,6 +112,6 @@ export default class CkbCapacity {
   }
 
   serialize () {
-    return `0x${this.#value.toString(16)}`
+    return `0x${this.#value.toString(16)}` as HexString
   }
 }

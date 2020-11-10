@@ -54,9 +54,9 @@ export default class CkbTransactions extends PureComponent {
 
   renderTableBody = () => {
     const rows = _.chain(this.state.txs)
-      .groupBy(tx => tx.txHash)
-      .map((cells, txHash) => (
-        <TransactionRow key={`tx-${txHash}`} cells={cells} wallet={this.props.wallet} />
+      .groupBy(tx => tx.tx_hash)
+      .map((cells, tx_hash) => (
+        <TransactionRow key={`tx-${tx_hash}`} cells={cells} wallet={this.props.wallet} />
       ))
       .value()
 

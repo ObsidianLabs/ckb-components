@@ -11,54 +11,54 @@ export default class CkbCellCache {
   }
 
   cellCollector (indexer, lock) {
-    // if (!this.#cellCollectors.has(lockHash)) {
-    //   this.#cellCollectors.set(lockHash, new CkbCellCollector(this, lockHash))
+    // if (!this.#cellCollectors.has(lock_hash)) {
+    //   this.#cellCollectors.set(lock_hash, new CkbCellCollector(this, lock_hash))
     // }
-    // return this.#cellCollectors.get(lockHash)
+    // return this.#cellCollectors.get(lock_hash)
 
-    const script = new CkbScript({ hashType: lock.hash_type, codeHash: lock.code_hash, args: lock.args })
-    const lockHash = script.hash
-    this.clearCellsForLockHash(lockHash)
+    const script = new CkbScript(lock.hash_type, lock.code_hash, lock.args)
+    const lock_hash = script.hash
+    this.clearCellsForLockHash(lock_hash)
     return new CkbCellCollector(this, indexer, lock)
   }
 
   push (cell: CkbLiveCell) {
-    const lockHash = cell.lockHash
-    if (!this.#cache.has(lockHash)) {
-      this.#cache.set(lockHash, new Set())
+    const lock_hash = cell.lock_hash
+    if (!this.#cache.has(lock_hash)) {
+      this.#cache.set(lock_hash, new Set())
     }
-    this.#cache.get(lockHash).add(cell)
+    this.#cache.get(lock_hash).add(cell)
   }
 
   pushCells (cells: Set<CkbLiveCell>) {
     cells.forEach(cell => this.push(cell))
   }
 
-  clearCellsForLockHash (lockHash: string) {
-    this.#cache.delete(lockHash)
+  clearCellsForLockHash (lock_hash: string) {
+    this.#cache.delete(lock_hash)
   }
 
-  updateLiveCells (lockHash: string, cells: Array<CkbLiveCell>) {
-    this.#cache.set(lockHash, new Set(cells))
+  updateLiveCells (lock_hash: string, cells: Array<CkbLiveCell>) {
+    this.#cache.set(lock_hash, new Set(cells))
   }
 
-  gatherCells (lockHash: string, amount: bigint, typeHash?: string) {
-    return this.gatherCellsByAccumulator(lockHash, defaultAccumulator(amount))
+  gatherCells (lock_hash: string, amount: bigint, type_hash?: string) {
+    return this.gatherCellsByAccumulator(lock_hash, defaultAccumulator(amount))
   }
 
-  gatherUdtCells (lockHash: string, amount: bigint, udtTypeHash: string) {
-    return this.gatherCellsByAccumulator<bigint>(lockHash, udtAccumulator(amount, udtTypeHash))
+  gatherUdtCells (lock_hash: string, amount: bigint, udtTypeHash: string) {
+    return this.gatherCellsByAccumulator<bigint>(lock_hash, udtAccumulator(amount, udtTypeHash))
   }
 
   gatherCellsByAccumulator<T> (
-    lockHash: string,
+    lock_hash: string,
     accumulator: accumulator<T>,
   ) {
     const cells: Set<CkbLiveCell> = new Set()
-    if (!this.#cache.has(lockHash)) {
-      throw new Error(`No cells for lock hash "${lockHash}".`)
+    if (!this.#cache.has(lock_hash)) {
+      throw new Error(`No cells for lock hash "${lock_hash}".`)
     }
-    const liveCells = this.#cache.get(lockHash)
+    const liveCells = this.#cache.get(lock_hash)
 
     const totalCapacity = new CkbCapacity()
 
@@ -96,7 +96,7 @@ const defaultAccumulator = (target: bigint): accumulator<bigint> => {
       throw new Error(`Do not have enough capacity.`)
     }
 
-    if (cell.data.size() || cell.typeHash) {
+    if (cell.data.size() || cell.type_hash) {
       return { accepted: false }
     }
     acc += cell.capacity.value
@@ -111,7 +111,7 @@ const udtAccumulator = (target: bigint, udtTypeHash: string): accumulator<bigint
       throw new Error(`Do not have enough UDTs.`)
     }
 
-    if (cell.typeHash !== udtTypeHash) {
+    if (cell.type_hash !== udtTypeHash) {
       return { accepted: false }
     }
     acc += BigInt(cell.data.toString('uint128'))

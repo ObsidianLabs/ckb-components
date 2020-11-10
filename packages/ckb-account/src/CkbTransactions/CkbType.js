@@ -10,7 +10,7 @@ import { CkbScript } from '@obsidians/ckb-objects'
 export default function CkbType (props) {
   const { type } = props
 
-  if (!type || !type.codeHash || !type.args) {
+  if (!type || !type.code_hash || !type.args) {
     return null
   }
 
@@ -18,7 +18,7 @@ export default function CkbType (props) {
     <Badge color='secondary' className='d-flex mr-1'>Type</Badge>
   )
 
-  if (!type || !type.codeHash || !type.args) {
+  if (!type || !type.code_hash || !type.args) {
     return (
       <div className='d-flex flex-row align-items-center'>
         {icon}
@@ -27,12 +27,12 @@ export default function CkbType (props) {
     )
   }
 
-  const typeScript = new CkbScript(type)
-  const typeHash = typeScript.hash
+  const type_script = new CkbScript(type)
+  const typeHash = type_script.hash
   const id = useRef(`type-${typeHash}-${Math.floor(Math.random() * 1000)}`)
 
-  if (typeScript.isAddress({ secp256k1Only: true })) {
-    const address = typeScript.getAddress()
+  if (type_script.isAddress({ secp256k1Only: true })) {
+    const address = type_script.getAddress()
     return (
       <div className='d-flex flex-row align-items-center'>
         <div id={id.current} className='d-flex flex-row align-items-center overflow-hidden'>
@@ -41,8 +41,8 @@ export default function CkbType (props) {
         </div>
         <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
           <div className='d-flex flex-column align-items-start'>
-            <div><Badge>hashType</Badge> <code>{type.hashType}</code></div>
-            <div><Badge>codeHash (block assembler)</Badge> <code>{type.codeHash}</code></div>
+            <div><Badge>hashType</Badge> <code>{type.hash_type}</code></div>
+            <div><Badge>codeHash (block assembler)</Badge> <code>{type.code_hash}</code></div>
             <div><Badge>address</Badge> <code>{address}</code></div>
           </div>
         </UncontrolledTooltip>
@@ -59,8 +59,8 @@ export default function CkbType (props) {
       <UncontrolledTooltip placement='top' target={id.current} style={{ maxWidth: 800 }}>
         <div className='d-flex flex-column align-items-start'>
           <div><Badge>typeHash</Badge> <code>{typeHash}</code></div>
-          <div><Badge>hashType</Badge> <code>{type.hashType}</code></div>
-          <div><Badge>codeHash</Badge> <code>{type.codeHash}</code></div>
+          <div><Badge>hashType</Badge> <code>{type.hash_type}</code></div>
+          <div><Badge>codeHash</Badge> <code>{type.code_hash}</code></div>
           <div><Badge>args</Badge> <code>{type.args}</code></div>
         </div>
       </UncontrolledTooltip>

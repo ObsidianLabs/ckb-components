@@ -1,4 +1,4 @@
-import { assertToBeHexString } from '@nervosnetwork/ckb-sdk-utils/lib/validators'
+import { utils } from '@ckb-lumos/base'
 
 import { hex2Blake2b, toHex, fromHex } from '../lib'
 import FileReaderInterface, { FileData } from './FileReader'
@@ -29,7 +29,7 @@ export default class CkbData {
       this.#value = value.toString()
     } else if (format === 'hex') {
       if (value.toString() !== '0x') {
-        assertToBeHexString(value.toString())
+        utils.assertHexadecimal(`CkbData(..., 'hex')`, value.toString())
       }
       this.format = 'hex'
       this.#value = value.toString()

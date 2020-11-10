@@ -66,8 +66,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
         const signer = message => keypair.sign(message)
         signatureProvider.set(lock.hash, signer)
       }))
-      const witnessesSigner = networkManager.sdk.ckbClient.core.signWitnesses(signatureProvider)
-      const signedTx = await this.tx.sign(witnessesSigner)
+      const signedTx = await this.tx.sign(signatureProvider)
       this.setState({
         signed: true,
         witnesses: signedTx.witnesses,

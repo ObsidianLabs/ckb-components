@@ -30,11 +30,11 @@ export default class CkbTransactionPart {
     return new CkbCapacity(8 + this.lock.size() + this.type.size() + this.data.size())
   }
 
-  get lockHash () {
+  get lock_hash () {
     return this.lock?.hash || ''
   }
 
-  get typeHash () {
+  get type_hash () {
     return this.type?.hash || ''
   }
 
@@ -63,11 +63,11 @@ export default class CkbTransactionPart {
         unmergeables.push(part)
         return
       }
-      if (!mergeables.has(part.typeHash)) {
-        mergeables.set(part.typeHash, part)
+      if (!mergeables.has(part.type_hash)) {
+        mergeables.set(part.type_hash, part)
         return
       }
-      mergeables.get(part.typeHash).merge(part)
+      mergeables.get(part.type_hash).merge(part)
     })
     return Array.from(mergeables.values()).filter(part => !part.capacity.isZero()).concat(unmergeables)
   }

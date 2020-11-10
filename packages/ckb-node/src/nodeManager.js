@@ -94,9 +94,9 @@ class NodeManager {
     }
   }
 
-  updateBlockNumber (blockNumber) {
+  updateBlockNumber (block_number) {
     if (this._status) {
-      this._status.setState({ blockNumber })
+      this._status.setState({ block_number })
     }
   }
 

@@ -16,7 +16,7 @@ export default class CkbTransactionHandler extends PureComponent {
   }
 
   processScript = async script => {
-    if (!script || !script.codeHash) {
+    if (!script || !script.code_hash) {
       return null
     }
 

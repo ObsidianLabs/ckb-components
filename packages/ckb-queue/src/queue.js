@@ -20,10 +20,10 @@ class Queue extends BaseQueueManager {
     let proposed = false
     const h = setInterval(async () => {
       const confirmed = await networkManager.sdk?.ckbClient.loadTransaction(txHash)
-      if (confirmed?.txStatus?.status === 'proposed' && !proposed) {
+      if (confirmed?.tx_status?.status === 'proposed' && !proposed) {
         proposed = true
         this.updateStatus(txHash, 'PROPOSED', {}, callbacks)
-      } else if (confirmed?.txStatus?.status === 'committed') {
+      } else if (confirmed?.tx_status?.status === 'committed') {
         clearInterval(h)
         this.updateStatus(txHash, 'CONFIRMED', {}, callbacks)
       }

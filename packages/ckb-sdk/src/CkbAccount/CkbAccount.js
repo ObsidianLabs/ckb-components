@@ -15,7 +15,7 @@ export default class CkbAccount {
     return this.ckbClient.rpc
   }
 
-  get lockHash () {
+  get lock_hash () {
     if (this.value.startsWith('ckb') || this.value.startsWith('ckt')) {
       try {
         const lock = new CkbScript(this.value)
@@ -55,17 +55,17 @@ export default class CkbAccount {
     return await this._getInfo()
   }
 
-  async lockScript () {
+  async lock_script () {
     const { lock_script } = await this.info()
     return lock_script
   }
 
   async getTransactions (lastCursor, size = 20) {
-    const lockScript = await this.lockScript()
-    if (!lockScript) {
+    const lock_script = await this.lock_script()
+    if (!lock_script) {
       return { txs: [] }
     }
-    const { cursor, txs } = await this.ckbIndexer.getTransactions(lockScript, lastCursor, size)
+    const { cursor, txs } = await this.ckbIndexer.getTransactions(lock_script, lastCursor, size)
 
     return {
       cursor,

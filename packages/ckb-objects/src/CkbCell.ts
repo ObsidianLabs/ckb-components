@@ -1,3 +1,5 @@
+import { OutPoint, Hash, HexString, Script, CellDep, Input, Output } from '@ckb-lumos/base'
+
 import CkbCapacity from './CkbCapacity'
 import CkbScript from './CkbScript'
 import CkbData from './CkbScript/CkbData'
@@ -6,14 +8,14 @@ import ckbEvents from './CkbEvents'
 import { BLOCK_ASSEMBLER_CODE_HASH, SIMPLE_UDT_CODE_HASH, ANYONE_CAN_PAY_CODE_HASH } from './lib/constants'
 
 export interface CkbCell {
-  outPoint: CKBComponents.OutPoint,
+  out_point: OutPoint,
   cellbase: boolean,
-  blockHash: CKBComponents.Hash256,
-  blockNumber: CKBComponents.BlockNumber,
-  capacity: CKBComponents.Capacity,
-  lock: CKBComponents.Script,
-  type?: CKBComponents.Script | null,
-  data: CKBComponents.Bytes,
+  block_hash: Hash,
+  block_number: HexString,
+  capacity: HexString,
+  lock: Script,
+  type?: Script,
+  data: HexString,
 }
 
 export enum CkbCellStatus {
@@ -24,10 +26,10 @@ export enum CkbCellStatus {
 
 export class CkbLiveCell {
   #status: CkbCellStatus
-  readonly outPoint: CKBComponents.OutPoint
+  readonly out_point: OutPoint
   readonly cellbase: boolean
-  readonly blockHash: string
-  readonly blockNumber: string
+  readonly block_hash: string
+  readonly block_number: string
   readonly capacity: CkbCapacity
   readonly lock: CkbScript
   readonly type: CkbScript
@@ -36,10 +38,10 @@ export class CkbLiveCell {
   constructor (cell: CkbCell) {
     this.#status = CkbCellStatus.Live
     
-    this.outPoint = cell.outPoint
+    this.out_point = cell.out_point
     this.cellbase = cell.cellbase
-    this.blockHash = cell.blockHash
-    this.blockNumber = cell.blockNumber
+    this.block_hash = cell.block_hash
+    this.block_number = cell.block_number
     this.capacity = new CkbCapacity(cell.capacity)
 
     this.lock = new CkbScript(cell.lock)
@@ -48,35 +50,35 @@ export class CkbLiveCell {
   }
 
   get id () {
-    return`${parseInt(this.outPoint.index, 16)}@${this.outPoint.txHash.slice(2)}`
+    return`${parseInt(this.out_point.index, 16)}@${this.out_point.tx_hash.slice(2)}`
   }
   
-  get lockHash () {
+  get lock_hash () {
     return this.lock.hash
   }
 
-  get typeHash () {
+  get type_hash () {
     return this.type.hash
   }
 
-  get dataHash () {
+  get data_hash () {
     return this.data.hash
   }
 
-  get dataLen () {
+  get data_len () {
     return this.data.size()
   }
 
   isEmpty () {
-    return !this.data.size() && !this.type.size() && this.lock.codeHash === BLOCK_ASSEMBLER_CODE_HASH
+    return !this.data.size() && !this.type.size() && this.lock.code_hash === BLOCK_ASSEMBLER_CODE_HASH
   }
 
   containsUdt () {
-    return this.type.codeHash === SIMPLE_UDT_CODE_HASH
+    return this.type.code_hash === SIMPLE_UDT_CODE_HASH
   }
 
   udt () {
-    if (!this.data.size() || this.type.codeHash !== SIMPLE_UDT_CODE_HASH) {
+    if (!this.data.size() || this.type.code_hash !== SIMPLE_UDT_CODE_HASH) {
       return null
     }
     const value = BigInt(this.data.toString('uint128'))
@@ -85,34 +87,37 @@ export class CkbLiveCell {
   }
 
   anyoneCanPay () {
-    return this.lock.codeHash === ANYONE_CAN_PAY_CODE_HASH
+    return this.lock.code_hash === ANYONE_CAN_PAY_CODE_HASH
   }
   
   serialize () {
     return {
       since: '0x0',
-      previousOutput: this.outPoint,
-    }
+      previous_output: this.out_point,
+    } as Input
   }
 
   serializeAsDep () {
     return {
-      depType: 'code',
-      outPoint: this.outPoint,
-    }
+      dep_type: 'code',
+      out_point: this.out_point,
+    } as CellDep
   }
 
   toCachedCell () {
     return {
-      blockHash: this.blockHash,
-      cellbase: this.cellbase,
-      outPoint: this.outPoint,
-      status: 'live',
-      capacity: this.capacity.serialize(),
-      lock: this.lock.serialize(),
-      type: this.type.serialize(),
-      dataHash: this.data.hash,
-      outputDataLen: this.data.size(),
+      // blockHash: this.block_hash,
+      // cellbase: this.cellbase,
+      // outPoint: {
+      //   index: this.out_point.index,
+      //   txHash: this.out_point.tx_hash,
+      // },
+      // status: 'live',
+      // capacity: this.capacity.serialize(),
+      lock: this.lock.serialize2() as CKBComponents.Script,
+      // type: this.type.serialize2(),
+      // dataHash: this.data.hash,
+      // outputDataLen: this.data.size(),
     }
   }
 
@@ -154,10 +159,10 @@ export class CkbOutputCell {
       capacity: this.capacity.serialize(),
       lock: this.lock.serialize(),
       type: this.type.serialize(),
-    }
+    } as Output
   }
 
   serializeAsOutputData () {
-    return this.data.serialize()
+    return this.data.serialize() as HexString
   }
 }

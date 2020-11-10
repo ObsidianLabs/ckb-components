@@ -13,7 +13,7 @@ export default class CkbCellManifest extends PureComponent {
     this.state = {
       key: 'network',
       name: '',
-      codeHash: '',
+      code_hash: '',
     }
 
     this.modal = React.createRef()
@@ -51,8 +51,8 @@ export default class CkbCellManifest extends PureComponent {
           label='Data Hash'
           placeholder='Hex string starts with 0x'
           maxLength='66'
-          value={this.state.codeHash}
-          onChange={codeHash => this.setState({ codeHash })}
+          value={this.state.code_hash}
+          onChange={code_hash => this.setState({ code_hash })}
         />
       </Modal>
     )

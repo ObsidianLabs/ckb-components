@@ -25,9 +25,9 @@ export default class ScriptInput extends PureComponent {
     let type
     if (props.initialScript) {
       if (props.noAddress) {
-        type = this.script.hashType
+        type = this.script.hash_type
       } else {
-        type = this.script.isAddress({ secp256k1Only: true }) ? 'address' : this.script.hashType
+        type = this.script.isAddress({ secp256k1Only: true }) ? 'address' : this.script.hash_type
       }
     } else {
       type = props.noAddress ? 'data' : 'address'
@@ -46,10 +46,10 @@ export default class ScriptInput extends PureComponent {
 
   onChange = updater => {
     if (updater.type) {
-      this.script.hashType = updater.type === 'address' ? 'type' : updater.type
+      this.script.hash_type = updater.type === 'address' ? 'type' : updater.type
       this.setState({ type: updater.type })
-    } else if (typeof updater.codeHash !== 'undefined') {
-      this.script.codeHash = updater.codeHash
+    } else if (typeof updater.code_hash !== 'undefined') {
+      this.script.code_hash = updater.code_hash
       this.forceUpdate()
     } else if (updater.args) {
       this.script.args = updater.args
@@ -86,14 +86,14 @@ export default class ScriptInput extends PureComponent {
         addon={<span key='code-hash'><i className='fas fa-hashtag' /></span>}
         placeholder='Code Hash - hex string starts with 0x'
         maxLength='66'
-        value={this.script.codeHash}
+        value={this.script.code_hash}
         invalid={!this.script.isValid || undefined}
-        onChange={codeHash => this.onChange({ codeHash })}
+        onChange={code_hash => this.onChange({ code_hash })}
       >
         <Dropdown
           header={`Deps' ${type} hash`}
           items={hashs}
-          onChange={codeHash => this.onChange({ codeHash })}
+          onChange={code_hash => this.onChange({ code_hash })}
         />
       </DebouncedInput>
       <ArgsInput
@@ -104,7 +104,7 @@ export default class ScriptInput extends PureComponent {
   }
 
   renderScriptHash = () => {
-    if (!this.script.codeHash || !this.script.isValid) {
+    if (!this.script.code_hash || !this.script.isValid) {
       return null
     }
     if (this.script.size() > 1000) {

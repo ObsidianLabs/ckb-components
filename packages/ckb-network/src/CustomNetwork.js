@@ -85,7 +85,7 @@ export default class CustomNetwork extends PureComponent {
     if (!networkManager.sdk) {
       return
     }
-    const blockchainInfo = await networkManager.sdk?.ckbClient.core.rpc.getBlockchainInfo()
+    const blockchainInfo = await networkManager.sdk?.ckbClient.rpc.get_blockchain_info()
     this.setState({ blockchainInfo })
   }
 
@@ -94,8 +94,8 @@ export default class CustomNetwork extends PureComponent {
     if (!networkManager.sdk) {
       return
     }
-    const block = await networkManager.sdk?.ckbClient.core.rpc.getTipHeader()
-    const epoch = await networkManager.sdk?.ckbClient.core.rpc.getCurrentEpoch()
+    const block = await networkManager.sdk?.ckbClient.rpc.get_tip_header()
+    const epoch = await networkManager.sdk?.ckbClient.rpc.get_current_epoch()
     this.setState({ block, epoch })
   }
 

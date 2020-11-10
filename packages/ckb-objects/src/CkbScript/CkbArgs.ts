@@ -47,8 +47,12 @@ export default class CkbArgs {
     return this.#args.map(arg => arg.size()).reduce((x, y) => x + y, 0)
   }
 
-  toAddress (prefix = AddressPrefix.Testnet) {
-    return bech32Address(this.serialize(), { prefix, type: AddressType.HashIdx, codeHashOrCodeHashIndex: '0x00' })
+  toAddress (prefix) {
+    return bech32Address(this.serialize(), {
+      prefix: AddressPrefix.Testnet,
+      type: AddressType.HashIdx,
+      codeHashOrCodeHashIndex: '0x00'
+    })
   }
 
   toString () {

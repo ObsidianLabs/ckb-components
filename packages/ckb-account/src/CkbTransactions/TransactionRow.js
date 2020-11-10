@@ -27,7 +27,7 @@ export default class TransactionRow extends PureComponent {
   }
 
   render () {
-    const { blockNumber, txHash } = this.props.cells[0]
+    const { block_number, tx_hash } = this.props.cells[0]
 
     if (!this.state.detail) {
       const inputs = []
@@ -73,10 +73,10 @@ export default class TransactionRow extends PureComponent {
         <tr onClick={this.onClick}>
           <td>
             <div className='d-flex flex-row align-items-center small'>
-              <div>{blockNumber}</div>
+              <div>{block_number}</div>
             </div>
           </td>
-          <td><div className='text-overflow-dots small'><code>{txHash}</code></div></td>
+          <td><div className='text-overflow-dots small'><code>{tx_hash}</code></div></td>
           <td>
             <div className='d-flex flex-row'>
               <div className='d-flex flex-1 flex-column overflow-hidden'>
@@ -106,10 +106,10 @@ export default class TransactionRow extends PureComponent {
       <tr onClick={this.onClick}>
         <td>
           <div className='d-flex flex-row align-items-center small'>
-            <div>{blockNumber}</div>
+            <div>{block_number}</div>
           </div>
         </td>
-        <td><div className='text-overflow-dots small'><code>{txHash}</code></div></td>
+        <td><div className='text-overflow-dots small'><code>{tx_hash}</code></div></td>
         <td>
           <div className='d-flex flex-row'>
             <div className='d-flex flex-1 align-items-center overflow-hidden'>

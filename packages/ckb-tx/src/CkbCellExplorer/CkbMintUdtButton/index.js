@@ -75,8 +75,8 @@ export default class CkbMintUdtButton extends PureComponent {
 
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
-      if (sudtCellInfo && sudtCellInfo.outPoint) {
-        const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.outPoint)
+      if (sudtCellInfo && sudtCellInfo.out_point) {
+        const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
         rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
       }
       

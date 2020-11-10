@@ -18,7 +18,7 @@ class NetworkManager {
   async createSdk (params) {
     const sdk = new Sdk(params)
     try {
-      const nodeInfo = await sdk.ckbClient.core.rpc.localNodeInfo()
+      const nodeInfo = await sdk.ckbClient.rpc.local_node_info()
       this._sdk = sdk
       return nodeInfo
     } catch (e) {

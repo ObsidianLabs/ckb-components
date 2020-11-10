@@ -49,9 +49,9 @@ class CkbTxManager {
       await fileOps.current.writeFile(manifestFile, JSON.stringify(defaultCellManifest, null, 2))
       manifest = await fileOps.current.readFile(manifestFile)
     }
-    
+
     try {
-      this._cellManifest = JSON.parse(manifest).map(({ hash, name, outPoint }) => ({ hash, name, outPoint }))
+      this._cellManifest = JSON.parse(manifest).map(({ hash, name, out_point }) => ({ hash, name, out_point }))
       return this._cellManifest
     } catch (e) {
       notification.error('Invalid Manifest', `Please check the manifest file <b>${manifestFile}</b>.`)
@@ -68,7 +68,7 @@ class CkbTxManager {
     const manifest = await this.loadCellManifest()
     const index = manifest.findIndex(item => item.hash === cell.dataHash)
     if (index > -1) {
-      manifest[index].outPoint = cell.outPoint
+      manifest[index].out_point = cell.out_point
       await fileOps.current.writeFile(this.cellManifestFile, JSON.stringify(manifest, null, 2))
     }
   }

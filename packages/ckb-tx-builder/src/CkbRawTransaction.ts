@@ -106,8 +106,8 @@ export default class CkbRawTransaction {
   }
 
   private mergeParts () {
-    Array.from(this.#txParts.keys()).forEach(lockHash => {
-      this.#txParts.set(lockHash, CkbTransactionPart.mergeAll(this.#txParts.get(lockHash)))
+    Array.from(this.#txParts.keys()).forEach(lock_hash => {
+      this.#txParts.set(lock_hash, CkbTransactionPart.mergeAll(this.#txParts.get(lock_hash)))
     })
   }
 
@@ -163,7 +163,7 @@ export default class CkbRawTransaction {
       const {
         cells,
         totalCapacity,
-      } = this.cellCache.gatherCells(inputPart.lockHash, amount, inputPart.typeHash)
+      } = this.cellCache.gatherCells(inputPart.lock_hash, amount, inputPart.type_hash)
       const returns = totalCapacity.value - amount
 
       cells.forEach(gatheredCells.add, gatheredCells)
@@ -199,8 +199,8 @@ export default class CkbRawTransaction {
 
   public generate () {
     const { inputs, outputs } = this.prepare()
-    const inputDeps = inputs.map(cell => [cell.lock.codeHash, cell.type.codeHash])
-    const outputDeps = outputs.map(cell => [cell.lock.codeHash, cell.type.codeHash])
+    const inputDeps = inputs.map(cell => [cell.lock.code_hash, cell.type.code_hash])
+    const outputDeps = outputs.map(cell => [cell.lock.code_hash, cell.type.code_hash])
     const depHashes = uniq([...inputDeps, ...outputDeps].flat().filter(Boolean)) as string[]
     const deps = depHashes.map(hash => this.#deps.get(hash)).filter(Boolean)
     return new CkbTransaction(inputs, deps, outputs.map(output => output.toCkbOutput()))

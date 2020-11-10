@@ -26,9 +26,9 @@ export default function CkbScriptRow ({ script, label, icon, children }) {
       >
         <div className='row ml-2'>
           <div className='col-2 pr-0'><Badge>hashType</Badge></div>
-          <div className='col-10 p-0'>{script.hashType}</div>
+          <div className='col-10 p-0'>{script.hash_type}</div>
           <div className='col-2 pr-0'><Badge>codeHash</Badge></div>
-          <div className='col-10 p-0'><code className='small'>{script.codeHash}</code></div>
+          <div className='col-10 p-0'><code className='small'>{script.code_hash}</code></div>
           <div className='col-2 pr-0'><Badge>args</Badge></div>
           <div className='col-10 p-0'><code className='small'>{script.args.serialize()}</code></div>
           <div className='col-2 pr-0'><Badge>address</Badge></div>
@@ -52,9 +52,9 @@ export default function CkbScriptRow ({ script, label, icon, children }) {
     >
       <div className='row ml-2'>
         <div className='col-2 pr-0'><Badge>hashType</Badge></div>
-        <div className='col-10 p-0'>{script.hashType}</div>
+        <div className='col-10 p-0'>{script.hash_type}</div>
         <div className='col-2 pr-0'><Badge>codeHash</Badge></div>
-        <div className='col-10 p-0'><code className='small'>{script.codeHash}</code></div>
+        <div className='col-10 p-0'><code className='small'>{script.code_hash}</code></div>
         <div className='col-2 pr-0'><Badge>args</Badge></div>
         <div className='col-10 p-0'><code className='small'>{args}</code></div>
         {children}

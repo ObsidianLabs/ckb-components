@@ -12,6 +12,9 @@
     "build": "tsc",
     "prepare": "yarn build"
   },
+  "dependencies": {
+    "@ckb-lumos/base": "^0.13.1"
+  },
   "devDependencies": {
     "typescript": "^3.8.3"
   },

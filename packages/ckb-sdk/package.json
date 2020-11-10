@@ -21,8 +21,5 @@
     "@babel/preset-env": "^7.7.5",
     "babel-eslint": "10.0.3",
     "cross-env": "^6.0.3"
-  },
-  "peerDependencies": {
-    "@nervosnetwork/ckb-sdk-core": "^0.32.0"
   }
 }

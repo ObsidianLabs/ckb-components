@@ -16,7 +16,7 @@ export default function TxInputs ({ inputs, wallet }) {
 }
 
 function CkbInput ({ since, previousOutput, self, wallet }) {
-  if (previousOutput.txHash === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+  if (previousOutput.tx_hash === '0x0000000000000000000000000000000000000000000000000000000000000000') {
     return <div className='small'>Cellbase for Block #{(BigInt(since) - BigInt(11)).toString()}</div>
   }
 
@@ -24,7 +24,7 @@ function CkbInput ({ since, previousOutput, self, wallet }) {
 
   useEffect(
     () => {
-      if (previousOutput.txHash === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+      if (previousOutput.tx_hash === '0x0000000000000000000000000000000000000000000000000000000000000000') {
         return
       }
 
@@ -35,7 +35,7 @@ function CkbInput ({ since, previousOutput, self, wallet }) {
 
   if (!cell) {
     const index = parseInt(previousOutput.index, 16)
-    const hash = `${previousOutput.txHash.substr(0, 6)}...${previousOutput.txHash.substr(62)}`
+    const hash = `${previousOutput.tx_hash.substr(0, 6)}...${previousOutput.tx_hash.substr(62)}`
     return (
       <div className='d-flex flex-row align-items-center'>
         <div className='d-flex flex-row align-items-center' key='loading'>

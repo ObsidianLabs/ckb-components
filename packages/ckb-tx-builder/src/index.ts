@@ -10,8 +10,8 @@ export default class CkbTxBuilder {
     this.#cellCache = new CkbCellCache()
   }
 
-  cellCollector (lockScript) {
-    return this.#cellCache.cellCollector(CkbTxBuilder.indexer, lockScript)
+  cellCollector (lock_script) {
+    return this.#cellCache.cellCollector(CkbTxBuilder.indexer, lock_script)
   }
 
   newTx () {
