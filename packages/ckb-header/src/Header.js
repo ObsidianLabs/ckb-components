@@ -56,7 +56,7 @@ export default class Header extends PureComponent {
 
     const navbarRight = [
       {
-        route: 'contract',
+        route: 'tx',
         title: 'TX Constructor',
         icon: 'fas fa-file-invoice',
         selected: { id: selectedContract, name: contractName },

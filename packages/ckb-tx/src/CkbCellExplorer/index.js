@@ -94,8 +94,8 @@ export default class CkbCellExplorer extends PureComponent {
         </>}
       >
         <CacheRoute
-          path={`/contract/:name`}
-          cacheKey={props => `contract-${network}-${props.match?.params?.name}`}
+          path={`/tx/:name`}
+          cacheKey={props => `tx-${network}-${props.match?.params?.name}`}
           multiple={5}
           className='h-100 overflow-hidden'
           render={props => (

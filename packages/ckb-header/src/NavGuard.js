@@ -21,7 +21,7 @@ export default class NavGuard {
     }
 
     const [first] = this.parsePathname(pathname)
-    if (first !== 'contract' && first !== 'account' && first !== 'network') {
+    if (first !== 'tx' && first !== 'account' && first !== 'network') {
       this.updateSelectedProject(pathname)
     }
   }

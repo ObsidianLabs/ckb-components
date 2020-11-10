@@ -102,7 +102,7 @@ class NodeManager {
 
   async stop () {
     const cachingKeys = getCachingKeys()
-    cachingKeys.filter(key => key.startsWith('contract-') || key.startsWith('account-')).forEach(dropByCacheKey)
+    cachingKeys.filter(key => key.startsWith('tx-') || key.startsWith('account-')).forEach(dropByCacheKey)
     
     let n
     if (this._minerTerminal) {
