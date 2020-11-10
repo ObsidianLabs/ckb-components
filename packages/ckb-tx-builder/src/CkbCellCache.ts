@@ -66,7 +66,7 @@ export default class CkbCellCache {
         continue
       }
 
-      const result = accumulator(cell, acc)
+      const result = accumulator.add(cell, acc)
       if (!result.accepted) {
         continue
       }
@@ -75,45 +75,46 @@ export default class CkbCellCache {
       totalCapacity.plus(cell.capacity)
       acc = result.acc
       if (result.done) {
-        break
+        return { cells, totalCapacity, accumulation: acc }
       }
     }
-    return { cells, totalCapacity, accumulation: acc }
+    throw new Error(accumulator.error)
   }
 }
 
-type accumulator<T> = (cell: CkbLiveCell, acc: T) => {
-  accepted: boolean,
-  done?: boolean,
-  acc?: T,
-}
-
-const defaultAccumulator = (target: bigint): accumulator<bigint> => {
-  return (cell: CkbLiveCell, acc: bigint = BigInt(0)) => {
-    if (!cell) {
-      throw new Error(`Do not have enough capacity.`)
-    }
-
-    if (cell.data.size() || cell.type_hash) {
-      return { accepted: false }
-    }
-    acc += cell.capacity.value
-    const done = acc >= target
-    return { accepted: true, done, acc }
+type accumulator<T> = {
+  error: string,
+  add: (cell: CkbLiveCell, acc: T) => {
+    accepted: boolean,
+    done?: boolean,
+    acc?: T,
   }
 }
 
-const udtAccumulator = (target: bigint, udtTypeHash: string): accumulator<bigint> => {
-  return (cell: CkbLiveCell, acc: bigint = BigInt(0)) => {
-    if (!cell) {
-      throw new Error(`Do not have enough UDTs.`)
+const defaultAccumulator = (target: bigint) => {
+  return {
+    error: `Do not have enough capacity.`,
+    add: (cell: CkbLiveCell, acc: bigint = BigInt(0)) => {
+      if (cell.data.size() || cell.type_hash) {
+        return { accepted: false }
+      }
+      acc += cell.capacity.value
+      const done = acc >= target
+      return { accepted: true, done, acc }
     }
+  } as accumulator<bigint>
+}
 
-    if (cell.type_hash !== udtTypeHash) {
-      return { accepted: false }
+const udtAccumulator = (target: bigint, udtTypeHash: string) => {
+  return {
+    error: `Do not have enough UDTs.`,
+    add: (cell: CkbLiveCell, acc: bigint = BigInt(0)) => {
+      if (cell.type_hash !== udtTypeHash) {
+        return { accepted: false }
+      }
+      acc += BigInt(cell.data.toString('uint128'))
+      const done = acc >= target
+      return { accepted: true, done, acc }
     }
-    acc += BigInt(cell.data.toString('uint128'))
-    const done = acc >= target
-    return { accepted: true, done, acc }
-  }
+  } as accumulator<bigint>
 }

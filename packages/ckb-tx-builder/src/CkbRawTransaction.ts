@@ -68,7 +68,7 @@ export default class CkbRawTransaction {
     const {
       cells,
       totalCapacity,
-      accumulation,
+      accumulation = BigInt(0),
     } = this.cellCache.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
 
     cells.forEach(this.#inputs.add, this.#inputs)

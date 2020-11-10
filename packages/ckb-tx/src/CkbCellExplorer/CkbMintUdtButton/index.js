@@ -91,7 +91,7 @@ export default class CkbMintUdtButton extends PureComponent {
 
       ckbTxManager.visualizeTransaction(tx)
     } catch (e) {
-      notification.error('Error in transfer', e.message)
+      notification.error('Error in mint UDT', e.message)
       return
     }
     this.modal.current.closeModal()

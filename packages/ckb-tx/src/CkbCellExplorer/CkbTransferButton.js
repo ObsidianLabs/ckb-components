@@ -103,6 +103,7 @@ export default class CkbTransferButton extends PureComponent {
 
       ckbTxManager.visualizeTransaction(tx)
     } catch (e) {
+      console.warn(e)
       notification.error('Error in transfer', e.message)
       return
     }
@@ -144,7 +145,12 @@ export default class CkbTransferButton extends PureComponent {
             ))}
           </CustomInput>
         </FormGroup>
-        <CapacityInput ref={this.capacityInput} label='Amount' onChange={this.onChangeCapacity} decimals={token === 'CKB' ? 8 : 0} />
+        <CapacityInput
+          ref={this.capacityInput}
+          label='Amount'
+          onChange={this.onChangeCapacity}
+          decimals={token === 'CKB' ? 8 : 0}
+        />
         <ScriptInput label='Receiver' addressOnly onChange={this.onChangeReceiver} />
       </Modal>
     </>

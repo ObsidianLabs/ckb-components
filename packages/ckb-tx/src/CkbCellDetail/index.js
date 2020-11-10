@@ -79,9 +79,7 @@ export default class CkbCellDetail extends PureComponent {
         return <Badge color='success'>In reference</Badge>
       }
     }
-    return (
-      <Badge color='primary' onClick={this.addToReference}>Add cell to reference</Badge>
-    )
+    return <Badge color='primary' onClick={this.addToReference}>Add cell to reference</Badge>
   }
 
   renderCellDetail = ({ cell, status }) => {
