@@ -29,8 +29,12 @@ export default class CkbCellCollector {
   async loadMoreCells () {
     const { done, value } = await this.#loader.next()
 
-    if (!value) {
-      return
+    if (done || !value) {
+      return {
+        done: true,
+        capacity: this.#capacity,
+        cells: [...this.#cells],
+      }
     }
 
     value.forEach(cell => {
