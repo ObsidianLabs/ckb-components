@@ -72,7 +72,6 @@ export default class CkbTx extends PureComponent {
     return (
       <CkbWalletContext.Provider value={{
         txBuilder: this.props.txBuilder,
-        addressBook: this.props.addressBook,
         cellManifest: this.state.cellManifest,
       }}>
         <DndProvider backend={HTML5Backend}>

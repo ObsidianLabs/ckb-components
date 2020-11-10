@@ -72,7 +72,6 @@ export default class ScriptInput extends PureComponent {
         <AddressLockScriptInput
           initialScript={this.script}
           onChange={this.onAddressScript}
-          addressBook={this.context.addressBook}
         />
       )
     }
