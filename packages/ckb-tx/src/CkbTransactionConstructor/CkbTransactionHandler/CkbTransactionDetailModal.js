@@ -73,7 +73,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
       })
     } catch (e) {
       console.warn(e)
-      notification.error('Push Transaction Failed', e.message)
+      notification.error('Sign Transaction Failed', e.message)
     }
   }
 
