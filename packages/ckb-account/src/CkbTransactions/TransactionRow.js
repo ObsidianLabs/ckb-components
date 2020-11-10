@@ -34,9 +34,9 @@ export default class TransactionRow extends PureComponent {
       const outputs = []
       this.props.cells.forEach(cell => {
         if (cell.type === 'input') {
-          inputs[cell.txIndex] = true
+          inputs[cell.io_index] = true
         } else {
-          outputs[cell.txIndex] = true
+          outputs[cell.io_index] = true
         }
       })
       let inputsComponents = (
@@ -94,12 +94,12 @@ export default class TransactionRow extends PureComponent {
       )
     }
 
-    const { transaction, txStatus } = this.state.detail
+    const { transaction, tx_status } = this.state.detail
     this.props.cells.forEach(cell => {
       if (cell.type === 'input') {
-        transaction.inputs[cell.txIndex].self = true
+        transaction.inputs[cell.io_index].self = true
       } else {
-        transaction.outputs[cell.txIndex].self = true
+        transaction.outputs[cell.io_index].self = true
       }
     })
     return (
@@ -121,7 +121,7 @@ export default class TransactionRow extends PureComponent {
             <div className='d-flex flex-1 align-items-center overflow-hidden'>
               <TxOutputs
                 outputs={transaction.outputs}
-                outputsData={transaction.outputsData}
+                outputs_data={transaction.outputs_data}
                 wallet={this.props.wallet}
               />
             </div>

@@ -16,7 +16,7 @@ export default class TxCell {
     return this.outpoint.tx_hash
   }
 
-  get txIndex () {
+  get io_index () {
     return Number(this.outpoint.io_index)
   }
 

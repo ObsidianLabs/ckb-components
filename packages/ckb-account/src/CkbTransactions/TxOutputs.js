@@ -2,7 +2,7 @@ import React from 'react'
 
 import CkbCell from './CkbCell'
 
-export default function TxOutputs ({ outputs, outputsData, wallet }) {
+export default function TxOutputs ({ outputs, outputs_data, wallet }) {
   return (
     <div className='d-flex flex-1 flex-column overflow-hidden'>
       {
@@ -10,7 +10,7 @@ export default function TxOutputs ({ outputs, outputsData, wallet }) {
           <CkbCell
             key={index}
             {...output}
-            data={outputsData[index]}
+            data={outputs_data[index]}
             capacityColor={output.self && 'primary'}
           />
         ))
