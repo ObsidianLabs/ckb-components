@@ -3,6 +3,7 @@ import { Progress } from 'reactstrap'
 
 import {
   Screen,
+  LoadingScreen,
   Button,
   Badge,
   CustomInput,
@@ -34,11 +35,7 @@ export default class CkbCells extends PureComponent {
       showEmptyCells: false,
       cellsCount: 0,
       totalCapacity: new CkbCapacity(),
-      used: new CkbCapacity(),
-      unused: new CkbCapacity(),
-      cells: [],
       cellsToRender: 0,
-      done: false,
       selected: new Set([]),
     }
 
@@ -69,11 +66,7 @@ export default class CkbCells extends PureComponent {
     this.setState({
       cellsCount: 0,
       totalCapacity: new CkbCapacity(),
-      used: new CkbCapacity(),
-      unused: new CkbCapacity(),
-      cells: [],
       cellsToRender: 0,
-      done: false,
       loading: true,
     })
 
@@ -103,9 +96,9 @@ export default class CkbCells extends PureComponent {
   }
 
   displayMoreCell = () => {
-    const { cellsToRender, cells } = this.state
+    const { cellsToRender } = this.state
     this.setState({ cellsToRender: this.state.cellsToRender + DISPLAY_STEP })
-    if (cellsToRender >= cells.length) {
+    if (cellsToRender >= this.cellCollector.nCells) {
       this.loadMoreCell()
     }
   }
@@ -113,15 +106,8 @@ export default class CkbCells extends PureComponent {
   loadMoreCell = async () => {
     this.setState({ loading: true })
     try {
-      const { done, cells, capacity } = await this.cellCollector.loadMoreCells()
-
-      this.setState({
-        done,
-        cells,
-        used: new CkbCapacity(capacity.used),
-        unused: new CkbCapacity(capacity.free),
-        loading: false,
-      })
+      await this.cellCollector.loadMoreCells()
+      this.setState({ loading: false })
     } catch (e) {
       console.warn(e)
       this.setState({ loading: false })
@@ -132,24 +118,22 @@ export default class CkbCells extends PureComponent {
     const {
       loading,
       cellsCount,
-      cells,
       totalCapacity,
-      used,
-      unused,
-      done,
     } = state
+
+    const { nCells, usedCapacity, freeCapacity, hasMore } = this.cellCollector
 
     let cellStat = null
     if (typeof cellsCount === 'number') {
-      cellStat = `${cells.length} of ${cellsCount} Cells`
+      cellStat = `${nCells} of ${cellsCount} Cells`
     } else {
-      cellStat = `${cells.length} Cells`
+      cellStat = `${nCells} Cells`
     }
 
     let icon = null
     if (loading) {
       icon = <span key='cells-loading'><i className='fas fa-spin fa-spinner text-muted ml-1' /></span>
-    } else if (!done) {
+    } else if (hasMore) {
       icon = <Badge className='ml-1' onClick={this.loadMoreCell}>more</Badge>
     }
 
@@ -157,11 +141,11 @@ export default class CkbCells extends PureComponent {
     let unusedPercentage = 0
     let underline
     if (totalCapacity) {
-      usedPercentage = Number(totalCapacity.value && used.value * BigInt(1000) / totalCapacity.value) / 10
-      unusedPercentage = Number(totalCapacity.value && unused.value * BigInt(1000) / totalCapacity.value) / 10
-      underline = `${unused.display()} free of ${totalCapacity.display()} CKB`
+      usedPercentage = Number(totalCapacity.value && usedCapacity.value * BigInt(1000) / totalCapacity.value) / 10
+      unusedPercentage = Number(totalCapacity.value && freeCapacity.value * BigInt(1000) / totalCapacity.value) / 10
+      underline = `${freeCapacity.display()} free of ${totalCapacity.display()} CKB`
     } else {
-      underline = `${unused.display()} free`
+      underline = `${freeCapacity.display()} free`
     }
     return (
       <div style={{ width: 200 }}>
@@ -186,28 +170,33 @@ export default class CkbCells extends PureComponent {
     )
   }
 
-  renderCells = cells => {
-    return cells.slice(0, this.state.cellsToRender).map((cell, i) => {
-      if (!this.state.showEmptyCells && cell.isEmpty()) {
-        return null
-      }
-      return (
-        <CkbCell
-          key={`cell-${cell.id}`}
-          cell={cell}
-          selected={this.state.selected.has(i)}
-          onSelect={() => this.setState({ selected: new Set([i]) })}
-          onDoubleClick={() => ckbTxManager.showCellDetail(cell)}
-        />
-      )
-    })
+  renderCells = () => {
+    return [...this.cellCollector.cells]
+      .slice(0, this.state.cellsToRender)
+      .map((cell, i) => {
+        if (!this.state.showEmptyCells && cell.isEmpty()) {
+          return null
+        }
+        return (
+          <CkbCell
+            key={`cell-${cell.id}`}
+            cell={cell}
+            selected={this.state.selected.has(i)}
+            onSelect={() => this.setState({ selected: new Set([i]) })}
+            onDoubleClick={() => ckbTxManager.showCellDetail(cell)}
+          />
+        )
+      })
   }
 
   renderEmptyCellStat = () => {
     if (this.state.showEmptyCells) {
       return null
     }
-    const emptyCells = this.state.cells.slice(0, this.state.cellsToRender).filter(cell => cell.isEmpty())
+    const emptyCells = [...this.cellCollector.cells]
+      .slice(0, this.state.cellsToRender)
+      .filter(cell => cell.isEmpty())
+    
     if (!emptyCells.length) {
       return null
     }
@@ -220,8 +209,8 @@ export default class CkbCells extends PureComponent {
     )
   }
 
-  renderLoadMore = ({ cellsCount, cells, cellsToRender, loading, done }) => {
-    if (cells.length > cellsToRender) {
+  renderLoadMore = ({ cellsCount, cellsToRender, loading }) => {
+    if (this.cellCollector.nCells > cellsToRender) {
       return (
         <div key='load-more' className='d-flex w-100 justify-content-center mt-2'>
           <Button size='sm' onClick={this.displayMoreCell}>Load More</Button>
@@ -235,7 +224,7 @@ export default class CkbCells extends PureComponent {
         </div>
       )
     }
-    if (typeof cellsCount === 'number' && cells.length < cellsCount) {
+    if (typeof cellsCount === 'number' && this.cellCollector.nCells < cellsCount) {
       return (
         <div key='load-more' className='d-flex w-100 justify-content-center mt-2'>
           <Button size='sm' onClick={this.displayMoreCell}>Load More</Button>
@@ -247,7 +236,7 @@ export default class CkbCells extends PureComponent {
   }
 
   render () {
-    const { error, cells } = this.state
+    const { error } = this.state
 
     if (!this.props.value) {
       return (
@@ -266,6 +255,10 @@ export default class CkbCells extends PureComponent {
           <p className='lead'><kbd>{this.props.value}</kbd></p>
         </Screen>
       )
+    }
+
+    if (!this.cellCollector) {
+      return <LoadingScreen />
     }
 
     return (
@@ -291,7 +284,7 @@ export default class CkbCells extends PureComponent {
 
         <div className='d-flex flex-1 flex-column align-items-stretch pb-3 px-3 overflow-auto'>
           <div className='d-flex flex-row flex-wrap'>
-            {this.renderCells(cells)}
+            {this.renderCells()}
             {this.renderEmptyCellStat()}
             {this.renderLoadMore(this.state)}
           </div>

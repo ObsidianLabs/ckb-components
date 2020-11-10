@@ -2,42 +2,22 @@ import { CkbCapacity, CkbLiveCell, CkbCellStatus, CkbScript } from '@obsidians/c
 import CkbCellCollector from './CkbCellCollector'
 
 export default class CkbCellCache {
-  #cache: Map<string, Set<CkbLiveCell>>
+  #cellCollectors: Map<string, CkbCellCollector>
 
   constructor () {
-    this.#cache = new Map()
+    this.#cellCollectors = new Map()
   }
 
   cellCollector (indexer, lock_script) {
-    // if (!this.#cellCollectors.has(lock_hash)) {
-    //   this.#cellCollectors.set(lock_hash, new CkbCellCollector(this, lock_hash))
-    // }
-    // return this.#cellCollectors.get(lock_hash)
-
     const script = new CkbScript(lock_script)
     const lock_hash = script.hash
-    this.clearCellsForLockHash(lock_hash)
-    return new CkbCellCollector(this, indexer, lock_script)
-  }
 
-  push (cell: CkbLiveCell) {
-    const lock_hash = cell.lock_hash
-    if (!this.#cache.has(lock_hash)) {
-      this.#cache.set(lock_hash, new Set())
+    if (!this.#cellCollectors.has(lock_hash)) {
+      this.#cellCollectors.set(lock_hash, new CkbCellCollector(indexer, lock_script))
     }
-    this.#cache.get(lock_hash).add(cell)
-  }
-
-  pushCells (cells: Set<CkbLiveCell>) {
-    cells.forEach(cell => this.push(cell))
-  }
-
-  clearCellsForLockHash (lock_hash: string) {
-    this.#cache.delete(lock_hash)
-  }
-
-  updateLiveCells (lock_hash: string, cells: Array<CkbLiveCell>) {
-    this.#cache.set(lock_hash, new Set(cells))
+    const collector = this.#cellCollectors.get(lock_hash)
+    collector.clear()
+    return collector
   }
 
   gatherCells (lock_hash: string, amount: bigint, type_hash?: string) {
@@ -52,16 +32,15 @@ export default class CkbCellCache {
     lock_hash: string,
     accumulator: accumulator<T>,
   ) {
-    const cells: Set<CkbLiveCell> = new Set()
-    if (!this.#cache.has(lock_hash)) {
+    if (!this.#cellCollectors.has(lock_hash)) {
       throw new Error(`No cells for lock hash "${lock_hash}".`)
     }
-    const liveCells = this.#cache.get(lock_hash)
+    const collector = this.#cellCollectors.get(lock_hash)
 
     const totalCapacity = new CkbCapacity()
-
+    const cells: Set<CkbLiveCell> = new Set()
     let acc
-    for (let cell of liveCells) {
+    for (let cell of collector.cells) {
       if (cell.status !== CkbCellStatus.Live) {
         continue
       }

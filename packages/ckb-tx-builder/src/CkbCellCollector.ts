@@ -1,6 +1,4 @@
-import { CkbCell, CkbLiveCell } from '@obsidians/ckb-objects'
-
-import CkbCellCache from './CkbCellCache'
+import { CkbCell, CkbLiveCell, CkbCapacity } from '@obsidians/ckb-objects'
 
 export default class CkbCellCollector {
   #loader: AsyncGenerator<CkbLiveCell[], void, unknown>
@@ -12,12 +10,15 @@ export default class CkbCellCollector {
   #hasMore: boolean = true
 
   constructor (
-    private cache: CkbCellCache,
     readonly indexer,
     readonly lock_script,
     readonly step: number = 20
   ) {
-    this.#loader = this.collect(step)
+    this.clear()
+  }
+
+  clear () {
+    this.#loader = this.collect(this.step)
 
     this.#cells = new Set()
     this.#capacity = {
@@ -26,15 +27,31 @@ export default class CkbCellCollector {
     }
   }
 
+  get cells () {
+    return this.#cells
+  }
+
+  get nCells () {
+    return this.#cells.size
+  }
+
+  get usedCapacity () {
+    return new CkbCapacity(this.#capacity.used)
+  }
+
+  get freeCapacity () {
+    return new CkbCapacity(this.#capacity.free)
+  }
+
+  get hasMore () {
+    return this.#hasMore
+  }
+
   async loadMoreCells () {
     const { done, value } = await this.#loader.next()
 
     if (done || !value) {
-      return {
-        done: true,
-        capacity: this.#capacity,
-        cells: [...this.#cells],
-      }
+      return
     }
 
     value.forEach(cell => {
@@ -44,14 +61,9 @@ export default class CkbCellCollector {
         this.#capacity.used += cell.capacity.value
       }
       this.#cells.add(cell)
-      this.cache.push(cell)
     })
 
-    return {
-      done,
-      capacity: this.#capacity,
-      cells: [...this.#cells],
-    }
+    return
   }
 
   private async *collect (step: number) {
