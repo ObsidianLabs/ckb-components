@@ -25,7 +25,29 @@ const copyRecursiveSync = (src, dest, name) => {
 }
 
 class CkbProjectChannel extends FileTreeChannel {
-  async createProject ({ template, projectRoot, name }) {
+  async isDirectoryNotEmpty (dirPath) {
+    try {
+      const stat = fs.statSync(dirPath)
+      if (!stat.isDirectory()) {
+        return false
+      }
+    } catch (e) {
+      return false
+    }
+
+    const files = fs.readdirSync(dirPath)
+    if (files && files.length) {
+      return true
+    }
+
+    return false
+  }
+
+  async post (_, { template, projectRoot, name }) {
+    if (await this.isDirectoryNotEmpty(projectRoot)) {
+      throw new Error(`<b>${projectRoot}</b> is not an empty directory.`)
+    }
+
     const templateFolder = path.join(__dirname, 'ckb-templates', template)
     try {
       fs.readdirSync(templateFolder)
@@ -34,6 +56,8 @@ class CkbProjectChannel extends FileTreeChannel {
     }
 
     copyRecursiveSync(templateFolder, projectRoot, name)
+
+    return { projectRoot, name }
   }
 }
 
