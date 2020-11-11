@@ -73,8 +73,11 @@ export default class CkbData {
     return fromHex(this.serialize(), format)
   }
 
-  display (length = 1000) {
+  display (length = 1000, format?: ckbDataFormat) {
     let value = this.value
+    if (format) {
+      value = this.toString(format)
+    }
     if (value.length > length) {
       value = value.slice(0, length) + '...'
     }

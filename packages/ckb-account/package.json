@@ -41,7 +41,6 @@
     "rollup-plugin-postcss": "^2.3.0"
   },
   "peerDependencies": {
-    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "lodash": "^4.17.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

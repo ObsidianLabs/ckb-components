@@ -2,7 +2,7 @@ import React from 'react'
 
 import CkbCell from './CkbCell'
 
-export default function TxOutputs ({ outputs, outputs_data, wallet }) {
+export default function TxOutputs ({ outputs, outputs_data }) {
   return (
     <div className='d-flex flex-1 flex-column overflow-hidden'>
       {

@@ -6,9 +6,9 @@ import {
 
 import CkbLock from './CkbLock'
 import CkbType from './CkbType'
-import CkbData from './CkbData'
+import CkbDataComponent from './CkbData'
 
-import { CkbCapacity } from '@obsidians/ckb-objects'
+import { CkbCapacity, CkbData } from '@obsidians/ckb-objects'
 
 export default function CkbCell (props) {
   if (!props || !props.capacity) {
@@ -31,7 +31,7 @@ export default function CkbCell (props) {
         </div>
       </div>
       <div className='ml-2 pl-1'><CkbType type={type} /></div>
-      <div className='ml-2 pl-1'><CkbData data={data} /></div>
+      <div className='ml-2 pl-1'><CkbDataComponent data={new CkbData(data, 'hex')} /></div>
     </div>
   )
 }

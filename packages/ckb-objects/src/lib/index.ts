@@ -1,10 +1,9 @@
-import * as ckbUtils from '@nervosnetwork/ckb-sdk-utils'
-import * as validators from '@nervosnetwork/ckb-sdk-utils/lib/validators'
+import { Reader } from 'ckb-js-toolkit'
+import { utils } from '@ckb-lumos/base'
 
 export const hex2Blake2b = hex => {
-  const s = ckbUtils.blake2b(32, null, null, ckbUtils.PERSONAL)
-  s.update(ckbUtils.hexToBytes(hex))
-  return `0x${s.digest('hex')}`
+  const buffer = new Reader(hex).toArrayBuffer()
+  return utils.ckbHash(buffer).serializeJson()
 }
 
 export const uintNumberToHex = (value, byteLength) => {
@@ -34,7 +33,11 @@ export const uintNumberToHex = (value, byteLength) => {
 }
 
 export const hexToUintNumber = hex => {
-  const bytes = ckbUtils.hexToBytes(hex)
+  if (hex.length % 2 > 0) {
+    hex = hex + '0'
+  }
+  const buffer = new Reader(hex).toArrayBuffer()
+  const bytes = new Uint8Array(buffer)
   const byteLength = bytes.length
 
   if (byteLength !== 32 && byteLength !== 16 && byteLength !== 8 && byteLength !== 4 && byteLength !== 2 && byteLength !== 1) {
@@ -42,14 +45,26 @@ export const hexToUintNumber = hex => {
   }
 
   bytes.reverse()
-  return BigInt(ckbUtils.bytesToHex(bytes)).toString()
+  return BigInt(new Reader(bytes.buffer).serializeJson()).toString()
+}
+
+export const hexToUtf8 = (hex: string): string => {
+  if (hex.length % 2 > 0) {
+    hex = hex + '0'
+  }
+  const buffer = new Reader(hex).toArrayBuffer()
+  return new TextDecoder().decode(buffer)
+}
+
+export const utf8ToHex = (utf8: string): string => {
+  return Reader.fromRawString(utf8).serializeJson()
 }
 
 export const toHex = (value, format): string => {
   if (format === 'hex') {
     return value.toString()
   } else if (format === 'utf8') {
-    return ckbUtils.utf8ToHex(value)
+    return utf8ToHex(value)
   } else if (format === 'uint256') {
     return uintNumberToHex(value, 32)
   } else if (format === 'uint128') {
@@ -69,7 +84,7 @@ export const fromHex = (value, format) => {
   if (format === 'hex') {
     return value
   } else if (format === 'utf8') {
-    return ckbUtils.hexToUtf8(value)
+    return hexToUtf8(value)
   } else if (format.startsWith('uint')) {
     return hexToUintNumber(value)
   }
@@ -77,8 +92,9 @@ export const fromHex = (value, format) => {
 
 export const isHexString = value => {
   try {
-    return value === '0x' || validators.assertToBeHexString(value)
+    utils.assertHexadecimal('', value)
+    return true
   } catch (e) {
-    return false
+    return value === '0x'
   }
 }

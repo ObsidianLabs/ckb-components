@@ -1,7 +1,6 @@
 import fileOps from '@obsidians/file-ops'
 
-import * as ckbUtils from '@nervosnetwork/ckb-sdk-utils'
-import { lib } from '@obsidians/ckb-objects'
+import { CkbScript, lib } from '@obsidians/ckb-objects'
 
 import get from 'lodash/get'
 
@@ -104,11 +103,8 @@ class CkbDebugger {
     }
 
     const { code_hash, hash_type, args } = get(JSON.parse(mockJsonString), config.target)
-    const scriptHash = lib.hex2Blake2b(ckbUtils.serializeScript({
-      codeHash: code_hash,
-      hashType: hash_type,
-      args: args
-    }))
+    const script = new CkbScript({ code_hash, hash_type, args })
+    const scriptHash = script.hash()
 
     const { run_json_with_printer } = await import('ckb-standalone-debugger')
 

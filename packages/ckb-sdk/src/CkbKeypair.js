@@ -34,17 +34,6 @@ export default class CkbKeypair {
     return ckbKeypair.publicKeyHash
   }
 
-  static publicKeyHashToAddress (publicKeyHash, prefix = 'ckt') {
-    if (/^0x[0-9A-Fa-f]+$/.test(publicKeyHash)) {
-      try {
-        return ckbUtils.bech32Address(publicKeyHash, { prefix })
-      } catch (e) {
-        return false
-      }
-    }
-    return false
-  }
-
   get publicKey () {
     if (!this._publicKey) {
       if (!this._privateKey) {
