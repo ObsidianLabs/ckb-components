@@ -3,6 +3,24 @@ const fs = require('fs')
 const fse = require('fs-extra')
 const { FileTreeChannel } = require('@obsidians/filetree')
 
+const isDirectoryNotEmpty = dirPath => {
+  try {
+    const stat = fs.statSync(dirPath)
+    if (!stat.isDirectory()) {
+      return false
+    }
+  } catch (e) {
+    return false
+  }
+
+  const files = fs.readdirSync(dirPath)
+  if (files && files.length) {
+    return true
+  }
+
+  return false
+}
+
 const copyRecursiveSync = (src, dest, name) => {
   const exists = fs.existsSync(src)
   const stats = exists && fs.statSync(src)
@@ -24,27 +42,9 @@ const copyRecursiveSync = (src, dest, name) => {
   }
 }
 
-class CkbProjectChannel extends FileTreeChannel {
-  async isDirectoryNotEmpty (dirPath) {
-    try {
-      const stat = fs.statSync(dirPath)
-      if (!stat.isDirectory()) {
-        return false
-      }
-    } catch (e) {
-      return false
-    }
-
-    const files = fs.readdirSync(dirPath)
-    if (files && files.length) {
-      return true
-    }
-
-    return false
-  }
-
+class ProjectChannel extends FileTreeChannel {
   async post (_, { template, projectRoot, name }) {
-    if (await this.isDirectoryNotEmpty(projectRoot)) {
+    if (await isDirectoryNotEmpty(projectRoot)) {
       throw new Error(`<b>${projectRoot}</b> is not an empty directory.`)
     }
 
@@ -61,4 +61,4 @@ class CkbProjectChannel extends FileTreeChannel {
   }
 }
 
-module.exports = CkbProjectChannel
+module.exports = ProjectChannel
