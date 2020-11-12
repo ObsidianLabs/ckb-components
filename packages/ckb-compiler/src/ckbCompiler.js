@@ -1,3 +1,4 @@
+import platform from '@obsidians/platform'
 import { DockerImageChannel } from '@obsidians/docker'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
@@ -108,6 +109,9 @@ class CkbCompiler {
     } else if (mode === 'release-w-debug-output') {
       cmd += ` --release --debug-output`
     }
+    if (platform.isWeb) {
+      return cmd
+    }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
@@ -124,6 +128,9 @@ class CkbCompiler {
     if (mode !== 'debug') {
       cmd += ` --release`
     }
+    if (platform.isWeb) {
+      return cmd
+    }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
@@ -137,6 +144,9 @@ class CkbCompiler {
 
   generateBuildCmdForC(config, { version, projectRoot }) {
     const cmd = this.commandForC(config, version)
+    if (platform.isWeb) {
+      return cmd
+    }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
       'docker', 'run', '-t', '--rm', '--name', `ckb-compiler-${version}`,
