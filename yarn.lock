@@ -1851,7 +1851,7 @@
     elliptic "6.5.2"
     jsbi "3.1.2"
 
-"@nervosnetwork/ckb-types@0.32.0":
+"@nervosnetwork/ckb-types@0.32.0", "@nervosnetwork/ckb-types@^0.32.0":
   version "0.32.0"
   resolved "https://registry.yarnpkg.com/@nervosnetwork/ckb-types/-/ckb-types-0.32.0.tgz#d289f0f574c51d1c629a7c2dc7b3a2b37186c02c"
   integrity sha512-d0mJIz9jvL1fGBC1+zx2v3PZsKy1oQS0cL9C9L5JZifkHtlDhe37h50Idp6R2svFXk5zo2mXny7GXe5JBb4zMQ==
@@ -2598,9 +2598,9 @@ bluebird@^3.4.7, bluebird@^3.5.1, bluebird@^3.5.3, bluebird@^3.5.5:
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
 bn.js@^4.4.0:
-  version "4.11.8"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
-  integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
+  version "4.11.9"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
+  integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
 
 boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
