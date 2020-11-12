@@ -8,6 +8,7 @@ import { QueueButton } from '@obsidians/ckb-queue'
 import { CompilerSelector } from '@obsidians/ckb-project'
 
 export default function CkbBottomBar (props) {
+  const username = props.profile.get('username') || 'local'
   return <>
     <KeypairButton>
       <div className='btn btn-primary btn-sm btn-flat'>
@@ -17,7 +18,7 @@ export default function CkbBottomBar (props) {
     <QueueButton txs={props.txs} />
     <div className='flex-1' />
     <CacheRoute
-      path={`/local/:project?`}
+      path={`/${username}/:project?`}
       render={({ match }) => {
         const project = match?.params?.project
         if (!project) {
@@ -30,7 +31,7 @@ export default function CkbBottomBar (props) {
       }}
     />
     <CacheRoute
-      path={`/local/:project`}
+      path={`/${username}/:project`}
       component={TerminalButton}
     />
   </>
