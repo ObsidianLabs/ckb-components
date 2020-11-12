@@ -90,7 +90,7 @@ export default class TransactionDetails extends PureComponent {
         name='Error'
         icon='fas fa-exclamation-triangle'
       >
-        {this.renderError(error)}
+        {error}
       </TableCardRow>
     }
   }
