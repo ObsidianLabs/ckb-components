@@ -14,9 +14,9 @@ import ckbCompiler from './ckbCompiler'
 import './style.scss'
 
 const modeText = {
-  debug: 'Debug',
-  release: 'Release',
-  'release-w-debug-output': 'Release w/ Output',
+  debug: 'Build (debug)',
+  release: 'Build (release)',
+  'release-w-debug-output': 'Build (release w/ output)',
 }
 
 export default class CkbCompilerButton extends PureComponent {
@@ -79,10 +79,10 @@ export default class CkbCompilerButton extends PureComponent {
     if (this.state.building) {
       return 'Stop Build'
     }
-    if (projectLanguage === 'javascript') {
-      return 'Build'
+    if (projectLanguage === 'rust') {
+      return modeText[this.state.mode]
     }
-    return modeText[this.state.mode]
+    return 'Build'
   }
 
   render () {

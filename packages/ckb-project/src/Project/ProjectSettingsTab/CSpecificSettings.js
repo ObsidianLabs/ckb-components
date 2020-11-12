@@ -47,7 +47,7 @@ export default function CSpecificSettings (props) {
       className='bg-black'
       value={projectSettings?.get('debug.cycles')}
       onChange={onChange('debug.cycles')}
-      placeholder={`Default: 1000000000 (1 Billion)`}
+      placeholder={`Default: 1,000,000,000 (1 Billion)`}
     />
   </>
 }
