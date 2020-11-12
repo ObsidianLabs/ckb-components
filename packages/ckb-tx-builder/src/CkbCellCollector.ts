@@ -18,6 +18,8 @@ export default class CkbCellCollector {
   }
 
   clear () {
+    this.#cursor = ''
+    this.#hasMore = true
     this.#loader = this.collect(this.step)
 
     this.#cells = new Set()
