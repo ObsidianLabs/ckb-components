@@ -9,10 +9,7 @@ class CkbInstanceManager extends IpcChannel {
     super('ckb-instances')
 
     this.ckbNode = new DockerImageChannel('nervos/ckb')
-    this.ckbIndexer = new DockerImageChannel('nervos/ckb-indexer', {
-      filter: false,
-      sort: false,
-    })
+    this.ckbIndexer = new DockerImageChannel('nervos/ckb-indexer')
   }
 
   async create ({ name, version, chain, lockArg }) {

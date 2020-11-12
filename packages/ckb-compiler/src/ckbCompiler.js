@@ -5,7 +5,10 @@ import notification from '@obsidians/notification'
 class CkbCompiler {
   constructor () {
     this.capsule = new DockerImageChannel(`obsidians/capsule`)
-    this.regular = new DockerImageChannel(`nervos/ckb-riscv-gnu-toolchain`)
+    this.regular = new DockerImageChannel(`nervos/ckb-riscv-gnu-toolchain`, {
+      filter: tag => tag.startsWith('xenial'),
+      sort: (x, y) => x < y ? 1 : -1,
+    })
     this._terminal = null
     this._button = null
     this._testButton = null
