@@ -28,6 +28,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
       serializedTx: '',
       witnesses: [],
       signed: false,
+      signing: false,
       pushing: false,
     }
 
@@ -53,6 +54,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
   }
 
   signTransaction = async () => {
+    this.setState({ signing: true })
     const signers = this.state.signers
     try {
       const signatureProvider = new Map()
@@ -69,10 +71,12 @@ export default class CkbTransactionDetailModal extends PureComponent {
       const signedTx = await this.tx.sign(signatureProvider)
       this.setState({
         signed: true,
+        signing: false,
         witnesses: signedTx.witnesses,
       })
     } catch (e) {
       console.warn(e)
+      this.setState({ signing: false })
       notification.error('Sign Transaction Failed', e.message)
     }
   }
@@ -136,7 +140,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
   }
 
   render () {
-    const { signed, serializedTx, witnesses, pushing } = this.state
+    const { signed, serializedTx, witnesses, signing, pushing } = this.state
 
     const actions = signed ? [this.openWitnessModal] : []
 
@@ -147,7 +151,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
           h100
           title='Transaction'
           textConfirm={signed ? 'Push transaction' : 'Sign transaction'}
-          pending={pushing && 'Pushing...'}
+          pending={signing ? 'Signing...' : pushing && 'Pushing...'}
           onConfirm={signed ? this.pushTransaction : this.signTransaction}
           textActions={signed ? ['Witnesses'] : []}
           onActions={actions}
