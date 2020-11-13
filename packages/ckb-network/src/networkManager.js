@@ -68,8 +68,10 @@ class NetworkManager {
   async updateCustomNetwork ({ url, indexer }) {
     const blockchainInfo = await this.createSdk({ url, indexer })
     
-    redux.dispatch('SELECT_NETWORK', `custom:${this.chain}`)
-    notification.success(`Network Connected`, `Connected to ckb rpc at <b>${url}</b>`)
+    if (blockchainInfo) {
+      redux.dispatch('SELECT_NETWORK', `custom:${this.chain}`)
+      notification.success(`Network Connected`, `Connected to ckb rpc at <b>${url}</b>`)
+    }
 
     return blockchainInfo
   }
