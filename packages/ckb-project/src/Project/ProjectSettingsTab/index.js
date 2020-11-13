@@ -118,6 +118,7 @@ export default class ProjectSettingsTab extends AbstractProjectSettingsTab {
             />
             {this.renderCompilerSelector(projectSettings)}
             {this.renderOtherSettings(projectSettings)}
+            <AbstractProjectSettingsTab.DeleteButton context={this.context} />
           </div>
         </div>
       </div>
