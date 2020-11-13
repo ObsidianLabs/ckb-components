@@ -1,9 +1,10 @@
 import { ProjectSettings } from '@obsidians/workspace'
 
 export default class CkbProjectSettings extends ProjectSettings {
+  static configFileName = 'ckbconfig.json'
+
   constructor (settingFilePath, channel) {
     super(settingFilePath, channel)
-    this.configFileName = 'ckbconfig.json'
   }
 
   trimSettings = (rawSettings = {}) => {
