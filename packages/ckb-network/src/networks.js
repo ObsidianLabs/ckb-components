@@ -1,6 +1,5 @@
 import { List } from 'immutable'
 import platform from '@obsidians/platform'
-import fileOps from '@obsidians/file-ops'
 
 const networkList = [
   {
@@ -10,9 +9,9 @@ const networkList = [
     fullName: "Testnet Aggron",
     icon: "far fa-clouds",
     notification: "Switched to <b>Testnet Aggron</b>.",
-    url: 'http://ckb-aggron.obsidians.io',
-    indexer: 'http://ckb-aggron.obsidians.io:81',
-    explorer: 'https://api.explorer.nervos.org/testnet/api/v1',
+    url: 'https://ckb.obsidians.io/rpc/aggron',
+    indexer: 'https://ckb.obsidians.io/indexer/aggron',
+    explorer: 'https://ckb.obsidians.io/explorer/aggron',
   }, {
     id: "ckb-mainnet",
     group: "mainnet",
@@ -20,9 +19,9 @@ const networkList = [
     fullName: "CKB Mainnet",
     icon: "far fa-globe",
     notification: "Switched to <b>CKB Mainnet</b>.",
-    url: 'http://ckb-mainnet.obsidians.io',
-    indexer: 'http://ckb-mainnet.obsidians.io:81',
-    explorer: 'https://api.explorer.nervos.org/api/v1',
+    url: 'https://ckb.obsidians.io/rpc/lina',
+    indexer: 'https://ckb.obsidians.io/indexer/lina',
+    explorer: 'https://ckb.obsidians.io/explorer/lina',
   }
 ]
 

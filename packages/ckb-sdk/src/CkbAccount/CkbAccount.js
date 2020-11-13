@@ -36,12 +36,7 @@ export default class CkbAccount {
     if (!this._getInfo || force) {
       this._getInfo = async () => {
         const url = `${this.ckbExplorer}/addresses/${this.value}`
-        const response = await fetch(url, {
-          headers: {
-            Accept: 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
-          }
-        })
+        const response = await fetch(url)
         const result = await response.json()
         const { balance, live_cells_count, transactions_count, ...rest } = result.data.attributes
         return {
