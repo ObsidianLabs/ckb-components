@@ -1,5 +1,3 @@
-import CkbTxBuilder from '@obsidians/ckb-tx-builder'
-
 import CkbClient from './CkbClient'
 import CkbIndexer from './CkbIndexer'
 import CkbAccount from './CkbAccount'
@@ -10,7 +8,6 @@ export default class CkbSdk {
     this.ckbClient = new CkbClient(url)
     if (indexer) {
       this.ckbIndexer = new CkbIndexer(indexer)
-      CkbTxBuilder.indexer = this.ckbIndexer
     }
     this.ckbExplorer = explorer
   }

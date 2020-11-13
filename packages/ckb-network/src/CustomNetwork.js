@@ -45,7 +45,7 @@ export default class CustomNetwork extends PureComponent {
   }
 
   tryCreateSdk = async ({ url, indexer }) => {
-    const blockchainInfo = await networkManager.createSdk({ url, indexer })
+    const blockchainInfo = await networkManager.updateCustomNetwork({ url, indexer })
     if (blockchainInfo) {
       this.refresh(blockchainInfo)
       if (this.h) {

@@ -2,16 +2,20 @@ import CkbRawTransaction from './CkbRawTransaction'
 import CkbCellCache from './CkbCellCache'
 
 export default class CkbTxBuilder {
-  static indexer
-
+  #indexer
   #cellCache: CkbCellCache
 
-  constructor () {
+  constructor (indexer) {
+    this.#indexer = indexer
     this.#cellCache = new CkbCellCache()
   }
 
   cellCollector (lock_script) {
-    return this.#cellCache.cellCollector(CkbTxBuilder.indexer, lock_script)
+    return this.#cellCache.cellCollector(this.#indexer, lock_script)
+  }
+
+  clearCache () {
+    this.#cellCache = new CkbCellCache()
   }
 
   newTx () {
