@@ -45,15 +45,15 @@ export default class CustomNetwork extends PureComponent {
   }
 
   tryCreateSdk = async ({ url, indexer }) => {
-    const nodeInfo = await networkManager.createSdk({ url, indexer })
-    if (nodeInfo) {
-      this.refresh(nodeInfo)
+    const blockchainInfo = await networkManager.createSdk({ url, indexer })
+    if (blockchainInfo) {
+      this.refresh(blockchainInfo)
       if (this.h) {
         clearInterval(this.h)
       }
       this.h = setInterval(() => this.refreshBlock(), 3000)
     }
-    return !!nodeInfo
+    return !!blockchainInfo
   }
 
   onConfirmCustomNetwork = async () => {
@@ -75,18 +75,18 @@ export default class CustomNetwork extends PureComponent {
     this.modal.current.closeModal()
   }
 
-  async refresh (nodeInfo) {
+  async refresh (blockchainInfo) {
     this.setState({
-      nodeInfo,
-      blockchainInfo: null,
+      nodeInfo: null,
+      blockchainInfo,
       block: null,
       epoch: null,
     })
     if (!networkManager.sdk) {
       return
     }
-    const blockchainInfo = await networkManager.sdk?.ckbClient.rpc.get_blockchain_info()
-    this.setState({ blockchainInfo })
+    const nodeInfo = await networkManager.sdk?.ckbClient.rpc.local_node_info()
+    this.setState({ nodeInfo })
   }
 
   async refreshBlock () {

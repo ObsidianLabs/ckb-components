@@ -9,7 +9,7 @@ import networks from './networks'
 class NetworkManager {
   constructor () {
     this._sdk = null
-    this.nodeId = ''
+    this.chain = ''
   }
 
   get sdk () {
@@ -19,10 +19,10 @@ class NetworkManager {
   async createSdk (params) {
     const sdk = new Sdk(params)
     try {
-      const nodeInfo = await sdk.ckbClient.rpc.local_node_info()
-      this.nodeId = nodeInfo.node_id
+      const blockchainInfo = await sdk.ckbClient.rpc.get_blockchain_info()
+      this.chain = blockchainInfo.chain
       this._sdk = sdk
-      return nodeInfo
+      return blockchainInfo
     } catch (e) {
       console.warn(e)
       notification.error('Invalid Node URL', '')
