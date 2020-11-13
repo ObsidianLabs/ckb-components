@@ -82,8 +82,8 @@ export default class RemoteNetwork extends PureComponent {
                 badge={this.state.blockchainInfo?.chain}
               />
               <TableCardRow
-                name='Chain ID'
-                badge={this.state.nodeInfo?.nodeId}
+                name='Node ID'
+                badge={this.state.nodeInfo?.node_id}
               />
               <TableCardRow
                 name='Version'

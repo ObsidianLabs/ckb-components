@@ -89,7 +89,6 @@ export default class CustomNetwork extends PureComponent {
     this.setState({ blockchainInfo })
   }
 
-
   async refreshBlock () {
     if (!networkManager.sdk) {
       return
@@ -131,8 +130,8 @@ export default class CustomNetwork extends PureComponent {
                 badge={this.state.blockchainInfo?.chain}
               />
               <TableCardRow
-                name='Chain ID'
-                badge={this.state.nodeInfo?.nodeId}
+                name='Node ID'
+                badge={this.state.nodeInfo?.node_id}
               />
               <TableCardRow
                 name='Version'
@@ -173,14 +172,14 @@ export default class CustomNetwork extends PureComponent {
       >
         <DebouncedFormGroup
           label='Node URL'
-          placeholder='https://...'
+          placeholder='http://localhost:8114'
           maxLength='200'
           value={this.state.nodeUrl}
           onChange={nodeUrl => this.setState({ nodeUrl })}
         />
         <DebouncedFormGroup
           label='Indexer URL'
-          placeholder='https://...'
+          placeholder='http://localhost:8116'
           maxLength='200'
           value={this.state.indexerUrl}
           onChange={indexerUrl => this.setState({ indexerUrl })}

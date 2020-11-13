@@ -9,6 +9,7 @@ import networks from './networks'
 class NetworkManager {
   constructor () {
     this._sdk = null
+    this.nodeId = ''
   }
 
   get sdk () {
@@ -19,6 +20,7 @@ class NetworkManager {
     const sdk = new Sdk(params)
     try {
       const nodeInfo = await sdk.ckbClient.rpc.local_node_info()
+      this.nodeId = nodeInfo.node_id
       this._sdk = sdk
       return nodeInfo
     } catch (e) {
@@ -46,7 +48,7 @@ class NetworkManager {
 
     this.network = network
     if (network.url) {
-      this._sdk = new Sdk(network)
+      await this.createSdk(network)
     } else {
       this._sdk = null
     }
