@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   Screen,
+  LoadingScreen,
 } from '@obsidians/ui-components'
 
 import { networkManager } from '@obsidians/ckb-network'
@@ -15,6 +16,7 @@ export default class CkbAccountPage extends PureComponent {
     super(props)
 
     this.state = {
+      loading: false,
       error: null,
       wallet: null,
     }
@@ -41,29 +43,34 @@ export default class CkbAccountPage extends PureComponent {
     const value = this.props.value
 
     if (!value) {
-      this.setState({ error: null, wallet: null })
+      this.setState({ loading: false, error: null, wallet: null })
       return
     }
 
+    this.setState({ loading: true })
     await new Promise(resolve => setTimeout(resolve, 10))
 
     let wallet
     try {
       wallet = networkManager.sdk?.walletFrom(value)
       await wallet.info()
-      this.setState({ error: null, wallet })
+      this.setState({ loading: false, error: null, wallet })
     } catch (e) {
       let error = e.message
       if (error === `Cannot read property 'attributes' of undefined`) {
         error = 'Invalid value, expected a lock hash or CKB address.'
       }
-      this.setState({ error, wallet: null })
+      this.setState({ loading: false, error, wallet: null })
       return
     }
   }
 
   render () {
     const { error, wallet } = this.state
+
+    if (this.state.loading) {
+      return <LoadingScreen />
+    }
 
     if (!this.props.value) {
       return (
