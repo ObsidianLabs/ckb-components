@@ -3,6 +3,11 @@ import { DockerImageChannel } from '@obsidians/docker'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
+const DockerImages = {
+  rust: 'obsidians/capsule',
+  c: 'nervos/ckb-riscv-gnu-toolchain'
+}
+
 class CkbCompiler {
   constructor () {
     this.capsule = new DockerImageChannel(`obsidians/capsule`)
@@ -42,11 +47,12 @@ class CkbCompiler {
 
   async build (version, config = {}) {
     const projectRoot = this.projectRoot
+    const { language } = config
 
     this._button.setState({ building: true })
 
     let cmd
-    if (config.language === 'rust') {
+    if (language === 'rust') {
       const mode = this._button.state.mode
       cmd = this.generateBuildCmdForRust(config, { version, projectRoot }, mode)
       if (mode === 'debug') {
@@ -56,14 +62,17 @@ class CkbCompiler {
       } else if (mode === 'release-w-debug-output') {
         this.notification = notification.info(`Building CKB Script`, `Building Release with Debug Output...`, 0)
       }
-    } else if (config.language === 'c' || config.language === 'other') {
+    } else if (language === 'c' || language === 'other') {
       cmd = this.generateBuildCmdForC(config, { version, projectRoot })
       this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     } else {
       cmd = config.scripts.build
       this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     }
-    const result = await this._terminal.exec(cmd)
+    const result = await this._terminal.exec(cmd, {
+      image: `${DockerImages[language]}:${version}`,
+      language
+    })
 
     this._button.setState({ building: false })
     this.notification.dismiss()
@@ -77,11 +86,12 @@ class CkbCompiler {
 
   async test (version, config = {}) {
     const projectRoot = this.projectRoot
+    const { language } = config
 
     this._testButton.setState({ testing: true })
 
     let cmd
-    if (config.language === 'rust') {
+    if (language === 'rust') {
       const mode = this._button.state.mode
       cmd = this.generateTestCmdForRust(config, { version, projectRoot }, mode)
       if (mode === 'debug') {
@@ -90,7 +100,10 @@ class CkbCompiler {
         this.notification = notification.info(`Testing CKB Script`, `Testing Release...`, 0)
       }
     }
-    const result = await this._terminal.exec(cmd)
+    const result = await this._terminal.exec(cmd, {
+      image: `${DockerImages[language]}:${version}`,
+      language
+    })
 
     this._testButton.setState({ testing: false })
     this.notification.dismiss()
