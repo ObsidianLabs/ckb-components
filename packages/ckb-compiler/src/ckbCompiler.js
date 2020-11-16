@@ -70,8 +70,7 @@ class CkbCompiler {
       this.notification = notification.info(`Building CKB Script`, `Building...`, 0)
     }
     const result = await this._terminal.exec(cmd, {
-      image: DockerImages[language],
-      imageVersion: version,
+      image: `${DockerImages[language]}:${version}`,
       language
     })
 
@@ -102,8 +101,7 @@ class CkbCompiler {
       }
     }
     const result = await this._terminal.exec(cmd, {
-      image: DockerImages[language],
-      imageVersion: version,
+      image: `${DockerImages[language]}:${version}`,
       language
     })
 
