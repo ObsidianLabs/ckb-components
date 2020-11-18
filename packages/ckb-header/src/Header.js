@@ -108,7 +108,7 @@ export default class Header extends PureComponent {
         navbarLeft={navbarLeft}
         navbarRight={navbarRight}
       />
-      <NewProjectModal />
+      <NewProjectModal username={username}/>
     </>
   }
 }
