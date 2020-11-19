@@ -56,7 +56,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
           `capsule new ${projectName}`,
         ].join(' ')
       } else {
-        created = await super.createProject({ projectRoot, name })
+        created = await super.createProject({ projectRoot, name, notify: false })
         projectName = created.name
         cmd = `capsule new ${projectName}`
         options = {
@@ -80,25 +80,30 @@ export default class NewCkbProjectModal extends NewProjectModal {
         },
       }
     } else if (language === 'c') {
-      created = await super.createProject({ projectRoot, name, template })
+      created = await super.createProject({ projectRoot, name, template, notify: false })
       const templateObj = languageGroup.children.find(child => child.id === template)
       ckbconfig = {
         ...ckbconfig,
         main: templateObj.main || `${created.name}.c`
       }
     } else {
-      created = await super.createProject({ projectRoot, name, template })
+      created = await super.createProject({ projectRoot, name, template, notify: false })
     }
     
     let pathConfig
     if (platform.isDesktop) {
       pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
     } else {
+      if (!created) {
+        notification.error('Cannot Create the Project')
+        return false
+      }
       const { _id, userId } = created
       pathConfig = `${created.public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
     }
 
     await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
+    notification.success('Successful', `New project <b>${name}</b> is created.`)
     return platform.isDesktop ? { projectRoot, name: projectName } : created
   }
 
