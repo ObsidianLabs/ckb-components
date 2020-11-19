@@ -92,8 +92,8 @@ export default class NewCkbProjectModal extends NewProjectModal {
     if (platform.isDesktop) {
       pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
     } else {
-      const { _id, public, userId } = created
-      pathConfig = `${public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
+      const { _id, userId } = created
+      pathConfig = `${created.public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
     }
 
     await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
