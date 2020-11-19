@@ -19,45 +19,85 @@ export default class NewCkbProjectModal extends NewProjectModal {
   }
 
   async createProject ({ projectRoot, name, template }) {
-    if (platform.isDesktop && template === 'rust') {
+    const languageGroup = this.props.templates.find(({ children }) => {
+      return children.find(child => child.id === template)
+    })
+    const language = languageGroup.group.toLowerCase()
+    
+    let projectName, created
+    let ckbconfig = {
+      language,
+    }
+
+    if (language === 'rust') {
       this.setState({ showTerminal: true })
       const capsuleVersion = this.state.capsuleVersion
       if (!capsuleVersion) {
         notification.error('Cannot Create the Project', 'Please select a version for Capsule.')
         return false
       }
-      const { dir, name: projectName } = fileOps.current.path.parse(projectRoot)
-      await fileOps.current.ensureDirectory(dir)
-      const projectDir = fileOps.current.getDockerMountPath(dir)
-      const cmd = [
-        `docker run --rm -it`,
-        `--name ckb-create-project`,
-        '-v /var/run/docker.sock:/var/run/docker.sock',
-        `-v "${projectDir}:${projectDir}"`,
-        `-w "${projectDir}"`,
-        `obsidians/capsule:${capsuleVersion}`,
-        `capsule new ${projectName}`,
-      ].join(' ')
 
-      const result = await this.terminal.current.exec(cmd)
+      let cmd
+      let options = {}
+  
+      if (platform.isDesktop) {
+        const { dir, parsedName } = fileOps.current.path.parse(projectRoot)
+        projectName = parsedName
+        await fileOps.current.ensureDirectory(dir)
+        const projectDir = fileOps.current.getDockerMountPath(dir)
+        cmd = [
+          `docker run --rm -it`,
+          `--name ckb-create-project`,
+          '-v /var/run/docker.sock:/var/run/docker.sock',
+          `-v "${projectDir}:${projectDir}"`,
+          `-w "${projectDir}"`,
+          `obsidians/capsule:${capsuleVersion}`,
+          `capsule new ${projectName}`,
+        ].join(' ')
+      } else {
+        created = await super.createProject({ projectRoot, name })
+        projectName = created.name
+        cmd = `capsule new ${projectName}`
+        options = {
+          image: `obsidians/capsule:${capsuleVersion}`,
+          language,
+          cwd: `${this.props.username}/${projectName}`
+        }
+      }
 
+      const result = await this.terminal.current.exec(cmd, options)
       if (result.code) {
         notification.error('Cannot Create the Project')
         return false
       }
 
-      const ckbconfig = {
-        language: 'rust',
+      ckbconfig = {
+        ...ckbconfig,
         main: `contracts/${projectName}/src/main.rs`,
         compilers: {
           capsule: capsuleVersion,
         },
       }
-      await fileOps.current.writeFile(fileOps.current.path.join(projectRoot, 'ckbconfig.json'), JSON.stringify(ckbconfig, null, 2))
-      return { projectRoot, name: projectName }
+    } else if (language === 'c') {
+      created = await super.createProject({ projectRoot, name, template })
+      ckbconfig = {
+        ...ckbconfig,
+        main: `${created.name}.c`
+      }
     } else {
-      return super.createProject({ projectRoot, name, template })
+      created = await super.createProject({ projectRoot, name, template })
     }
+    
+    let pathConfig
+    if (platform.isDesktop) {
+      pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
+    } else {
+      const { _id, public, userId } = created
+      pathConfig = `${public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
+    }
+
+    await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
+    return platform.isDesktop ? { projectRoot, name: projectName } : created
   }
 
   renderOtherOptions = () => {
