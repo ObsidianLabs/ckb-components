@@ -160,5 +160,5 @@ NewCkbProjectModal.defaultProps = {
 if (platform.isWeb) {
   const defaultProps = NewCkbProjectModal.defaultProps
   defaultProps.defaultTemplate = 'simple-udt'
-  defaultProps.templates = defaultProps.templates.filter(t => t.group !== 'JavaScript')
+  defaultProps.templates = defaultProps.templates.filter(t => t.group !== 'JavaScript' && t.group !== 'Other')
 }
