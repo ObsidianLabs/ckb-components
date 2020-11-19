@@ -24,7 +24,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
       return children.find(child => child.id === template)
     })
     const language = languageGroup.group.toLowerCase()
-    
+
     let projectName, created
     let ckbconfig = {
       language,
@@ -81,9 +81,10 @@ export default class NewCkbProjectModal extends NewProjectModal {
       }
     } else if (language === 'c') {
       created = await super.createProject({ projectRoot, name, template })
+      const templateObj = languageGroup.children.find(child => child.id === template)
       ckbconfig = {
         ...ckbconfig,
-        main: `${created.name}.c`
+        main: templateObj.main || `${created.name}.c`
       }
     } else {
       created = await super.createProject({ projectRoot, name, template })
@@ -144,7 +145,7 @@ NewCkbProjectModal.defaultProps = {
       badge: 'C',
       children: [
         { id: 'carrot', display: 'carrot' },
-        { id: 'simple-udt', display: 'Simple UDT' },
+        { id: 'simple-udt', display: 'Simple UDT', main: 'simple_udt.c' },
       ],
     },
     {
