@@ -23,6 +23,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
       return children.find(child => child.id === template)
     })
     const language = languageGroup.group.toLowerCase()
+    
     let projectName, created
     let ckbconfig = {
       language,
@@ -77,7 +78,6 @@ export default class NewCkbProjectModal extends NewProjectModal {
           capsule: capsuleVersion,
         },
       }
-
     } else if (language === 'c') {
       created = await super.createProject({ projectRoot, name, template })
       ckbconfig = {
@@ -88,8 +88,15 @@ export default class NewCkbProjectModal extends NewProjectModal {
       created = await super.createProject({ projectRoot, name, template })
     }
     
-    const ckbconfigPath = platform.isDesktop ? fileOps.current.path.join(projectRoot, 'ckbconfig.json') : `${created.public ? 'public' : 'private'}/${created.userId}/${created._id}/ckbconfig.json`
-    await fileOps.current.writeFile(ckbconfigPath, JSON.stringify(ckbconfig, null, 2))
+    let pathConfig
+    if (platform.isDesktop) {
+      pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
+    } else {
+      const { _id, public, userId } = created
+      pathConfig = `${public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
+    }
+
+    await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
     return platform.isDesktop ? { projectRoot, name: projectName } : created
   }
 
