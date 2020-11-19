@@ -1,12 +1,16 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
+import { IpcChannel } from '@obsidians/ipc'
+import { networkManager } from '@obsidians/ckb-network'
 import { SIMPLE_UDT_CODE_HASH, DUKTAPE_CODE_HASH } from '@obsidians/ckb-objects'
 
 const defaultCellManifest = [
   { hash: SIMPLE_UDT_CODE_HASH, name: 'Simple UDT' },
   { hash: DUKTAPE_CODE_HASH, name: 'Duktape' },
 ]
+
+const channel = new IpcChannel('udt')
 
 class CkbTxManager {
   set cellDetailModal(cellDetailModal) {
@@ -103,19 +107,30 @@ class CkbTxManager {
   }
 
   async getUdtInfo (issuer) {
-    const manifest = await this.loadUdtManifest()
-    return manifest.find(item => item.issuer === issuer) || {}
+    if (platform.isDesktop) {
+      const manifest = await this.loadUdtManifest()
+      return manifest.find(item => item.issuer === issuer) || {}
+    }
+    const result = await channel.invoke('GET', `${networkManager.chain}/${issuer}`)
+    return result ? {
+      ...result,
+      issuer: result._id,
+    } : {}
   }
 
   async updateUdtInfo (udt) {
-    const manifest = await this.loadUdtManifest()
-    const index = manifest.findIndex(item => item.issuer === udt.issuer)
-    if (index > -1) {
-      manifest[index] = udt
-    } else {
-      manifest.push(udt)
+    if (platform.isDesktop) {
+      const manifest = await this.loadUdtManifest()
+      const index = manifest.findIndex(item => item.issuer === udt.issuer)
+      if (index > -1) {
+        manifest[index] = udt
+      } else {
+        manifest.push(udt)
+      }
+      await fileOps.current.writeFile(this.udtManifestFile, JSON.stringify(manifest, null, 2))
     }
-    await fileOps.current.writeFile(this.udtManifestFile, JSON.stringify(manifest, null, 2))
+
+    await channel.invoke('PUT', `${networkManager.chain}/${udt.issuer}`, udt)
   }
 }
 
