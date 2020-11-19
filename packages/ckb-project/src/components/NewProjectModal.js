@@ -73,7 +73,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
 
       ckbconfig = {
         ...ckbconfig,
-        main: platform.isDesktop ? `contracts/${projectName}/src/main.rs` : 'src/main.rs',
+        main: `contracts/${projectName}/src/main.rs`,
         compilers: {
           capsule: capsuleVersion,
         },
