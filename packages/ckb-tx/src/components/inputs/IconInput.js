@@ -5,6 +5,7 @@ import {
   Button,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 export default class IconInput extends PureComponent {
@@ -34,13 +35,16 @@ export default class IconInput extends PureComponent {
         label='Icon'
         value={value}
         onChange={onChange}
-        placeholder="Url starts with http/file"
+        placeholder={`Url starts with http${platform.isDesktop ? '/file' : ''}`}
       >
-        <InputGroupAddon addonType="append">
-          <Button
-            onClick={this.onSelect}
-          >Browse</Button>
-        </InputGroupAddon>
+        {
+          platform.isDesktop &&
+          <InputGroupAddon addonType="append">
+            <Button
+              onClick={this.onSelect}
+            >Browse</Button>
+          </InputGroupAddon>
+        }
       </DebouncedFormGroup>
     )
   }
