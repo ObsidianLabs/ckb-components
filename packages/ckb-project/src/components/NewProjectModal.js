@@ -3,6 +3,7 @@ import React from 'react'
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
+import Auth from '@obsidians/auth'
 
 import { NewProjectModal } from '@obsidians/workspace'
 import { DockerImageInputSelector } from '@obsidians/docker'
@@ -61,7 +62,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
         options = {
           image: `obsidians/capsule:${capsuleVersion}`,
           language,
-          cwd: `${this.props.username}/${projectName}`
+          cwd: `${Auth.username}/${projectName}`
         }
       }
 
@@ -154,4 +155,10 @@ NewCkbProjectModal.defaultProps = {
       ],
     },
   ]
+}
+
+if (platform.isWeb) {
+  const defaultProps = NewCkbProjectModal.defaultProps
+  defaultProps.defaultTemplate = 'simple-udt'
+  defaultProps.templates = defaultProps.templates.filter(t => t.group !== 'JavaScript')
 }
