@@ -64,8 +64,20 @@ class CkbTxManager {
   }
 
   async getCellInfo (data_hash) {
-    const manifest = await this.loadCellManifest()
-    return manifest.find(item => item.hash === data_hash)
+    if (platform.isDesktop) {
+      const manifest = await this.loadCellManifest()
+      return manifest.find(item => item.hash === data_hash)
+    }
+    if (data_hash === SIMPLE_UDT_CODE_HASH) {
+      return {
+        hash: SIMPLE_UDT_CODE_HASH,
+        name: 'Simple UDT',
+        out_point: {
+          tx_hash: '0xc1b2ae129fad7465aaa9acc9785f842ba3e6e8b8051d899defa89f5508a77958',
+          index: 0
+        }
+      }
+    }
   }
 
   async addCellReference (cell) {
