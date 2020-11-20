@@ -36,7 +36,8 @@ class CreateCell extends PureComponent {
     this.modal.current.openModal()
 
     const content = await fileOps.current.readFile(node.path)
-    this.data = new CkbData(content)
+    const hexContent = new Buffer(content).toString('hex')
+    this.data = new CkbData(`0x${hexContent}`, 'hex')
 
     this.setState({ loading: false })
   }
