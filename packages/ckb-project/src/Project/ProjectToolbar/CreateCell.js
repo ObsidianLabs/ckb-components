@@ -60,10 +60,11 @@ class CreateCell extends PureComponent {
       return
     }
 
+    this.props.history.push(`/tx/${signer}`)
+    await new Promise(resolve => setTimeout(resolve, 100))
+    ckbTxManager.visualizeTransaction(tx)
     this.setState({ pending: false })
     this.modal.current.closeModal()
-    this.props.history.push(`/tx/${signer}`)
-    ckbTxManager.visualizeTransaction(tx)
   }
 
   closeModal = () => {

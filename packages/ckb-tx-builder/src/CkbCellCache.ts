@@ -36,7 +36,7 @@ export default class CkbCellCache {
   ) {
     const lock_hash = lock_script.hash
     if (!this.#cellCollectors.has(lock_hash)) {
-      this.#cellCollectors.set(lock_hash, new CkbCellCollector(this.#indexer, lock_script))
+      this.#cellCollectors.set(lock_hash, new CkbCellCollector(this.#indexer, lock_script.serialize()))
     }
     const collector = this.#cellCollectors.get(lock_hash)
 
