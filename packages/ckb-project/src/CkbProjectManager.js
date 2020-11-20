@@ -63,6 +63,8 @@ function makeProjectManager (Base) {
       } catch (e) {
         return false
       }
+
+      this.refreshDirectory()
   
       return true
     }
