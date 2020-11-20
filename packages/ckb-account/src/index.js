@@ -9,6 +9,7 @@ import CacheRoute from 'react-router-cache-route'
 
 import keypairManager from '@obsidians/keypair'
 import CkbAccountPage from './CkbAccountPage'
+import FaucetButton from './buttons/FaucetButton'
 
 export default class CkbAccount extends PureComponent {
   constructor (props) {
@@ -100,7 +101,7 @@ export default class CkbAccount extends PureComponent {
 
   render () {
     const { network } = this.props
-    const { initialSelected, initialTabs } = this.state
+    const { initialSelected, initialTabs, value } = this.state
 
     return <>
       <TabsWithNavigationBar
@@ -114,6 +115,9 @@ export default class CkbAccount extends PureComponent {
         onChangeStarred={this.props.onChangeStarred}
         onRefresh={this.onRefresh}
         onTabsUpdated={this.props.onTabsUpdated}
+        NavbarButtons={(
+          network === 'ckb-aggron' && <FaucetButton address={value} network={network} />
+        )}
       >
         <CacheRoute
           path={`/account/:name`}
