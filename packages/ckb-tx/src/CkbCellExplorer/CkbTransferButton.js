@@ -71,7 +71,7 @@ export default class CkbTransferButton extends PureComponent {
       return
     }
     try {
-      const tx = await this.context.txBuilder.newTx()
+      const tx = await networkManager.txBuilder.newTx()
         .transfer(this.props.sender, this.lock, this.capacity)
         .generate()
 
@@ -88,7 +88,7 @@ export default class CkbTransferButton extends PureComponent {
       notification.error('Error in transfer', 'Cannot transfer to yourself.')
       return
     }
-    const rawTx = this.context.txBuilder.newTx()
+    const rawTx = networkManager.txBuilder.newTx()
 
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)

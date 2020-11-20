@@ -8,6 +8,7 @@ import {
 import notification from '@obsidians/notification'
 
 import { CkbCapacity, CkbData } from '@obsidians/ckb-objects'
+import { networkManager } from '@obsidians/ckb-network'
 
 import CkbWalletContext from '../../CkbWalletContext'
 import ckbTxManager from '../../ckbTxManager'
@@ -48,7 +49,7 @@ export default class CkbNewCellButton extends PureComponent {
 
   onChangeData = (errorInData, data) => {
     this.data = data
-    const tx = this.context.txBuilder.newTx()
+    const tx = networkManager.txBuilder.newTx()
       .to(this.props.address, this.capacity, data || new CkbData())
     this.setState({
       errorInData,
@@ -62,7 +63,7 @@ export default class CkbNewCellButton extends PureComponent {
   }
 
   preview = async () => {
-    const rawTx = this.context.txBuilder.newTx()
+    const rawTx = networkManager.txBuilder.newTx()
       .to(this.props.address, this.capacity, this.data || new CkbData())
 
     if (this.fee && this.fee.value) {

@@ -91,7 +91,7 @@ export default class CkbCells extends PureComponent {
       totalCapacity: typeof balance === 'string' ? new CkbCapacity(BigInt(balance)) : null,
     })
 
-    this.cellCollector = this.context.txBuilder.cellCollector(await wallet.lock_script())
+    this.cellCollector = networkManager.txBuilder.cellCollector(await wallet.lock_script())
     this.displayMoreCell()
   }
 

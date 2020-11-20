@@ -38,6 +38,7 @@ class NetworkManager {
 
   async updateSdk (params) {
     this._sdk = new Sdk(params)
+    this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 
   async setNetwork (networkId) {

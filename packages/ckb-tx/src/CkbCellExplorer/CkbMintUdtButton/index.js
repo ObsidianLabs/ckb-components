@@ -71,7 +71,7 @@ export default class CkbMintUdtButton extends PureComponent {
   }
 
   preview = async () => {
-    const rawTx = this.context.txBuilder.newTx()
+    const rawTx = networkManager.txBuilder.newTx()
 
     try {
       const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
