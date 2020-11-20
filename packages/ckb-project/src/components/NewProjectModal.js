@@ -125,24 +125,47 @@ export default class NewCkbProjectModal extends NewProjectModal {
   }
 }
 
-NewCkbProjectModal.defaultProps = {
-  defaultTemplate: 'moleculec-es-template',
-  templates: [
+let templates = [
+  {
+    group: 'Rust',
+    badge: 'Rust',
+    children: [
+      { id: 'rust', display: 'CKB project in Rust' },
+    ],
+  },
+  {
+    group: 'JavaScript',
+    badge: 'JavaScript',
+    children: [
+      { id: 'moleculec-es-template', display: 'moleculec-es' },
+      { id: 'molecule-javascript-template', display: 'molecule-javascript' },
+      { id: 'js-minimal', display: 'minimal' },
+      { id: 'htlc', display: 'HTLC' },
+    ],
+  },
+  {
+    group: 'C',
+    badge: 'C',
+    children: [
+      { id: 'carrot', display: 'carrot' },
+      { id: 'simple-udt', display: 'Simple UDT', main: 'simple_udt.c' },
+    ],
+  },
+  {
+    group: 'Other',
+    badge: 'Other',
+    children: [
+      { id: 'duktape', display: 'Duktape' },
+    ],
+  },
+]
+if (platform.isWeb) {
+  templates = [
     {
       group: 'Rust',
       badge: 'Rust',
       children: [
         { id: 'rust', display: 'CKB project in Rust' },
-      ],
-    },
-    {
-      group: 'JavaScript',
-      badge: 'JavaScript',
-      children: [
-        { id: 'moleculec-es-template', display: 'moleculec-es' },
-        { id: 'molecule-javascript-template', display: 'molecule-javascript' },
-        { id: 'js-minimal', display: 'minimal' },
-        { id: 'htlc', display: 'HTLC' },
       ],
     },
     {
@@ -153,18 +176,10 @@ NewCkbProjectModal.defaultProps = {
         { id: 'simple-udt', display: 'Simple UDT', main: 'simple_udt.c' },
       ],
     },
-    {
-      group: 'Other',
-      badge: 'Other',
-      children: [
-        { id: 'duktape', display: 'Duktape' },
-      ],
-    },
   ]
 }
 
-if (platform.isWeb) {
-  const defaultProps = NewCkbProjectModal.defaultProps
-  defaultProps.defaultTemplate = 'simple-udt'
-  defaultProps.templates = defaultProps.templates.filter(t => t.group !== 'JavaScript' && t.group !== 'Other')
+NewCkbProjectModal.defaultProps = {
+  defaultTemplate: platform.isWeb ? 'simple-udt' : 'moleculec-es-template',
+  templates,
 }

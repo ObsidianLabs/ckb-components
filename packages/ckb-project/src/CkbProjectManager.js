@@ -3,6 +3,7 @@ import { ProjectManager, BaseProjectManager } from '@obsidians/workspace'
 
 import ckbCompiler from '@obsidians/ckb-compiler'
 import ckbDebugger from '@obsidians/ckb-debugger'
+import { networkManager } from '@obsidians/ckb-network'
 
 import CkbProjectSettings from './CkbProjectSettings'
 
@@ -12,6 +13,7 @@ function makeProjectManager (Base) {
   return class CkbProjectManager extends Base {
     constructor (project, projectRoot) {
       super(project, projectRoot)
+      this.createCellButton = null
     }
   
     get settingsFilePath () {
@@ -125,6 +127,14 @@ function makeProjectManager (Base) {
       }
   
       return true
+    }
+
+    async createCell (node) {
+      if (!networkManager.sdk) {
+        notification.error('No Network', 'Please connect to a network.')
+        return
+      }
+      this.createCellButton.open(node)
     }
   }
 }

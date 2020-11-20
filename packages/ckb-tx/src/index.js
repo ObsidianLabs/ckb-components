@@ -21,3 +21,4 @@ CkbData.fileReader = new FileReader()
 export { default } from './CkbTxContructor'
 
 export { default as CkbCellDetail } from './CkbCellDetail'
+export { default as ckbTxManager } from './ckbTxManager'

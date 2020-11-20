@@ -4,6 +4,7 @@ import {
   ButtonOptions,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import { CkbData, lib } from '@obsidians/ckb-objects'
 
 import NonHexInput from './NonHexInput'
@@ -28,7 +29,7 @@ export default class DataInput extends PureComponent {
       { key: 'uint256', text: 'uint256' },
       { key: 'hex', icon: 'fas fa-code', text: 'Hex' },
     ]
-    if (!props.noFile) {
+    if (!props.noFile && platform.isDesktop) {
       this.options.push({ key: 'file', icon: 'fas fa-file', text: 'File' })
     }
   }

@@ -19,11 +19,24 @@ modelSessionManager.registerModeDetector(filePath => {
   }
 })
 
+const makeContextMenu = (contextMenu, projectManager) => node => {
+  if (node.children) {
+    return contextMenu
+  }
+  const cloned = [...contextMenu]
+  cloned.splice(3, 0, {
+    text: 'Create Cell...',
+    onClick: () => projectManager.createCell(node),
+  }, null)
+  return cloned
+}
+
 Workspace.defaultProps = {
   ProjectManager: CkbProjectManager,
   compilerManager: ckbCompiler,
   ProjectToolbar,
   CompilerTerminal: CkbCompilerTerminal,
+  makeContextMenu,
 }
 
 export default Workspace
