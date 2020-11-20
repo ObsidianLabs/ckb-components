@@ -2,38 +2,41 @@ import { CkbCapacity, CkbLiveCell, CkbCellStatus, CkbScript } from '@obsidians/c
 import CkbCellCollector from './CkbCellCollector'
 
 export default class CkbCellCache {
+  #indexer
   #cellCollectors: Map<string, CkbCellCollector>
 
-  constructor () {
+  constructor (indexer) {
+    this.#indexer = indexer
     this.#cellCollectors = new Map()
   }
 
-  cellCollector (indexer, lock_script) {
+  cellCollector (lock_script) {
     const script = new CkbScript(lock_script)
     const lock_hash = script.hash
 
     if (!this.#cellCollectors.has(lock_hash)) {
-      this.#cellCollectors.set(lock_hash, new CkbCellCollector(indexer, lock_script))
+      this.#cellCollectors.set(lock_hash, new CkbCellCollector(this.#indexer, lock_script))
     }
     const collector = this.#cellCollectors.get(lock_hash)
     collector.clear()
     return collector
   }
 
-  async gatherCells (lock_hash: string, amount: bigint, type_hash?: string) {
-    return this.gatherCellsByAccumulator(lock_hash, defaultAccumulator(amount))
+  async gatherCells (lock_script: CkbScript, amount: bigint, type_hash?: string) {
+    return this.gatherCellsByAccumulator(lock_script, defaultAccumulator(amount))
   }
 
-  async gatherUdtCells (lock_hash: string, amount: bigint, udtTypeHash: string) {
-    return this.gatherCellsByAccumulator<bigint>(lock_hash, udtAccumulator(amount, udtTypeHash))
+  async gatherUdtCells (lock_script: CkbScript, amount: bigint, udtTypeHash: string) {
+    return this.gatherCellsByAccumulator<bigint>(lock_script, udtAccumulator(amount, udtTypeHash))
   }
 
   async gatherCellsByAccumulator<T> (
-    lock_hash: string,
+    lock_script: CkbScript,
     accumulator: accumulator<T>,
   ) {
+    const lock_hash = lock_script.hash
     if (!this.#cellCollectors.has(lock_hash)) {
-      throw new Error(`No cells for lock hash "${lock_hash}".`)
+      this.#cellCollectors.set(lock_hash, new CkbCellCollector(this.#indexer, lock_script))
     }
     const collector = this.#cellCollectors.get(lock_hash)
 

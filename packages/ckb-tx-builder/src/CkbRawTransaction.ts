@@ -69,7 +69,7 @@ export default class CkbRawTransaction {
       cells,
       totalCapacity,
       accumulation = BigInt(0),
-    } = await this.cellCache.gatherUdtCells(fromLockScript.hash, amount, udtScript.hash)
+    } = await this.cellCache.gatherUdtCells(fromLockScript, amount, udtScript.hash)
 
     cells.forEach(this.#inputs.add, this.#inputs)
     const returns = accumulation - amount
@@ -163,7 +163,7 @@ export default class CkbRawTransaction {
       const {
         cells,
         totalCapacity,
-      } = await this.cellCache.gatherCells(inputPart.lock_hash, amount, inputPart.type_hash)
+      } = await this.cellCache.gatherCells(inputPart.lock, amount, inputPart.type_hash)
       const returns = totalCapacity.value - amount
 
       cells.forEach(gatheredCells.add, gatheredCells)

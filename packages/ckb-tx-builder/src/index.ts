@@ -7,15 +7,15 @@ export default class CkbTxBuilder {
 
   constructor (indexer) {
     this.#indexer = indexer
-    this.#cellCache = new CkbCellCache()
+    this.#cellCache = new CkbCellCache(indexer)
   }
 
   cellCollector (lock_script) {
-    return this.#cellCache.cellCollector(this.#indexer, lock_script)
+    return this.#cellCache.cellCollector(lock_script)
   }
 
   clearCache () {
-    this.#cellCache = new CkbCellCache()
+    this.#cellCache = new CkbCellCache(this.#indexer)
   }
 
   newTx () {
