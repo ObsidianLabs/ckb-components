@@ -95,6 +95,7 @@ class CreateCell extends PureComponent {
                 {this.state.pathInProject}
               </div>
               <div className='text-muted small'>{this.data.size()} Bytes</div>
+              <div className='text-muted small'>Data hash: <code>{this.data.hash}</code></div>
             </div>
           </div>
         )

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import {
   ButtonOptions,
   TableCardRow,
+  Badge,
 } from '@obsidians/ui-components'
 
 export default function CkbDataRow (props) {
@@ -31,6 +32,10 @@ export default function CkbDataRow (props) {
       badge={`${data.size()} Bytes`}
     >
       <div>
+        <div className='row ml-2 mb-2'>
+          <div className='col-2 pr-0'><Badge>hash</Badge></div>
+          <div className='col-10 p-0'><code className='small'>{data.hash}</code></div>
+        </div>
         <ButtonOptions
           size='sm'
           className='my-1'
