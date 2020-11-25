@@ -84,7 +84,10 @@ export default class NewCkbProjectModal extends NewProjectModal {
       const templateObj = languageGroup.children.find(child => child.id === template)
       ckbconfig = {
         ...ckbconfig,
-        main: templateObj.main || `${created.name}.c`
+        main: templateObj.main || `${created.name}.c`,
+        compilers: {
+          riscv: 'xenial-full-20191209'
+        }
       }
     } else {
       created = await super.createProject({ projectRoot, name, template, notify: false })
