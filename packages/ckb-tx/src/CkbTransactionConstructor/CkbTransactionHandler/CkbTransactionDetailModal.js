@@ -38,7 +38,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
   }
 
   openModal = tx => {
-    tx.chain = networkManager.network?.chain || 'ckb_dev'
+    tx.chain = networkManager?.chain || 'ckb_dev'
     this.tx = tx
 
     this.setState({
