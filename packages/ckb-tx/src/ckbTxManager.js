@@ -74,7 +74,7 @@ class CkbTxManager {
         name: 'Simple UDT',
         out_point: {
           tx_hash: '0xc1b2ae129fad7465aaa9acc9785f842ba3e6e8b8051d899defa89f5508a77958',
-          index: 0
+          index: '0x0'
         }
       }
     }
