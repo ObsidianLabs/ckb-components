@@ -81,7 +81,12 @@ export class CkbLiveCell {
     if (!this.data.size() || this.type.code_hash !== SIMPLE_UDT_CODE_HASH) {
       return null
     }
-    const value = BigInt(this.data.toString('uint128'))
+    let value
+    try {
+      value = BigInt(this.data.toString('uint128'))
+    } catch {
+      value = BigInt(0)
+    }
     const issuer = this.type.args.serialize()
     return { value, issuer }
   }
