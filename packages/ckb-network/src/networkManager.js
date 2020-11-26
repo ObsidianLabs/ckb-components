@@ -66,8 +66,8 @@ class NetworkManager {
     notification.success(`Network`, network.notification)
   }
 
-  async updateCustomNetwork ({ url, indexer }) {
-    const blockchainInfo = await this.createSdk({ url, indexer })
+  async updateCustomNetwork ({ url, indexer, explorer }) {
+    const blockchainInfo = await this.createSdk({ url, indexer, explorer })
     
     if (blockchainInfo) {
       redux.dispatch('SELECT_NETWORK', `custom:${this.chain}`)

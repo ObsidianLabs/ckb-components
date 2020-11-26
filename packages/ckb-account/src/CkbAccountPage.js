@@ -30,7 +30,7 @@ export default class CkbAccountPage extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.value !== this.props.value) {
+    if (prevProps.value !== this.props.value || prevProps.network !== this.props.network) {
       this.refresh()
     }
   }

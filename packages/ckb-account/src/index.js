@@ -129,6 +129,7 @@ export default class CkbAccount extends PureComponent {
               cacheLifecycles={props.cacheLifecycles}
               onDisplay={this.onPageDisplay}
               value={props.match.params.name}
+              network={network}
             />
           )}
         />

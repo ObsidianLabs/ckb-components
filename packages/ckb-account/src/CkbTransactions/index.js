@@ -13,8 +13,9 @@ export default class CkbTransactions extends PureComponent {
   state = {
     cursor: '',
     txs: [],
-    hasMore: true,
+    hasMore: false,
     loading: true,
+    error: '',
   }
 
   componentDidMount () {
@@ -28,8 +29,13 @@ export default class CkbTransactions extends PureComponent {
   }
 
   refresh = async wallet => {
-    this.setState({ txs: [], loading: true })
-    const { cursor, txs } = await wallet.getTransactions(null, PAGE_SIZE)
+    this.setState({ txs: [], loading: true, error: '', hasMore: false })
+    const transactions = await wallet.getTransactions(null, PAGE_SIZE)
+    if (transactions.error) {
+      this.setState({ loading: false, error: transactions.error })
+      return
+    }
+    const { cursor, txs } = transactions
     if (this.props.wallet !== wallet) {
       return
     }
@@ -43,7 +49,12 @@ export default class CkbTransactions extends PureComponent {
 
   loadMore = async () => {
     this.setState({ loading: true })
-    const { cursor, txs } = await this.props.wallet.getTransactions(this.state.cursor, PAGE_SIZE)
+    const transactions = await this.props.wallet.getTransactions(this.state.cursor, PAGE_SIZE)
+    if (transactions.error) {
+      this.setState({ loading: false, error: transactions.error })
+      return
+    }
+    const { cursor, txs } = transactions
     this.setState({
       cursor,
       txs: [...this.state.txs, ...txs],
@@ -67,6 +78,19 @@ export default class CkbTransactions extends PureComponent {
             <i className='fas fa-spin fa-spinner mr-1' />Loading...
           </td>
         </tr>
+      )
+    } else if (this.state.error) {
+      rows.push(
+        <tr key='txs-error' className='bg-transparent'>
+        <td align='middle' colSpan={3}>
+          Loading Error
+        </td>
+      </tr>,
+      <tr key='txs-refresh' className='bg-transparent'>
+        <td align='middle' colSpan={3}>
+          <span className='btn btn-sm btn-secondary' onClick={() => this.refresh(this.props.wallet)}>Reload</span>
+        </td>
+      </tr>
       )
     } else if (this.state.hasMore) {
       rows.push(

@@ -36,10 +36,14 @@ export default class CkbIndexer {
 
   async getTransactions (lock_script, cursor, step, order = 'desc') {
     const params = this.prepareParams(lock_script, cursor, step, order)
-    const result = await this.rpc.get_transactions(...params)
-    return {
-      cursor: result.last_cursor,
-      txs: result.objects,
+    try {
+      const result = await this.rpc.get_transactions(...params)
+      return {
+        cursor: result.last_cursor,
+        txs: result.objects,
+      }
+    } catch (error) {
+      return { error }
     }
   }
 }

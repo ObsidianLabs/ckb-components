@@ -60,8 +60,11 @@ export default class CkbAccount {
     if (!lock_script) {
       return { txs: [] }
     }
-    const { cursor, txs } = await this.ckbIndexer.getTransactions(lock_script, lastCursor, size)
-
+    const transactions = await this.ckbIndexer.getTransactions(lock_script, lastCursor, size)
+    if (transactions.error) {
+      return transactions
+    }
+    const { cursor, txs } = transactions
     return {
       cursor,
       txs: txs.map(tx => new TxCell(tx, this.ckbClient)),

@@ -19,6 +19,7 @@ export default class CustomNetwork extends PureComponent {
     this.state = {
       nodeUrl: '',
       indexerUrl: '',
+      explorerUrl: '',
       nodeInfo: null,
       blockchainInfo: null,
       block: null,
@@ -31,9 +32,9 @@ export default class CustomNetwork extends PureComponent {
     if (!this.props.customNetwork) {
       this.modal.current.openModal()
     } else {
-      const { node, indexer } = this.props.customNetwork
-      this.setState({ nodeUrl: node, indexerUrl: indexer })
-      this.tryCreateSdk({ url: node, indexer })
+      const { node, indexer, explorer } = this.props.customNetwork
+      this.setState({ nodeUrl: node, indexerUrl: indexer, explorerUrl: explorer })
+      this.tryCreateSdk({ url: node, indexer, explorer })
     }
   }
 
@@ -44,8 +45,8 @@ export default class CustomNetwork extends PureComponent {
     }
   }
 
-  tryCreateSdk = async ({ url, indexer }) => {
-    const blockchainInfo = await networkManager.updateCustomNetwork({ url, indexer })
+  tryCreateSdk = async ({ url, indexer, explorer }) => {
+    const blockchainInfo = await networkManager.updateCustomNetwork({ url, indexer, explorer })
     if (blockchainInfo) {
       this.refresh(blockchainInfo)
       if (this.h) {
@@ -60,6 +61,7 @@ export default class CustomNetwork extends PureComponent {
     const valid = await this.tryCreateSdk({
       url: this.state.nodeUrl,
       indexer: this.state.indexerUrl,
+      explorer: this.state.explorerUrl,
     })
 
     if (!valid) {
@@ -70,6 +72,7 @@ export default class CustomNetwork extends PureComponent {
       customNetwork: {
         node: this.state.nodeUrl,
         indexer: this.state.indexerUrl,
+        explorer:  this.state.explorerUrl,
       }
     })
     this.modal.current.closeModal()
@@ -125,6 +128,14 @@ export default class CustomNetwork extends PureComponent {
                 badge={this.props.customNetwork?.indexer}
                 badgeColor='primary'
               />
+              {
+                this.props.customNetwork?.explorer &&
+                <TableCardRow
+                  name='Explorer URL'
+                  badge={this.props.customNetwork?.explorer}
+                  badgeColor='primary'
+                />
+              }
               <TableCardRow
                 name='Chain'
                 badge={this.state.blockchainInfo?.chain}
@@ -183,6 +194,13 @@ export default class CustomNetwork extends PureComponent {
           maxLength='200'
           value={this.state.indexerUrl}
           onChange={indexerUrl => this.setState({ indexerUrl })}
+        />
+        <DebouncedFormGroup
+          label='Explorer URL'
+          placeholder='Optional'
+          maxLength='200'
+          value={this.state.explorerUrl}
+          onChange={explorerUrl => this.setState({ explorerUrl })}
         />
       </Modal>
     </>
