@@ -4,6 +4,7 @@ import Navbar from '@obsidians/navbar'
 import keypairManager from '@obsidians/keypair'
 import { NewProjectModal, navbarItem } from '@obsidians/ckb-project' 
 import { networkManager } from '@obsidians/ckb-network'
+import platform from '@obsidians/platform'
 
 import headerActions from './headerActions'
 
@@ -34,7 +35,7 @@ export default class Header extends PureComponent {
       networkList,
     } = this.props
 
-    const username = profile.get('username') || 'local'
+    const username = platform.isDesktop ? 'local' : profile.get('username')
     const navbarLeft = [
       navbarItem(projects, selectedProject, username)
     ]
