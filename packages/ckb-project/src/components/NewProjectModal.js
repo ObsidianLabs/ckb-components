@@ -42,9 +42,9 @@ export default class NewCkbProjectModal extends NewProjectModal {
       let options = {}
   
       if (platform.isDesktop) {
-        const { dir, parsedName } = fileOps.current.path.parse(projectRoot)
-        projectName = parsedName
-        await fileOps.current.ensureDirectory(dir)
+        const { dir, base } = fileOps.current.path.parse(projectRoot)
+        projectName = base
+        created = await fileOps.current.ensureDirectory(dir)
         const projectDir = fileOps.current.getDockerMountPath(dir)
         cmd = [
           `docker run --rm -it`,
@@ -82,25 +82,28 @@ export default class NewCkbProjectModal extends NewProjectModal {
     } else if (language === 'c') {
       created = await super.createProject({ projectRoot, name, template, notify: false })
       const templateObj = languageGroup.children.find(child => child.id === template)
+      projectName = created.name
       ckbconfig = {
         ...ckbconfig,
-        main: templateObj.main || `${created.name}.c`,
+        main: templateObj.main || `${projectName}.c`,
         compilers: {
           riscv: 'xenial-full-20191209'
         }
       }
     } else {
       created = await super.createProject({ projectRoot, name, template, notify: false })
+      projectName = created.name
+    }
+
+    if (!created) {
+      notification.error('Cannot Create the Project')
+      return false
     }
     
     let pathConfig
     if (platform.isDesktop) {
       pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
     } else {
-      if (!created) {
-        notification.error('Cannot Create the Project')
-        return false
-      }
       const { _id, userId } = created
       pathConfig = `${created.public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
     }
