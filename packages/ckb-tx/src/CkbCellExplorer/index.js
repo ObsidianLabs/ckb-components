@@ -34,6 +34,12 @@ export default class CkbCellExplorer extends PureComponent {
     keypairManager.onUpdated(this.updateKeypairs)
   }
 
+  componentDidUpdate (prevProps) {
+    if (prevProps.network !== this.props.network) {
+      this.onRefresh()
+    }
+  }
+
   updateKeypairs = keypairs => {
     this.keypairs = {}
     keypairs.forEach(k => {
