@@ -3,12 +3,13 @@ import CacheRoute from 'react-router-cache-route'
 
 import { KeypairButton } from '@obsidians/keypair'
 import { TerminalButton } from '@obsidians/workspace'
+import platform from '@obsidians/platform'
 
 import { QueueButton } from '@obsidians/ckb-queue'
 import { CompilerSelector } from '@obsidians/ckb-project'
 
 export default function CkbBottomBar (props) {
-  const username = props.profile.get('username') || 'local'
+  const username = platform.isDesktop ? 'local' : props.profile.get('username')
   return <>
     <KeypairButton>
       <div className='btn btn-primary btn-sm btn-flat'>
