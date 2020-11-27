@@ -26,15 +26,19 @@ export default class CkbClient {
   }
   
   async loadOutpoint (out_point) {
-    const tx = await this.loadTransaction(out_point.tx_hash)
-    if (!tx || !tx.transaction || !tx.transaction.outputs) {
+    try {
+      const tx = await this.loadTransaction(out_point.tx_hash)
+      if (!tx || !tx.transaction || !tx.transaction.outputs) {
+        return
+      }
+  
+      const index = parseInt(out_point.index, 16)
+      const type = tx.transaction.outputs[index].type
+      const data = tx.transaction.outputs_data[index]
+      const cell = tx.transaction.outputs[index]
+      return { out_point, type, data, ...cell }
+    } catch (e) {
       return
     }
-
-    const index = parseInt(out_point.index, 16)
-    const type = tx.transaction.outputs[index].type
-    const data = tx.transaction.outputs_data[index]
-    const cell = tx.transaction.outputs[index]
-    return { out_point, type, data, ...cell }
   }
 }
