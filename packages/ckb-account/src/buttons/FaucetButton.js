@@ -36,7 +36,7 @@ export default class FaucetButton extends PureComponent {
         notification.error('Failed', 'Unknown error')
       }
     } else {
-      notification.success('CKB Claimed', `Claimed 5000 CFX for <b>${address}</b>`)
+      notification.success('CKB Claimed', `Claimed 5000 CKB tokens for <b>${address}</b>`)
     }
   }
 
