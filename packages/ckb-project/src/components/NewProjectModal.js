@@ -26,9 +26,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
     const language = languageGroup.group.toLowerCase()
 
     let projectName, created
-    let ckbconfig = {
-      language,
-    }
+    let ckbconfig
 
     if (language === 'rust') {
       this.setState({ showTerminal: true })
@@ -73,7 +71,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
       }
 
       ckbconfig = {
-        ...ckbconfig,
+        ckbconfig: 'rust',
         main: `contracts/${projectName}/src/main.rs`,
         compilers: {
           capsule: capsuleVersion,
@@ -83,13 +81,6 @@ export default class NewCkbProjectModal extends NewProjectModal {
       created = await super.createProject({ projectRoot, name, template, notify: false })
       const templateObj = languageGroup.children.find(child => child.id === template)
       projectName = created.name
-      ckbconfig = {
-        ...ckbconfig,
-        main: templateObj.main || `${projectName}.c`,
-        compilers: {
-          riscv: 'xenial-full-20191209'
-        }
-      }
     } else {
       created = await super.createProject({ projectRoot, name, template, notify: false })
       projectName = created.name
@@ -100,15 +91,17 @@ export default class NewCkbProjectModal extends NewProjectModal {
       return false
     }
     
-    let pathConfig
-    if (platform.isDesktop) {
-      pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
-    } else {
-      const { _id, userId } = created
-      pathConfig = `${created.public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
+    if (ckbconfig) {
+      let pathConfig
+      if (platform.isDesktop) {
+        pathConfig = fileOps.current.path.join(projectRoot, 'ckbconfig.json')
+      } else {
+        const { _id, userId } = created
+        pathConfig = `${created.public ? 'public' : 'private'}/${userId}/${_id}/ckbconfig.json`
+      }
+      await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
     }
 
-    await fileOps.current.writeFile(pathConfig, JSON.stringify(ckbconfig, null, 2))
     notification.success('Successful', `New project <b>${name}</b> is created.`)
     return platform.isDesktop ? { projectRoot, name: projectName } : created
   }
