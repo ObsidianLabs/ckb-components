@@ -38,6 +38,8 @@ class NetworkManager {
 
   async updateSdk (params) {
     this._sdk = new Sdk(params)
+    const blockchainInfo = await this._sdk.ckbClient.rpc.get_blockchain_info()
+    this.chain = blockchainInfo.chain
     this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 

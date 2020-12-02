@@ -74,24 +74,44 @@ export default class CkbMintUdtButton extends PureComponent {
     const rawTx = networkManager.txBuilder.newTx()
 
     try {
-      const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
-      if (sudtCellInfo && sudtCellInfo.out_point) {
-        const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
-        rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
+      let tx
+
+      if (networkManager?.chain === 'ckb_dev') {
+        const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH.DEV)
+        if (sudtCellInfo && sudtCellInfo.out_point) {
+          const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
+          rawTx.provideDep(SIMPLE_UDT_CODE_HASH.DEV, new CkbLiveCell(cell))
+        }
+
+        tx = await rawTx
+          .from(this.props.issuer, 142)
+          .to(
+            this.lock, 142,
+            new CkbData(this.capacity.value, 'uint128'),
+            new CkbScript('data', SIMPLE_UDT_CODE_HASH.DEV, new CkbData(this.issuer, 'hex'))
+          )
+          .generate()
+      } else {
+        const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH.PROD)
+        if (sudtCellInfo && sudtCellInfo.out_point) {
+          const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
+          rawTx.provideDep(SIMPLE_UDT_CODE_HASH.PROD, new CkbLiveCell(cell))
+        }
+
+        tx = await rawTx
+          .from(this.props.issuer, 142)
+          .to(
+            this.lock, 142,
+            new CkbData(this.capacity.value, 'uint128'),
+            new CkbScript('data', SIMPLE_UDT_CODE_HASH.PROD, new CkbData(this.issuer, 'hex'))
+          )
+          .generate()
       }
-      
-      const tx = await rawTx
-        .from(this.props.issuer, 142)
-        .to(
-          this.lock, 142,
-          new CkbData(this.capacity.value, 'uint128'),
-          new CkbScript('data', SIMPLE_UDT_CODE_HASH, new CkbData(this.issuer, 'hex'))
-        )
-        .generate()
 
       ckbTxManager.visualizeTransaction(tx)
     } catch (e) {
-      notification.error('Error in mint UDT', e.message)
+      console.warn(e)
+      notification.error('Error in Mint UDT', e.message)
       return
     }
     this.modal.current.closeModal()
