@@ -8,6 +8,7 @@ const chains = {
   local: 'dev',
   'ckb-aggron': 'aggron',
   'ckb-mainnet': 'mainnet',
+  'ckb-bsn': 'bsn-aggron',
 }
 
 export default props => {

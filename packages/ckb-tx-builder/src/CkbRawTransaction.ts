@@ -56,12 +56,13 @@ export default class CkbRawTransaction {
     return this.from(from, amount).to(to, amount, data, type)
   }
 
-  public async transferUdt(from: string | CkbScript, to: string | CkbScript, amount: bigint, udt: string) {
+  public async transferUdt(from: string | CkbScript, to: string | CkbScript, amount: bigint, udt: string, chain: string) {
     const fromLockScript = new CkbScript(from)
     const toLockScript = new CkbScript(to)
+    const codeHash = chain === 'ckb_dev' ? SIMPLE_UDT_CODE_HASH.DEV : SIMPLE_UDT_CODE_HASH.PROD
     const udtScript = new CkbScript(
       'data',
-      SIMPLE_UDT_CODE_HASH,
+      codeHash,
       new CkbData(udt, 'hex')
     )
 

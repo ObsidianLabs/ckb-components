@@ -74,11 +74,11 @@ export class CkbLiveCell {
   }
 
   containsUdt () {
-    return this.type.code_hash === SIMPLE_UDT_CODE_HASH
+    return this.type.code_hash === SIMPLE_UDT_CODE_HASH.PROD || this.type.code_hash === SIMPLE_UDT_CODE_HASH.DEV
   }
 
   udt () {
-    if (!this.data.size() || this.type.code_hash !== SIMPLE_UDT_CODE_HASH) {
+    if (!this.data.size() || !this.containsUdt()) {
       return null
     }
     let value

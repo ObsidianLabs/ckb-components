@@ -72,7 +72,7 @@ class NodeManager {
       `--name ckb-${name}-indexer`,
       `-p 8116:8116`,
       `-v ckb-${name}:/data`,
-      `nervos/ckb-indexer`,
+      `obsidians/ckb-indexer`,
       `-c 172.17.0.1:8114 -s /data/indexer -l 0.0.0.0:8116`
     ].join(' ')
 

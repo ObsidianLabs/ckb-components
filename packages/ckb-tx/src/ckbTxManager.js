@@ -6,7 +6,7 @@ import { networkManager } from '@obsidians/ckb-network'
 import { SIMPLE_UDT_CODE_HASH, DUKTAPE_CODE_HASH } from '@obsidians/ckb-objects'
 
 const defaultCellManifest = [
-  { hash: SIMPLE_UDT_CODE_HASH, name: 'Simple UDT' },
+  { hash: SIMPLE_UDT_CODE_HASH.DEV, name: 'Simple UDT' },
   { hash: DUKTAPE_CODE_HASH, name: 'Duktape' },
 ]
 
@@ -68,9 +68,9 @@ class CkbTxManager {
       const manifest = await this.loadCellManifest()
       return manifest.find(item => item.hash === data_hash)
     }
-    if (data_hash === SIMPLE_UDT_CODE_HASH) {
+    if (data_hash === SIMPLE_UDT_CODE_HASH.PROD) {
       return {
-        hash: SIMPLE_UDT_CODE_HASH,
+        hash: SIMPLE_UDT_CODE_HASH.PROD,
         name: 'Simple UDT',
         out_point: {
           tx_hash: '0xc1b2ae129fad7465aaa9acc9785f842ba3e6e8b8051d899defa89f5508a77958',

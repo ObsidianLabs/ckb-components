@@ -63,7 +63,7 @@ export default class CkbTransactionDetailModal extends PureComponent {
           return
         }
         const lock = new CkbScript(address)
-        const secret = await keypairManager.getSigner(address)
+        const secret = await keypairManager.getSecret(address)
         const keypair = CkbKeypair.fromPrivateKey(secret)
         const signer = message => keypair.sign(message)
         signatureProvider.set(lock.hash, signer)

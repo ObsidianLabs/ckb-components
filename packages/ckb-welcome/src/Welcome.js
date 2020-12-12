@@ -79,7 +79,7 @@ export default class Welcome extends PureComponent {
                 channel={instanceChannel.ckbIndexer}
                 title='CKB Indexer'
                 subtitle='A library that keeps track of live cells and transactions'
-                link='https://hub.docker.com/r/nervos/ckb-indexer'
+                link='https://hub.docker.com/r/obsidians/ckb-indexer'
                 downloadingTitle='Downloading CKB Indexer'
                 onInstalled={this.refresh}
               />

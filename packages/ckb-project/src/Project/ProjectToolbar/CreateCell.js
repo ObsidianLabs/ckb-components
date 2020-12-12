@@ -4,6 +4,7 @@ import {
   Modal,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import notification from '@obsidians/notification'
 import { KeypairSelector } from '@obsidians/keypair'
 import fileOps from '@obsidians/file-ops'
@@ -35,14 +36,26 @@ class CreateCell extends PureComponent {
     this.setState({ loading: true, pending: false, name: node.name, pathInProject: node.pathInProject })
     this.modal.current.openModal()
 
-    const content = await fileOps.current.readFile(node.path)
-    const hexContent = new Buffer(content).toString('hex')
-    this.data = new CkbData(`0x${hexContent}`, 'hex')
+    let hexContent
+    if (platform.isDesktop) {
+      hexContent = await fileOps.current.readFile(node.path, 'hex')
+    } else {
+      const content = await fileOps.current.readFile(node.path)
+      const encoder = new TextEncoder()
+      const view = encoder.encode(content)
+      hexContent = Buffer.from(view).toString('hex')
+    }
 
+    this.data = new CkbData(`0x${hexContent}`, 'hex')
     this.setState({ loading: false })
   }
 
   onConfirm = async () => {
+    if (!networkManager.sdk) {
+      notification.error('No Network', 'Please connect to a network.')
+      return
+    }
+
     const signer = this.state.signer
     this.setState({ pending: true })
 

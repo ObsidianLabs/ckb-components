@@ -91,13 +91,21 @@ export default class CkbTransferButton extends PureComponent {
     const rawTx = networkManager.txBuilder.newTx()
 
     try {
-      const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH)
-      if (sudtCellInfo && sudtCellInfo.out_point) {
-        const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
-        rawTx.provideDep(SIMPLE_UDT_CODE_HASH, new CkbLiveCell(cell))
+      if (networkManager?.chain === 'ckb_dev') {
+        const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH.DEV)
+        if (sudtCellInfo && sudtCellInfo.out_point) {
+          const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
+          rawTx.provideDep(SIMPLE_UDT_CODE_HASH.DEV, new CkbLiveCell(cell))
+        }
+      } else {
+        const sudtCellInfo = await ckbTxManager.getCellInfo(SIMPLE_UDT_CODE_HASH.PROD)
+        if (sudtCellInfo && sudtCellInfo.out_point) {
+          const cell = await networkManager.sdk.ckbClient.loadOutpoint(sudtCellInfo.out_point)
+          rawTx.provideDep(SIMPLE_UDT_CODE_HASH.PROD, new CkbLiveCell(cell))
+        }
       }
 
-      await rawTx.transferUdt(this.props.sender, this.lock, this.capacity.value, this.state.token)
+      await rawTx.transferUdt(this.props.sender, this.lock, this.capacity.value, this.state.token, networkManager?.chain)
       const tx = await rawTx.generate()
 
       ckbTxManager.visualizeTransaction(tx)

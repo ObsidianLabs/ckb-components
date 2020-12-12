@@ -13,6 +13,16 @@ const networkList = [
     indexer: 'https://ckb.obsidians.io/indexer/aggron',
     explorer: 'https://ckb.obsidians.io/explorer/aggron',
   }, {
+    id: "ckb-bsn",
+    group: "testnet",
+    name: "Testnet by BSN",
+    fullName: "Testnet by BSN",
+    icon: "far fa-clouds",
+    notification: "Switched to <b>Testnet by BSN</b>.",
+    url: 'https://hk.bsngate.com/api/652eff54ee1ea0425e9d307e71bb309c6b17cf5ccd0e1755778fcc1babcfd6cd/Nervos-Aggron/rpc/rpc',
+    indexer: 'https://hk.bsngate.com/api/652eff54ee1ea0425e9d307e71bb309c6b17cf5ccd0e1755778fcc1babcfd6cd/Nervos-Aggron/rpc/indexer',
+    explorer: 'https://ckb.obsidians.io/explorer/aggron',
+  }, {
     id: "ckb-mainnet",
     group: "mainnet",
     name: "Mainnet",

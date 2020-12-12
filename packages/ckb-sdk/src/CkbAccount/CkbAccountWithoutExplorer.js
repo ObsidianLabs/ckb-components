@@ -71,7 +71,7 @@ export default class CkbAccountWithoutExplorer extends CkbAccount {
   }
 
   async createIndex () {
-    const result = await this.ckbClient.rpc.index_lock_hash(this.lock_hash, BigInt(0))
+    const result = await this.ckbClient.rpc.index_lock_hash(this.lock_hash, '0x0')
     this.indexed = true
     return result
   }
