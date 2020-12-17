@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { KeypairSelector } from '@obsidians/keypair'
+import { KeypairInputSelector } from '@obsidians/keypair'
 import { CkbScript } from '@obsidians/ckb-objects'
 
 export default function AddressLockScriptInput ({ initialScript, onChange }) {
@@ -24,7 +24,7 @@ export default function AddressLockScriptInput ({ initialScript, onChange }) {
   }
 
   return (
-    <KeypairSelector
+    <KeypairInputSelector
       editable
       noCaret
       icon='fas fa-map-marker-alt'

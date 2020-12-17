@@ -6,7 +6,7 @@ import {
 
 import platform from '@obsidians/platform'
 import notification from '@obsidians/notification'
-import { KeypairSelector } from '@obsidians/keypair'
+import { KeypairInputSelector } from '@obsidians/keypair'
 import fileOps from '@obsidians/file-ops'
 import { CkbData } from '@obsidians/ckb-objects'
 import { networkManager } from '@obsidians/ckb-network'
@@ -135,7 +135,7 @@ class CreateCell extends PureComponent {
         confirmDisabled={loading}
       >
         {this.renderFileData()}
-        <KeypairSelector
+        <KeypairInputSelector
           label='Signer'
           value={this.state.signer}
           onChange={signer => this.setState({ signer })}
