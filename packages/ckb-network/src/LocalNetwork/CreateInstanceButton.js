@@ -6,7 +6,7 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
-import { KeypairSelector } from '@obsidians/keypair'
+import { KeypairInputSelector } from '@obsidians/keypair'
 import { DockerImageInputSelector } from '@obsidians/docker'
 import { CkbKeypair } from '@obsidians/ckb-sdk'
 
@@ -50,7 +50,7 @@ export default class CreateInstanceButton extends PureComponent {
       return null
     }
     return (
-      <KeypairSelector
+      <KeypairInputSelector
         label='Block assembler (miner)'
         value={this.state.address}
         onChange={address => this.setState({ address })}
