@@ -19,9 +19,9 @@
   "dependencies": {
     "@obsidians/ckb-project": "^0.1.0",
     "@obsidians/ckb-queue": "^0.1.0",
-    "@obsidians/keypair": "^0.1.0",
-    "@obsidians/platform": "^0.1.0",
-    "@obsidians/workspace": "^0.1.1"
+    "@obsidians/keypair": "^0.3.0",
+    "@obsidians/platform": "^0.3.0",
+    "@obsidians/workspace": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
