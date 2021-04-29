@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import Navbar from '@obsidians/navbar'
 import keypairManager from '@obsidians/keypair'
-import { NewProjectModal, navbarItem } from '@obsidians/ckb-project' 
+import { NewProjectModal, navbarItem } from '@obsidians/ckb-project'
 import { networkManager } from '@obsidians/ckb-network'
 import platform from '@obsidians/platform'
 
@@ -96,9 +96,8 @@ export default class Header extends PureComponent {
         icon: network.icon,
         selected: network,
         dropdown: networkList,
-        onClickItem: newtorkId => {
-          headerActions.updateNetwork(newtorkId)
-          networkManager.setNetwork(newtorkId)
+        onClickItem: (newtorkId, network) => {
+          networkManager.setNetwork(network)
         }
       },
     ]
