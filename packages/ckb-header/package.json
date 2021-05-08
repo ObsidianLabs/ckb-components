@@ -17,12 +17,14 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/auth": "^0.3.0",
     "@obsidians/ckb-network": "^0.1.0",
     "@obsidians/ckb-project": "^0.1.0",
     "@obsidians/keypair": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
     "@obsidians/navbar": "^0.3.0",
-    "@obsidians/redux": "^0.3.0"
+    "@obsidians/redux": "^0.3.0",
+    "@obsidians/ui-components": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
