@@ -44,7 +44,7 @@ class NetworkManager {
     this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 
-  async setNetwork (network) {
+  async setNetwork (network, redirect = true) {
     if (!network || network.id === redux.getState().network) {
       return
     }
@@ -62,7 +62,9 @@ class NetworkManager {
 
     redux.dispatch('SELECT_NETWORK', network.id)
     notification.success(`Network`, network.notification)
-    headerActions.updateNetwork(network.id)
+    if (redirect) {
+      headerActions.updateNetwork(network.id)
+    }
   }
 
   async updateCustomNetwork ({ url, indexer, explorer }) {
