@@ -83,6 +83,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
 
       ckbconfig = {
         ckbconfig: 'rust',
+        language: 'rust',
         main: `contracts/${projectName}/src/main.rs`,
         compilers: {
           capsule: capsuleVersion,
