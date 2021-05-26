@@ -13,6 +13,12 @@ class NetworkManager {
     this._sdk = null
     this._txBuilder = null
     this.chain = ''
+    this.network = undefined
+    this.networks = []
+  }
+
+  get networkId () {
+    return this.network?.id
   }
 
   get sdk () {
@@ -44,7 +50,7 @@ class NetworkManager {
     this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 
-  async setNetwork (network, redirect = true) {
+  async setNetwork (network, { redirect = true, notify = true }) {
     if (!network || network.id === redux.getState().network) {
       return
     }
@@ -61,7 +67,9 @@ class NetworkManager {
     }
 
     redux.dispatch('SELECT_NETWORK', network.id)
-    notification.success(`Network`, network.notification)
+    if (notify) {
+      notification.success(`Network`, network.notification)
+    }
     if (redirect) {
       headerActions.updateNetwork(network.id)
     }
