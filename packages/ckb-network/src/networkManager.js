@@ -50,7 +50,7 @@ class NetworkManager {
     this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 
-  async setNetwork (network, { redirect = true, notify = true }) {
+  async setNetwork (network, { redirect = true, notify = true } = {}) {
     if (!network || network.id === redux.getState().network) {
       return
     }
