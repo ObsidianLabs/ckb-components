@@ -32,7 +32,7 @@ class CkbDebugger {
 
     const path = fileOps.current.path
     const mockFile = path.join(projectRoot, config.mock)
-    
+
     let mockJsonString
     try {
       mockJsonString = await fileOps.current.readFile(mockFile)
@@ -104,7 +104,7 @@ class CkbDebugger {
 
     const { code_hash, hash_type, args } = get(JSON.parse(mockJsonString), config.target)
     const script = new CkbScript({ code_hash, hash_type, args })
-    const scriptHash = script.hash()
+    const scriptHash = script.hash
 
     const { run_json_with_printer } = await import('ckb-standalone-debugger')
 
