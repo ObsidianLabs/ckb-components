@@ -35,6 +35,7 @@ export default class Header extends PureComponent {
       networkList,
       AuthModal,
       createProject,
+      navbarCenter = null,
     } = this.props
 
     const username = platform.isDesktop ? 'local' : profile.get('username')
@@ -108,6 +109,7 @@ export default class Header extends PureComponent {
       <Navbar
         profile={profile}
         navbarLeft={navbarLeft}
+        navbarCenter={navbarCenter}
         navbarRight={navbarRight}
       />
       <NewProjectModal createProject={createProject} />
