@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import Navbar from '@obsidians/navbar'
 import keypairManager from '@obsidians/keypair'
-import { NewProjectModal, navbarItem } from '@obsidians/ckb-project' 
+import { NewProjectModal, navbarItem } from '@obsidians/ckb-project'
 import { networkManager } from '@obsidians/ckb-network'
 import platform from '@obsidians/platform'
 
@@ -33,6 +33,9 @@ export default class Header extends PureComponent {
       selectedAccount,
       network,
       networkList,
+      AuthModal,
+      createProject,
+      navbarCenter = null,
     } = this.props
 
     const username = platform.isDesktop ? 'local' : profile.get('username')
@@ -96,9 +99,8 @@ export default class Header extends PureComponent {
         icon: network.icon,
         selected: network,
         dropdown: networkList,
-        onClickItem: newtorkId => {
-          headerActions.updateNetwork(newtorkId)
-          networkManager.setNetwork(newtorkId)
+        onClickItem: (newtorkId, network) => {
+          networkManager.setNetwork(network)
         }
       },
     ]
@@ -107,9 +109,11 @@ export default class Header extends PureComponent {
       <Navbar
         profile={profile}
         navbarLeft={navbarLeft}
+        navbarCenter={navbarCenter}
         navbarRight={navbarRight}
       />
-      <NewProjectModal />
+      <NewProjectModal createProject={createProject} />
+      { AuthModal && <AuthModal /> }
     </>
   }
 }

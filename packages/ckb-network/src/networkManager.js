@@ -2,6 +2,7 @@ import notification from '@obsidians/notification'
 import redux from '@obsidians/redux'
 import Sdk from '@obsidians/ckb-sdk'
 import CkbTxBuilder from '@obsidians/ckb-tx-builder'
+import headerActions from '@obsidians/header'
 
 import { getCachingKeys, dropByCacheKey } from 'react-router-cache-route'
 
@@ -12,6 +13,12 @@ class NetworkManager {
     this._sdk = null
     this._txBuilder = null
     this.chain = ''
+    this.network = undefined
+    this.networks = []
+  }
+
+  get networkId () {
+    return this.network?.id
   }
 
   get sdk () {
@@ -43,18 +50,13 @@ class NetworkManager {
     this._txBuilder = new CkbTxBuilder(this._sdk.ckbIndexer)
   }
 
-  async setNetwork (networkId) {
-    if (networkId === redux.getState().network) {
+  async setNetwork (network, { redirect = true, notify = true } = {}) {
+    if (!network || network.id === redux.getState().network) {
       return
     }
 
     const cachingKeys = getCachingKeys()
     cachingKeys.filter(key => key.startsWith('tx-') || key.startsWith('account-')).forEach(dropByCacheKey)
-
-    const network = networks.find(n => n.id === networkId)
-    if (!network) {
-      return
-    }
 
     this.network = network
     if (network.url) {
@@ -65,12 +67,17 @@ class NetworkManager {
     }
 
     redux.dispatch('SELECT_NETWORK', network.id)
-    notification.success(`Network`, network.notification)
+    if (notify) {
+      notification.success(`Network`, network.notification)
+    }
+    if (redirect) {
+      headerActions.updateNetwork(network.id)
+    }
   }
 
   async updateCustomNetwork ({ url, indexer, explorer }) {
     const blockchainInfo = await this.createSdk({ url, indexer, explorer })
-    
+
     if (blockchainInfo) {
       redux.dispatch('SELECT_NETWORK', `custom:${this.chain}`)
       notification.success(`Network Connected`, `Connected to ckb rpc at <b>${url}</b>`)

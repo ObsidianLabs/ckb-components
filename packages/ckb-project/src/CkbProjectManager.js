@@ -14,11 +14,11 @@ function makeProjectManager (Base) {
       super(project, projectRoot)
       this.createCellButton = null
     }
-  
+
     get settingsFilePath () {
       return this.pathForProjectFile('ckbconfig.json')
     }
-    
+
     get compilerVersion () {
       const language = this.projectSettings?.get('language')
       const compilers = this.projectSettings?.get('compilers')
@@ -29,7 +29,7 @@ function makeProjectManager (Base) {
       }
       return ''
     }
-    
+
     async compile () {
       let settings
       try {
@@ -37,7 +37,7 @@ function makeProjectManager (Base) {
       } catch (e) {
         return false
       }
-  
+
       if (!this.compilerVersion) {
         if (settings.language === 'c' || settings.language === 'other') {
           notification.error('No CKB Compiler', 'Please install and select a CKB compiler.')
@@ -47,16 +47,16 @@ function makeProjectManager (Base) {
           return false
         }
       }
-  
+
       const main = settings.main
       if (!main) {
         notification.error('No Main File', 'Please specify a main file in project settings.')
         return false
       }
-  
+
       await this.project.saveAll()
       this.toggleTerminal(true)
-  
+
       try {
         await ckbCompiler.build(this.compilerVersion, settings)
       } catch (e) {
@@ -64,10 +64,10 @@ function makeProjectManager (Base) {
       }
 
       this.refreshDirectory()
-  
+
       return true
     }
-  
+
     async test () {
       let settings
       try {
@@ -75,25 +75,25 @@ function makeProjectManager (Base) {
       } catch (e) {
         return false
       }
-  
+
       if (!this.compilerVersion) {
         notification.error('No Capsule', 'Please install Capsule and select a version.')
         return false
       }
-  
+
       await this.project.saveAll()
       this.toggleTerminal(true)
-  
+
       try {
         await ckbCompiler.build(this.compilerVersion, settings)
         await ckbCompiler.test(this.compilerVersion, settings)
       } catch (e) {
         return false
       }
-  
+
       return true
     }
-  
+
     async debug () {
       let settings
       try {
@@ -101,32 +101,34 @@ function makeProjectManager (Base) {
       } catch (e) {
         return false
       }
-  
+
       if (settings.language !== 'c' && settings.language !== 'javascript') {
         notification.error('Cannot Debug', 'Debug is only supported for C or JavaScript projects.')
         return false
       }
-  
+
       if (!settings.debug) {
         notification.error('No Debug Configurations', 'Please specify debug configurations in project settings.')
         return false
       }
-  
+
       ckbDebugger.setDebugState(true)
       const result = await this.compile()
       if (!result) {
         ckbDebugger.setDebugState(false)
         return false
       }
-  
+
+      const projectRoot = this.pathForProjectFile('')
+
       try {
-        await ckbDebugger.debug(settings.debug, this.projectRoot)
+        await ckbDebugger.debug(settings.debug, projectRoot)
       } catch (e) {
         ckbDebugger.setDebugState(false)
         notification.error('Debug Failed', e.message)
         return false
       }
-  
+
       return true
     }
 

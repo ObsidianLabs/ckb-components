@@ -38,7 +38,7 @@ export default class NewCkbProjectModal extends NewProjectModal {
 
       let cmd
       let options = {}
-  
+
       if (platform.isDesktop) {
         const { dir, base } = fileOps.current.path.parse(projectRoot)
         projectName = base
@@ -54,7 +54,18 @@ export default class NewCkbProjectModal extends NewProjectModal {
           `capsule new ${projectName}`,
         ].join(' ')
       } else {
-        created = await super.createProject({ projectRoot, name, notify: false })
+        if (this.props.createProject) {
+          const createProject = this.props.createProject.bind(this)
+          created = await createProject({ projectRoot, name, notify: false })
+        } else {
+          created = await super.createProject({ projectRoot, name, notify: false })
+        }
+
+        if (!created) {
+          notification.error('Cannot Create the Project')
+          return false
+        }
+
         projectName = created.name
         cmd = `capsule new ${projectName}`
         options = {
@@ -72,25 +83,36 @@ export default class NewCkbProjectModal extends NewProjectModal {
 
       ckbconfig = {
         ckbconfig: 'rust',
+        language: 'rust',
         main: `contracts/${projectName}/src/main.rs`,
         compilers: {
           capsule: capsuleVersion,
         },
       }
     } else if (language === 'c') {
-      created = await super.createProject({ projectRoot, name, template, notify: false })
+      if (this.props.createProject) {
+        const createProject = this.props.createProject.bind(this)
+        created = await createProject({ projectRoot, name, template, notify: false })
+      } else {
+        created = await super.createProject({ projectRoot, name, template, notify: false })
+      }
       const templateObj = languageGroup.children.find(child => child.id === template)
-      projectName = created.name
     } else {
-      created = await super.createProject({ projectRoot, name, template, notify: false })
-      projectName = created.name
+      if (this.props.createProject) {
+        const createProject = this.props.createProject.bind(this)
+        created = await createProject({ projectRoot, name, template, notify: false })
+      } else {
+        created = await super.createProject({ projectRoot, name, template, notify: false })
+      }
     }
 
     if (!created) {
       notification.error('Cannot Create the Project')
       return false
     }
-    
+
+    projectName = created.name
+
     if (ckbconfig) {
       let pathConfig
       if (platform.isDesktop) {

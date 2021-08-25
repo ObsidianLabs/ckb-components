@@ -17,7 +17,7 @@ export default props => {
     network = 'local',
     customNetwork,
   } = props
-  const chain = chains[network]
+  const chain = chains[network] || (network.startsWith('bsn') ? 'bsn' : '')
   if (chain === 'dev') {
     return <LocalNetwork chain={chain} active={active} />
   } else if (network.startsWith('custom')) {
