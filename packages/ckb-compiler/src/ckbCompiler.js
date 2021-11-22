@@ -123,7 +123,7 @@ class CkbCompiler {
       cmd += ` --release --debug-output`
     }
     if (platform.isWeb) {
-      return cmd
+      return `'${cmd}''`
     }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
@@ -142,7 +142,7 @@ class CkbCompiler {
       cmd += ` --release`
     }
     if (platform.isWeb) {
-      return cmd
+      return `'${cmd}''`
     }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
@@ -158,7 +158,7 @@ class CkbCompiler {
   generateBuildCmdForC(config, { version, projectRoot }) {
     const cmd = this.commandForC(config, version)
     if (platform.isWeb) {
-      return cmd
+      return `'${cmd}''`
     }
     const projectDir = fileOps.current.getDockerMountPath(projectRoot)
     return [
