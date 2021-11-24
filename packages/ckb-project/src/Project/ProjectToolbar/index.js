@@ -45,7 +45,7 @@ export default class ProjectToolbar extends PureComponent {
         />
       }
       {
-        (language === 'c' || language === 'javascript') &&
+        (language === 'c' || language === 'javascript') && (process.env.DEPLOY !== 'bsn') &&
         <CkbDebuggerButton
           className='rounded-0 border-0 flex-none w-5'
           projectRoot={projectRoot}
