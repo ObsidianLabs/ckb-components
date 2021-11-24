@@ -29,7 +29,7 @@ class NetworkManager {
     return this._txBuilder
   }
 
-  async createSdk (params) {
+  async createSdk (params, notify = true) {
     const sdk = new Sdk(params)
     try {
       const blockchainInfo = await sdk.ckbClient.rpc.get_blockchain_info()
@@ -39,7 +39,9 @@ class NetworkManager {
       return blockchainInfo
     } catch (e) {
       console.warn(e)
-      notification.error('Invalid Node URL', params.url)
+      if (notify) {
+        notification.error('Invalid Node URL', params.url)
+      }
     }
   }
 
@@ -55,8 +57,10 @@ class NetworkManager {
       return
     }
 
+    let notifyConnection = true
     if (process.env.DEPLOY === 'bsn' && network.projectKey) {
       notification.warning(`${network.name}`, `The current network ${network.name} enables a project key, please turn it off in the BSN portal.`, 5)
+      notifyConnection = false
     }
 
     const cachingKeys = getCachingKeys()
@@ -64,7 +68,7 @@ class NetworkManager {
 
     this.network = network
     if (network.url) {
-      await this.createSdk(network)
+      await this.createSdk(network, notifyConnection)
     } else {
       this._sdk = null
       this._txBuilder = null
